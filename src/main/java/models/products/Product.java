@@ -1,6 +1,7 @@
 package models.products;
 
 import com.google.gson.annotations.SerializedName;
+import models.SuperModel;
 
 public class Product {
 
@@ -20,9 +21,9 @@ public class Product {
     private Category category;
     private UnitOfMeasure uom;
 
-    public int getId() {
+    /*public int getId() {
         return id;
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -94,5 +95,10 @@ public class Product {
 
     public void setUom(UnitOfMeasure uom) {
         this.uom = uom;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

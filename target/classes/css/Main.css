@@ -1,0 +1,29 @@
+.button{
+    -fx-font-family:Monospaced;
+}
+.tree-view {
+	-fx-background-color:  #4338AE;
+}
+.tree-cell {
+	-fx-fill:#F3D741;
+}
+.tree-cell:selected {
+    -fx-font-weight: bold ;
+}
+.btn_success{
+	-fx-background-color:#19D019;
+	-fx-text-fill: white;
+	-fx-font-weight: bold ;
+}
+.btn_cancel{
+	-fx-background-color:#f80707;
+	-fx-text-fill: white;
+}
+.btn_neutral{
+	-fx-background-color:#1446e8;
+	-fx-text-fill: white;
+}
+.label{
+	-fx-font-family:Monospaced;
+	-fx-font-weight: bold ;
+}
