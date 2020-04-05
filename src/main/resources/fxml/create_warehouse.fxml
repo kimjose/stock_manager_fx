@@ -8,9 +8,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import org.controlsfx.control.NotificationPane?>
 <VBox fx:id="vbParent" prefHeight="211.0" prefWidth="415.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateWarehouse">
    <children>
-      <!--<NotificationPane fx:id="notificationPane" />-->
+      <NotificationPane fx:id="notificationPane" />
       <VBox fx:id="vbHolder" prefHeight="197.0" prefWidth="444.0">
          <children>
             <HBox>

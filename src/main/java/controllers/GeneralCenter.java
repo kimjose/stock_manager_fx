@@ -20,7 +20,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.MyTableColumn;
+import models.customers.Customer;
 import models.products.*;
+import models.vendors.Invoice;
+import models.vendors.Vendor;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.Notifications;
@@ -153,21 +156,98 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
             //Vendors
             case "All Vendors":{
-
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Vendor Name", "name", 0.35),
+                        new MyTableColumn("Email", "email", 0.35),
+                        new MyTableColumn("Phone No.", "phone", 0.30),
+                }));
+                break;
             }
             case "Vendor Invoices":{
-
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Invoice No", "invoiceNo", 0.15),
+                        new MyTableColumn("Vendor", "vendor", 0.20),
+                        new MyTableColumn("Invoice Date", "invoiceDate", 0.25),
+                        new MyTableColumn("Warehouse", "warehouse", 0.20),
+                        new MyTableColumn("Total", "total", 0.20),
+                }));
+                break;
+            }
+            case "Posted Vendor Invoices":{
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Invoice No", "invoiceNo", 0.15),
+                        new MyTableColumn("Vendor", "vendor", 0.15),
+                        new MyTableColumn("Invoice Date", "invoiceDate", 0.20),
+                        new MyTableColumn("Warehouse", "warehouse", 0.15),
+                        new MyTableColumn("Total", "total", 0.15),
+                        new MyTableColumn("Posted On", "postedOn", 0.20),
+                }));
+                break;
+            }
+            case "Reversed Vendor Invoices":{
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Invoice No", "invoiceNo", 0.10),
+                        new MyTableColumn("Vendor", "vendor", 0.15),
+                        new MyTableColumn("Invoice Date", "invoiceDate", 0.20),
+                        new MyTableColumn("Warehouse", "warehouse", 0.15),
+                        new MyTableColumn("Total", "total", 0.10),
+                        new MyTableColumn("Posted On", "postedOn", 0.15),
+                        new MyTableColumn("Reversed On", "reversedOn", 0.15),
+                }));
+                break;
             }
 
 
             //Customers
             case "All Customers":{
-
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Customer Name", "name", 0.35),
+                        new MyTableColumn("Email", "email", 0.35),
+                        new MyTableColumn("Phone No.", "phone", 0.30),
+                }));
+                break;
             }
             case "Customer Invoices":{
-
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Invoice No", "invoiceNo", 0.15),
+                        new MyTableColumn("Customer", "customer", 0.20),
+                        new MyTableColumn("Invoice Date", "invoiceDate", 0.25),
+                        new MyTableColumn("Warehouse", "warehouse", 0.20),
+                        new MyTableColumn("Total", "total", 0.20),
+                }));
+                break;
             }
-            System.out.println(tvGeneral.getColumns());
+            case "Posted Customer Invoices":{
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Invoice No", "invoiceNo", 0.15),
+                        new MyTableColumn("Customer", "customer", 0.15),
+                        new MyTableColumn("Invoice Date", "invoiceDate", 0.20),
+                        new MyTableColumn("Warehouse", "warehouse", 0.15),
+                        new MyTableColumn("Total", "total", 0.15),
+                        new MyTableColumn("Posted On", "postedOn", 0.20),
+                }));
+                break;
+            }
+            case "Reversed Customer Invoices":{
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Invoice No", "invoiceNo", 0.10),
+                        new MyTableColumn("Customer", "customer", 0.15),
+                        new MyTableColumn("Invoice Date", "invoiceDate", 0.20),
+                        new MyTableColumn("Warehouse", "warehouse", 0.15),
+                        new MyTableColumn("Total", "total", 0.10),
+                        new MyTableColumn("Posted On", "postedOn", 0.15),
+                        new MyTableColumn("Reversed On", "reversedOn", 0.15),
+                }));
+                break;
+            }
         }
     }
 
@@ -233,6 +313,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
+                break;
             }
             case "Units of Measure":{
                 Call<UnitOfMeasure[]> call = apiService.unitsOfMeasure();
@@ -247,6 +328,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
+                break;
             }
             case "Warehouses":{
                 Call<Warehouse[]> call = apiService.warehouses();
@@ -267,19 +349,177 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
             //Vendors
             case "All Vendors":{
+                Call<Vendor[]> call = apiService.vendors();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Vendor[]> call, Response<Vendor[]> response) {
+                        if (response.isSuccessful()){
+                            setData(response.body());
+                        }else{
+                            createNotification(-1, response.message());
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<Vendor[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
             }
             case "Vendor Invoices":{
+                Call<models.vendors.Invoice[]> call = apiService.vendorInvoices();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
+                        if (response.isSuccessful()){
+                            List<Invoice> filtered = new ArrayList<>();
+                            for (Invoice i : response.body()) {
+                                if (!i.isPosted()) filtered.add(i);
+                            }
+                            setData(filtered.toArray());
+                        }else createNotification(-1, response.message());
+                    }
 
+                    @Override
+                    public void onFailure(Call<Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Posted Vendor Invoices":{
+                Call<models.vendors.Invoice[]> call = apiService.vendorInvoices();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
+                        if (response.isSuccessful()){
+                            List<Invoice> filtered = new ArrayList<>();
+                            for (Invoice i : response.body()) {
+                                if (i.isPosted() && !i.isReversed()) filtered.add(i);
+                            }
+                            setData(filtered.toArray());
+                        }else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Reversed Vendor Invoices":{
+                Call<models.vendors.Invoice[]> call = apiService.vendorInvoices();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
+                        if (response.isSuccessful()){
+                            List<Invoice> filtered = new ArrayList<>();
+                            for (Invoice i : response.body()) {
+                                if (i.isPosted() && i.isReversed()) filtered.add(i);
+                            }
+                            setData(filtered.toArray());
+                        }else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
             }
 
 
             //Customers
             case "All Customers":{
+                Call<Customer[]> call = apiService.customers();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Customer[]> call, Response<Customer[]> response) {
+                        if (response.isSuccessful()){
+                            setData(response.body());
+                        }else{
+                            createNotification(-1, response.message());
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<Customer[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
             }
             case "Customer Invoices":{
+                Call<models.customers.Invoice[]> call = apiService.customerInvoices();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
+                        if (response.isSuccessful()){
+                            List<models.customers.Invoice> filtered = new ArrayList<>();
+                            for (models.customers.Invoice i: response.body()) {
+                                if (!i.isPosted()) filtered.add(i);
+                            }
+                            setData(filtered.toArray());
+                        }else{
+                            createNotification(-1, response.message());
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<models.customers.Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Posted Customer Invoices":{
+                Call<models.customers.Invoice[]> call = apiService.customerInvoices();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
+                        if (response.isSuccessful()){
+                            List<models.customers.Invoice> filtered = new ArrayList<>();
+                            for (models.customers.Invoice i: response.body()) {
+                                if (i.isPosted() && !i.isReversed()) filtered.add(i);
+                            }
+                            setData(filtered.toArray());
+                        }else{
+                            createNotification(-1, response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<models.customers.Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Reversed Customer Invoices":{
+                Call<models.customers.Invoice[]> call = apiService.customerInvoices();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
+                        if (response.isSuccessful()){
+                            List<models.customers.Invoice> filtered = new ArrayList<>();
+                            for (models.customers.Invoice i: response.body()) {
+                                if (i.isReversed()) filtered.add(i);
+                            }
+                            setData(filtered.toArray());
+                        }else{
+                            createNotification(-1, response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<models.customers.Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
             }
         }
     }
@@ -326,6 +566,78 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }
                 break;
             }
+            case "Categories":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_category.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateCategory controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Category");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "Units of Measure":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_uom.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateUOM controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Unit Of Measure");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "All Customers":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_customer.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateCustomer controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Customer");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "All Vendors":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_vendor.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateVendor controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Vendor");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
         }
     }
     /**
@@ -366,6 +678,82 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setResizable(false);
                     stage.setTitle("Edit Warehouse");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "Categories":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_category.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateCategory controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setCategory((Category) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Category");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "Units of Measure":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_uom.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateUOM controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setUom((UnitOfMeasure) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit unit of measure");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "All Customers":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_customer.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateCustomer controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setCustomer((Customer) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit customer");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "All Vendors":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_vendor.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateVendor controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setVendor((Vendor) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Vendor");
                     stage.show();
                 }catch(Exception e){
                     e.printStackTrace();
@@ -423,16 +811,87 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
+            case "Categories":{
+                Category category = (Category) object;
+                Call<Category[]> call = apiService.deleteCategory(category.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Category[]> call, Response<Category[]> response) {
+                        if (response.isSuccessful()){
+                            setData(response.body());
+                            createNotification(0, "The category has been deleted successfully.");
+                        }else{
+                            createNotification(-1, response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Category[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Units of Measure":{
+                UnitOfMeasure uom = (UnitOfMeasure) object;
+                Call<UnitOfMeasure[]> call = apiService.deleteUOM(uom.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<UnitOfMeasure[]> call, Response<UnitOfMeasure[]> response) {
+                        if (response.isSuccessful()){
+                            setData(response.body());
+                            createNotification(0, "The unit has been deleted successfully.");
+                        }else{
+                            createNotification(-1, response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UnitOfMeasure[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+            }
             //Vendors
             case "All Vendors":{
+                Vendor vendor = (Vendor) object;
+                Call<Vendor[]> call = apiService.deleteVendor(vendor.getId());
+                call.enqueue(new Callback<Vendor[]>() {
+                    @Override
+                    public void onResponse(Call<Vendor[]> call, Response<Vendor[]> response) {
+                        if (response.isSuccessful()){
+                            setData(response.body());
+                            createNotification(0, "Vendor has been deleted");
+                        }else createNotification(-1, response.message());
+                    }
 
+                    @Override
+                    public void onFailure(Call<Vendor[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
             }
             case "Vendor Invoices":{
 
             }
             //Customers
             case "All Customers":{
+                Customer customer = (Customer) object;
+                Call<Customer[]> call = apiService.deleteCustomer(customer.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Customer[]> call, Response<Customer[]> response) {
+                        if (response.isSuccessful()){
+                            setData(response.body());
+                            createNotification(0, "Customer has been deleted");
+                        }else createNotification(-1, response.message());
+                    }
 
+                    @Override
+                    public void onFailure(Call<Customer[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
             }
             case "Customer Invoices":{
 

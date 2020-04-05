@@ -3,6 +3,12 @@ package models.customers;
 public class Customer {
     //'name', 'is_active','email','phone','addedBy','isActive'
 
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
     private String name, email, phone;
 
     public String getName() {
@@ -27,5 +33,10 @@ public class Customer {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

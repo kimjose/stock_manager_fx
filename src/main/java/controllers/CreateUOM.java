@@ -10,11 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import models.products.Warehouse;
+import models.products.UnitOfMeasure;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
-import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,7 +22,8 @@ import utils.Utility;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class CreateWarehouse implements Initializable {
+public class CreateUOM implements Initializable {
+
 
     @FXML
     private VBox vbParent;
@@ -41,11 +41,9 @@ public class CreateWarehouse implements Initializable {
     @FXML
     private TextField tfName;
 
-    @FXML
-    private Label labelId11;
 
     @FXML
-    private TextField tfLocation;
+    private TextField tfDescription;
 
     @FXML
     private Button btnSave;
@@ -53,72 +51,66 @@ public class CreateWarehouse implements Initializable {
     @FXML
     private Button btnCancel;
 
-    private Warehouse warehouse;
+    private UnitOfMeasure uom;
     private HomeDataInterface dataInterface;
     private ApiService apiService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         apiService = RetrofitBuilder.createService(ApiService.class);
+        Utility.setupNotificationPane(notificationPane, vbHolder);
 
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> {
             Stage stage = (Stage) vbHolder.getScene().getWindow();
             stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
         });
-        Utility.setupNotificationPane(notificationPane, vbHolder);
     }
+
     private void save(){
         String name = tfName.getText().trim();
-        String location = tfLocation.getText().trim();
+        String description = tfDescription.getText().trim();
         if (name.equals("")){
-            notificationPane.show("name is required");
-            return;
+            notificationPane.show("Unit name is required.");return;
         }
-        if (location.equals("")){
-            notificationPane.show("location is required");
-            return;
-        }
-        Call<Warehouse[]> call;
-        if(warehouse==null){
-            call = apiService.addWarehouse(name, location);
+        Call<UnitOfMeasure[]> call;
+        if (uom == null){
+            call = apiService.addUOM(name, description);
         }else{
-            name = name.equals(warehouse.getName())?null:name;
-            call = apiService.updateWarehouse(warehouse.getId(), name, location);;
+            name = uom.getName().equals(name)?null:name;
+            call = apiService.updateUOM(uom.getId(), name, description);
         }
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Warehouse[]> call, Response<Warehouse[]> response) {
+            public void onResponse(Call<UnitOfMeasure[]> call, Response<UnitOfMeasure[]> response) {
                 if (response.isSuccessful()){
-                    if (dataInterface!=null){
-                        Platform.runLater(()->{
-                            Stage stage = (Stage) vbParent.getScene().getWindow();
-                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                            dataInterface.updateData("Warehouse has been saved successfully.", response.body());
-                        });
-                    }
+                    Platform.runLater(()->{
+                        Stage stage = (Stage) vbHolder.getScene().getWindow();
+                        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                        if (dataInterface!=null){
+                            dataInterface.updateData("The Unit of measure has been saved", response.body());
+                        }
+                    });
                 }else{
                     notificationPane.show(response.message());
                 }
             }
 
             @Override
-            public void onFailure(Call<Warehouse[]> call, Throwable throwable) {
+            public void onFailure(Call<UnitOfMeasure[]> call, Throwable throwable) {
                 notificationPane.show(throwable.getMessage());
             }
         });
-
     }
-
 
     public void setDataInterface(HomeDataInterface dataInterface) {
         this.dataInterface = dataInterface;
     }
 
-    public void setWarehouse(@NotNull Warehouse warehouse) {
-        this.warehouse = warehouse;
-        labelId.setText(String.valueOf(warehouse.getId()));
-        tfName.setText(warehouse.getName());
-        tfLocation.setText(warehouse.getLocation());
+    public void setUom(UnitOfMeasure uom) {
+        this.uom = uom;
+        labelId.setText(String.valueOf(uom.getId()));
+        tfName.setText(uom.getName());
+        tfDescription.setText(uom.getDescription());
     }
 }

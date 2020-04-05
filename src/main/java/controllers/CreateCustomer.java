@@ -10,11 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import models.products.Warehouse;
+import models.customers.Customer;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
-import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,13 +22,10 @@ import utils.Utility;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class CreateWarehouse implements Initializable {
+public class CreateCustomer implements Initializable {
 
     @FXML
     private VBox vbParent;
-
-    @FXML
-    private NotificationPane notificationPane;
 
     @FXML
     private VBox vbHolder;
@@ -37,15 +33,14 @@ public class CreateWarehouse implements Initializable {
     @FXML
     private Label labelId;
 
-
     @FXML
     private TextField tfName;
 
     @FXML
-    private Label labelId11;
+    private TextField tfEmail;
 
     @FXML
-    private TextField tfLocation;
+    private TextField tfPhone;
 
     @FXML
     private Button btnSave;
@@ -53,61 +48,62 @@ public class CreateWarehouse implements Initializable {
     @FXML
     private Button btnCancel;
 
-    private Warehouse warehouse;
+    @FXML
+    private NotificationPane notificationPane;
+
+    private Customer customer;
     private HomeDataInterface dataInterface;
     private ApiService apiService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         apiService = RetrofitBuilder.createService(ApiService.class);
+        Utility.setupNotificationPane(notificationPane, vbHolder);
+        Utility.restrictInputNum(tfPhone);
 
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> {
-            Stage stage = (Stage) vbHolder.getScene().getWindow();
+            Stage stage = (Stage) vbParent.getScene().getWindow();
             stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
         });
-        Utility.setupNotificationPane(notificationPane, vbHolder);
+
     }
     private void save(){
         String name = tfName.getText().trim();
-        String location = tfLocation.getText().trim();
+        String email = tfEmail.getText().trim();
+        String phone = tfPhone.getText().trim();
         if (name.equals("")){
-            notificationPane.show("name is required");
-            return;
+            notificationPane.show("Customer name is required.");return;
         }
-        if (location.equals("")){
-            notificationPane.show("location is required");
-            return;
-        }
-        Call<Warehouse[]> call;
-        if(warehouse==null){
-            call = apiService.addWarehouse(name, location);
-        }else{
-            name = name.equals(warehouse.getName())?null:name;
-            call = apiService.updateWarehouse(warehouse.getId(), name, location);;
+        Call<Customer[]> call;
+        if (customer==null) call = apiService.addCustomer(name, email, phone, 1);
+        else{
+            name = customer.getName().equals(name)?null:name;
+            email = customer.getEmail().equals(email)?null:email;
+            phone = customer.getPhone().equals(phone)?null:phone;
+            call = apiService.updateCustomer(customer.getId(), name, email, phone);
         }
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Warehouse[]> call, Response<Warehouse[]> response) {
+            public void onResponse(Call<Customer[]> call, Response<Customer[]> response) {
                 if (response.isSuccessful()){
                     if (dataInterface!=null){
                         Platform.runLater(()->{
+                            dataInterface.updateData("The customer has been saved", response.body());
                             Stage stage = (Stage) vbParent.getScene().getWindow();
                             stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                            dataInterface.updateData("Warehouse has been saved successfully.", response.body());
                         });
                     }
                 }else{
-                    notificationPane.show(response.message());
+                    Platform.runLater(()-> notificationPane.show(response.message()));
                 }
             }
 
             @Override
-            public void onFailure(Call<Warehouse[]> call, Throwable throwable) {
+            public void onFailure(Call<Customer[]> call, Throwable throwable) {
                 notificationPane.show(throwable.getMessage());
             }
         });
-
     }
 
 
@@ -115,10 +111,11 @@ public class CreateWarehouse implements Initializable {
         this.dataInterface = dataInterface;
     }
 
-    public void setWarehouse(@NotNull Warehouse warehouse) {
-        this.warehouse = warehouse;
-        labelId.setText(String.valueOf(warehouse.getId()));
-        tfName.setText(warehouse.getName());
-        tfLocation.setText(warehouse.getLocation());
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        labelId.setText(String.valueOf(customer.getId()));
+        tfName.setText(customer.getName());
+        tfEmail.setText(customer.getEmail());
+        tfPhone.setText(customer.getPhone());
     }
 }

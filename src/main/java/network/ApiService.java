@@ -37,7 +37,7 @@ public interface ApiService {
     Call<Invoice[]> customerInvoices();
 
     @GET("vendor_invoice")
-    Call<models.vendors.Invoice> vendorInvoices();
+    Call<models.vendors.Invoice[]> vendorInvoices();
 
     @GET("products_pack")
     Call<ProductsPack[]> ProductsPacks();
@@ -70,6 +70,16 @@ public interface ApiService {
                              @Field("categoryId")int categoryId, @Field("sku_code")String skuCode, @Field("upc_code")String upcCode,
                              @Field("image")String image);
 
+    @POST("customer")
+    @FormUrlEncoded
+    Call<Customer[]> addCustomer(@Field("name") String name, @Field("email") String email,
+                                 @Field("phone")String phone, @Field("addedBy") int addedBy);
+
+    @POST("vendor")
+    @FormUrlEncoded
+    Call<Vendor[]> addVendor(@Field("name") String name, @Field("email") String email,
+                                 @Field("phone")String phone, @Field("addedBy") int addedBy);
+
 
     /***
      * PUT requests
@@ -81,6 +91,18 @@ public interface ApiService {
     @PUT("warehouse/{id}")
     Call<Warehouse[]> updateWarehouse(@Path("id")int id, @Query("name") String name, @Query("location") String location);
 
+    @PUT("category/{id}")
+    Call<Category[]> updateCategory(@Path("id") int id, @Query("name") String name);
+
+    @PUT("uom/{id}")
+    Call<UnitOfMeasure[]> updateUOM(@Path("id")int id, @Query("name") String name, @Query("description") String description);
+
+    @PUT("customer/{id}")
+    Call<Customer[]> updateCustomer(@Path("id") int id, @Query("name") String name, @Query("email") String email, @Query("phone")String phone);
+
+    @PUT("vendor/{id}")
+    Call<Vendor[]> updateVendor(@Path("id") int id, @Query("name") String name, @Query("email") String email, @Query("phone")String phone);
+
 
     /**
      * DELETE requests
@@ -90,4 +112,16 @@ public interface ApiService {
 
     @DELETE("warehouse/{id}")
     Call<Warehouse[]> deleteWarehouse(@Path("id") int id);
+
+    @DELETE("category/{id}")
+    Call<Category[]> deleteCategory(@Path("id") int id);
+
+    @DELETE("uom/{id}")
+    Call<UnitOfMeasure[]> deleteUOM(@Path("id") int id);
+
+    @DELETE("customer/{id}")
+    Call<Customer[]> deleteCustomer(@Path("id") int id);
+
+    @DELETE("vendor/{id}")
+    Call<Vendor[]> deleteVendor(@Path("id") int id);
 }

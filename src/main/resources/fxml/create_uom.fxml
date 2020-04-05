@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.controlsfx.control.NotificationPane?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.CreateUOM"
+      prefHeight="197.0" prefWidth="350.0"
+      stylesheets="@../css/Main.css"
+      fx:id="vbParent">
+    <children>
+        <NotificationPane fx:id="notificationPane" />
+        <VBox fx:id="vbHolder" >
+            <children>
+                <HBox>
+                    <children>
+                        <Label prefHeight="40.0" prefWidth="120.0" text="Unit ID:" />
+                        <Label fx:id="labelId" prefHeight="40.0" prefWidth="134.0" />
+                    </children>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label fx:id="labelId1" prefHeight="40.0" prefWidth="120.0" text="Unit Name:" />
+                        <TextField fx:id="tfName" prefHeight="25.0" prefWidth="203.0" promptText="Unit name">
+                            <HBox.margin>
+                                <Insets top="7.0" />
+                            </HBox.margin>
+                        </TextField>
+                    </children>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label fx:id="labelId11" prefHeight="40.0" prefWidth="120.0" text="Description:" />
+                        <TextField fx:id="tfDescription" prefHeight="25.0" prefWidth="205.0" promptText="Description">
+                            <HBox.margin>
+                                <Insets top="7.0" />
+                            </HBox.margin>
+                        </TextField>
+                    </children>
+                </HBox>
+                <HBox prefHeight="65.0" prefWidth="592.0" spacing="25.0">
+                    <children>
+                        <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" styleClass="btn_success" text="Save">
+                            <graphic>
+                                <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" styleClass="btn_cancel" text="Cancel">
+                            <graphic>
+                                <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="15" />
+                            </graphic>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="5.0" />
+                    </VBox.margin>
+                    <padding>
+                        <Insets left="40.0" />
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+    <padding>
+        <Insets bottom="3.0" left="4.0" right="4.0" top="3.0" />
+    </padding>
+
+</VBox>

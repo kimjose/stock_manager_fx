@@ -59,11 +59,15 @@ public class MainStage implements Initializable, ChangeListener {
 
         TreeItem<String> allVendors = new TreeItem<>("All Vendors");
         TreeItem<String> vInvoiceTree = new TreeItem<>("Vendor Invoices");
-        vendorsTree.getChildren().addAll(allVendors, vInvoiceTree);
+        TreeItem<String> pvInvoiceTree = new TreeItem<>("Posted Vendor Invoices");
+        TreeItem<String> rvInvoiceTree = new TreeItem<>("Reversed Vendor Invoices");
+        vendorsTree.getChildren().addAll(allVendors, vInvoiceTree, pvInvoiceTree, rvInvoiceTree);
 
         TreeItem<String> allCustomers = new TreeItem<>("All Customers");
         TreeItem<String> cInvoiceTree = new TreeItem<>("Customer Invoices");
-        customerTree.getChildren().addAll(allCustomers, cInvoiceTree);
+        TreeItem<String> pcInvoiceTree = new TreeItem<>("Posted Customer Invoices");
+        TreeItem<String> rcInvoiceTree = new TreeItem<>("Reversed Customer Invoices");
+        customerTree.getChildren().addAll(allCustomers, cInvoiceTree, pcInvoiceTree, rcInvoiceTree);
 
 
         treeItemList.add(homeTree);
@@ -81,7 +85,7 @@ public class MainStage implements Initializable, ChangeListener {
         TreeItem<String> selected = (TreeItem) newValue;
         System.out.println(selected.getValue());
         switch (selected.getValue()){
-            //for shop
+
             case "Products":
             case "Categories":
             case "Units of Measure":
@@ -89,8 +93,12 @@ public class MainStage implements Initializable, ChangeListener {
             case "Brands":
             case "All Customers":
             case "Customer Invoices":
+            case "Posted Customer Invoices":
+            case "Reversed Customer Invoices":
             case "All Vendors":
-            case "Vendor Invoices":{
+            case "Vendor Invoices":
+            case "Posted Vendor Invoices":
+            case "Reversed Vendor Invoices":{
                 try {
                     FXMLLoader loader = new FXMLLoader();
                     apCenter.getChildren().clear();

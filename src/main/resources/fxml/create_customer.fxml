@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.NotificationPane?>
+
+
+<VBox fx:id="vbParent" prefHeight="208.0" prefWidth="425.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateCustomer">
+   <children>
+      <VBox fx:id="vbHolder" prefHeight="400.0" prefWidth="457.0" spacing="4.0">
+         <children>
+            <HBox>
+               <children>
+                  <Label prefHeight="34.0" prefWidth="148.0" text="Customer ID:" />
+                  <Label fx:id="labelId" prefHeight="34.0" prefWidth="148.0" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="24.0" prefWidth="148.0" text="Customer Name:" />
+                  <TextField fx:id="tfName" prefHeight="25.0" prefWidth="219.0" promptText="Customer Name" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="27.0" prefWidth="148.0" text="Customer Email:" />
+                  <TextField fx:id="tfEmail" prefHeight="25.0" prefWidth="218.0" promptText="Customer Email" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="24.0" prefWidth="148.0" text="Customer Phone:" />
+                  <TextField fx:id="tfPhone" prefHeight="25.0" prefWidth="218.0" promptText="Customer Phone:" />
+               </children>
+            </HBox>
+            <HBox spacing="25.0">
+               <children>
+                  <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="33.0" prefWidth="109.0" styleClass="btn_success" text="Save">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="33.0" prefWidth="109.0" styleClass="btn_cancel" text="Cancel">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="15" />
+                     </graphic>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets left="50.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="4.0" top="2.0" />
+         </padding>
+      </VBox>
+      <NotificationPane fx:id="notificationPane" />
+   </children>
+</VBox>
