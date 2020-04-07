@@ -62,10 +62,7 @@ public class CreateVendor implements Initializable {
         Utility.restrictInputNum(tfPhone);
 
         btnSave.setOnAction(event -> save());
-        btnCancel.setOnAction(event -> {
-            Stage stage = (Stage) vbParent.getScene().getWindow();
-            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-        });
+        btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
     }
 
     private void save(){
@@ -83,19 +80,18 @@ public class CreateVendor implements Initializable {
             phone = vendor.getPhone().equals(phone)?null:phone;
             call = apiService.updateVendor(vendor.getId(), name, email, phone);
         }
-        call.enqueue(new Callback<Vendor[]>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Vendor[]> call, Response<Vendor[]> response) {
-                if (response.isSuccessful()){
-                    if (dataInterface!=null){
-                        Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    if (dataInterface != null) {
+                        Platform.runLater(() -> {
                             dataInterface.updateData("The Vendor has been saved", response.body());
-                            Stage stage = (Stage) vbParent.getScene().getWindow();
-                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                            Utility.closeWindow(vbParent);
                         });
                     }
-                }else{
-                    Platform.runLater(()-> notificationPane.show(response.message()));
+                } else {
+                    Platform.runLater(() -> notificationPane.show(response.message()));
                 }
             }
 

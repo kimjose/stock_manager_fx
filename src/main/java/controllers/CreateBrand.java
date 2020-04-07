@@ -20,6 +20,7 @@ import org.controlsfx.control.Notifications;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import utils.Utility;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -50,10 +51,7 @@ public class CreateBrand implements Initializable {
         apiService = RetrofitBuilder.createService(ApiService.class);
         Platform.runLater(()->{
             btnSave.setOnAction(event -> save());
-            btnCancel.setOnAction(event -> {
-                Stage stage = (Stage) vbParent.getScene().getWindow();
-                stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-            });
+            btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
         });
     }
 
@@ -76,10 +74,7 @@ public class CreateBrand implements Initializable {
                 call = apiService.addBrand(name);
             }else{
                 if (brand.getName().equals(name)){
-                    Platform.runLater(()->{
-                        Stage stage = (Stage) vbParent.getScene().getWindow();
-                        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                    });
+                    Platform.runLater(()-> Utility.closeWindow(vbParent));
                     return;
                 }
                 call = apiService.updateBrand(brand.getId(), name);

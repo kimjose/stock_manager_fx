@@ -2,6 +2,8 @@ package utils;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.NotificationPane;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +24,11 @@ public class Utility {
         notificationPane.setContent(content);
         notificationPane.getStyleClass().add(NotificationPane.STYLE_CLASS_DARK);
         notificationPane.setCloseButtonVisible(true);
+    }
+
+    public static void closeWindow(Node node){
+        Stage stage = (Stage) node.getScene().getWindow();
+        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
     public static void restrictInputDec(TextField t){

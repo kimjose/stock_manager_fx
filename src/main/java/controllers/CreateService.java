@@ -10,7 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import models.products.Category;
+import models.products.Service;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
@@ -22,7 +22,8 @@ import utils.Utility;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class CreateCategory implements Initializable {
+public class CreateService implements Initializable {
+
 
     @FXML
     private VBox vbParent;
@@ -40,15 +41,19 @@ public class CreateCategory implements Initializable {
     @FXML
     private TextField tfName;
 
+
+    @FXML
+    private TextField tfDescription;
+
     @FXML
     private Button btnSave;
 
     @FXML
     private Button btnCancel;
 
-    private Category category;
     private HomeDataInterface dataInterface;
     private ApiService apiService;
+    private Service service;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,56 +62,48 @@ public class CreateCategory implements Initializable {
 
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
-
     }
 
     private void save(){
         String name = tfName.getText().trim();
-        if (name.equals("")){
-            notificationPane.show("Category name is required.");
-            return;
+        String description = tfDescription.getText().trim();
+        if (name.equals("")) {
+            notificationPane.show("Service name is required.");return;
         }
-        Call<Category[]> call;
-        if (category == null){
-            call = apiService.addCategory(name);
-        }else{
-            if (category.getName().equals(name)){
-                Utility.closeWindow(vbParent);
-                return;
-            }else{
-                call = apiService.updateCategory(category.getId(), name);
-            }
+        Call<Service[]> call;
+        if (service==null) call = apiService.addService(name, description);
+        else {
+            name = service.getName().equals(name)?null:name;
+            call = apiService.updateService(service.getId(), name, description);
         }
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Category[]> call, Response<Category[]> response) {
-                if (response.isSuccessful()) {
-                    Platform.runLater(() -> {
-                        Utility.closeWindow(vbParent);
-                        if (dataInterface != null) {
-                            dataInterface.updateData("The category has been saved.", response.body());
-                        }
-                    });
-                } else {
-                    notificationPane.show(response.message());
+            public void onResponse(Call<Service[]> call, Response<Service[]> response) {
+                if (response.isSuccessful()){
+                    if (dataInterface!=null){
+                        Platform.runLater(()->{
+                            Utility.closeWindow(vbParent);
+                            dataInterface.updateData("Service has been saved.", response.body());
+                        });
+                    }else notificationPane.show(response.message());
                 }
             }
 
             @Override
-            public void onFailure(Call<Category[]> call, Throwable throwable) {
+            public void onFailure(Call<Service[]> call, Throwable throwable) {
                 notificationPane.show(throwable.getMessage());
             }
         });
     }
 
-
     public void setDataInterface(HomeDataInterface dataInterface) {
         this.dataInterface = dataInterface;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
-        labelId.setText(String.valueOf(category.getId()));
-        tfName.setText(category.getName());
+    public void setService(Service service) {
+        this.service = service;
+        labelId.setText(String.valueOf(service.getId()));
+        tfName.setText(service.getName());
+        tfDescription.setText(service.getDescription());
     }
 }

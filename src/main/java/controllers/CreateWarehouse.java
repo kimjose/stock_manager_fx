@@ -62,10 +62,7 @@ public class CreateWarehouse implements Initializable {
         apiService = RetrofitBuilder.createService(ApiService.class);
 
         btnSave.setOnAction(event -> save());
-        btnCancel.setOnAction(event -> {
-            Stage stage = (Stage) vbHolder.getScene().getWindow();
-            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-        });
+        btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
         Utility.setupNotificationPane(notificationPane, vbHolder);
     }
     private void save(){
@@ -92,8 +89,7 @@ public class CreateWarehouse implements Initializable {
                 if (response.isSuccessful()){
                     if (dataInterface!=null){
                         Platform.runLater(()->{
-                            Stage stage = (Stage) vbParent.getScene().getWindow();
-                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                            Utility.closeWindow(vbParent);
                             dataInterface.updateData("Warehouse has been saved successfully.", response.body());
                         });
                     }

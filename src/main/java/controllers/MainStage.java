@@ -55,7 +55,8 @@ public class MainStage implements Initializable, ChangeListener {
         TreeItem<String> categoriesTI = new TreeItem<>("Categories");
         TreeItem<String> uomTI = new TreeItem<>("Units of Measure");
         TreeItem<String> warehouseTI = new TreeItem<>("Warehouses");
-        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI);
+        TreeItem<String> serviceTI = new TreeItem<>("Services");
+        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI, serviceTI);
 
         TreeItem<String> allVendors = new TreeItem<>("All Vendors");
         TreeItem<String> vInvoiceTree = new TreeItem<>("Vendor Invoices");
@@ -91,6 +92,7 @@ public class MainStage implements Initializable, ChangeListener {
             case "Units of Measure":
             case "Warehouses":
             case "Brands":
+            case "Services":
             case "All Customers":
             case "Customer Invoices":
             case "Posted Customer Invoices":

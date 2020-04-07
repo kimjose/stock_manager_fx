@@ -152,6 +152,15 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
+            case "Services":{
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Service Id", "id", 0.10),
+                        new MyTableColumn("Service Name", "name", 0.35),
+                        new MyTableColumn("Description", "description", 0.55),
+                }));
+                break;
+            }
 
 
             //Vendors
@@ -340,6 +349,21 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     @Override
                     public void onFailure(Call<Warehouse[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Services":{
+                Call<Service[]> call = apiService.services();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Service[]> call, Response<Service[]> response) {
+                        if (response.isSuccessful()) setData(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Service[]> call, Throwable throwable) {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
@@ -602,6 +626,24 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }
                 break;
             }
+            case "Services":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_service.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateService controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Service");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
             case "All Customers":{
                 try{
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_customer.fxml")));
@@ -632,6 +674,44 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setResizable(false);
                     stage.setTitle("Create Vendor");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "Vendor Invoices":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoices_creator.fxml")));
+                    VendorInvoice controller = new VendorInvoice();
+                    loader.setController(controller);
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 730, 460);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Vendor Invoice");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "Customer Invoices":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoices_creator.fxml")));
+                    CustomerInvoice controller = new CustomerInvoice();
+                    loader.setController(controller);
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 730, 460);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Customer Invoice");
                     stage.show();
                 }catch(Exception e){
                     e.printStackTrace();
@@ -722,6 +802,25 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }
                 break;
             }
+            case "Services":{
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_service.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 450, 200);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateService controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setService((Service) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Service");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
             case "All Customers":{
                 try{
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_customer.fxml")));
@@ -754,6 +853,51 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setResizable(false);
                     stage.setTitle("Edit Vendor");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "Vendor Invoices":
+            case "Posted Vendor Invoices":
+            case "Reversed Vendor Invoices":{
+                models.vendors.Invoice invoice = (Invoice) object;
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoice_creator.fxml")));
+                    VendorInvoice controller = new VendorInvoice();
+                    controller.setDataInterface(this);
+                    controller.setInvoice(invoice);
+                    loader.setController(controller);
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 730, 460);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Vendor Invoice");
+                    stage.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "Customer Invoices":
+            case "Posted Customer Invoices":
+            case "Reversed Customer Invoices":{
+                models.customers.Invoice invoice = (models.customers.Invoice ) object;
+                try{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoice_creator.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 730, 460);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CustomerInvoice controller = new CustomerInvoice();
+                    controller.setDataInterface(this);
+                    controller.setInvoice(invoice);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Vendor Invoice");
                     stage.show();
                 }catch(Exception e){
                     e.printStackTrace();
@@ -851,6 +995,28 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
+                break;
+            }
+            case "Services":{
+                Service service = (Service) object;
+                Call<Service[]> call = apiService.deleteService(service.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Service[]> call, Response<Service[]> response) {
+                        if (response.isSuccessful()) {
+                            setData(response.body());
+                            createNotification(0, "The service has been deleted successfully.");
+                        } else {
+                            createNotification(-1, response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Service[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
             }
             //Vendors
             case "All Vendors":{
@@ -870,6 +1036,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
+                break;
             }
             case "Vendor Invoices":{
 
@@ -892,6 +1059,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
+                break;
             }
             case "Customer Invoices":{
 

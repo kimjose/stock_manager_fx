@@ -61,10 +61,7 @@ public class CreateUOM implements Initializable {
         Utility.setupNotificationPane(notificationPane, vbHolder);
 
         btnSave.setOnAction(event -> save());
-        btnCancel.setOnAction(event -> {
-            Stage stage = (Stage) vbHolder.getScene().getWindow();
-            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-        });
+        btnCancel.setOnAction(event -> Utility.closeWindow(vbHolder));
     }
 
     private void save(){
@@ -85,8 +82,7 @@ public class CreateUOM implements Initializable {
             public void onResponse(Call<UnitOfMeasure[]> call, Response<UnitOfMeasure[]> response) {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
-                        Stage stage = (Stage) vbHolder.getScene().getWindow();
-                        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                        Utility.closeWindow(vbParent);
                         if (dataInterface!=null){
                             dataInterface.updateData("The Unit of measure has been saved", response.body());
                         }

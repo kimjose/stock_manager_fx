@@ -3,6 +3,7 @@ package network;
 import models.ApiResponse;
 import models.customers.Customer;
 import models.customers.Invoice;
+import models.customers.InvoiceLine;
 import models.products.*;
 import models.vendors.Vendor;
 import retrofit2.Call;
@@ -42,6 +43,11 @@ public interface ApiService {
     @GET("products_pack")
     Call<ProductsPack[]> ProductsPacks();
 
+    @GET("service")
+    Call<Service[]> services();
+
+
+
 
 
     /**
@@ -80,6 +86,30 @@ public interface ApiService {
     Call<Vendor[]> addVendor(@Field("name") String name, @Field("email") String email,
                                  @Field("phone")String phone, @Field("addedBy") int addedBy);
 
+    @POST("service")
+    @FormUrlEncoded
+    Call<Service[]> addService(@Field("name") String name, @Field("description") String description);
+
+    @POST("customer_invoice")
+    @FormUrlEncoded
+    Call<Invoice[]> addCustomerInvoice(@Field("invoiceNo") String invoiceNo, @Field("customerId") int customer,
+                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date,@Field("addedBy") int addedBy);
+
+    @POST("customer_invoice_line")
+    @FormUrlEncoded
+    Call<InvoiceLine[]> addCustomerInvoiceLine(@Field("invId")int invId, @Field("type")String type, @Field("typeId")int typeId,
+                                               @Field("unitPrice")double unitPrice,@Field("quantity")int quantity,@Field("description")String description);
+    //'invId', 'type','typeId','description','unitPrice','quantity'
+    @POST("vendor_invoice_line")
+    @FormUrlEncoded
+    Call<models.vendors.InvoiceLine[]> addVendorInvoiceLine(@Field("invId")int invId, @Field("type")String type, @Field("typeId")int typeId,
+                                                            @Field("unitPrice")double unitPrice,@Field("quantity")int quantity,@Field("description")String description);
+
+
+    @POST("vendor_invoice")
+    @FormUrlEncoded
+    Call<models.vendors.Invoice[]> addVendorInvoice(@Field("invoiceNo") String invoiceNo, @Field("vendorId") int vendor,
+                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date, @Field("addedBy") int addedBy);
 
     /***
      * PUT requests
@@ -103,6 +133,16 @@ public interface ApiService {
     @PUT("vendor/{id}")
     Call<Vendor[]> updateVendor(@Path("id") int id, @Query("name") String name, @Query("email") String email, @Query("phone")String phone);
 
+    @PUT("service/{id}")
+    Call<Service[]> updateService(@Path("id")int id, @Query("name") String name, @Query("description") String description);
+
+    @PUT("customer_invoice/{id}")
+    Call<Invoice[]> updateCustomerInvoice(@Path("id")int id,@Query("invoiceNo") String invoiceNo, @Query("customerId") int customer,
+                                          @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
+
+    @PUT("vendor_invoice/{id}")
+    Call<models.vendors.Invoice[]> updateVendorInvoice(@Path("id")int id,@Query("invoiceNo") String invoiceNo, @Query("vendorId") int vendor,
+                                          @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
 
     /**
      * DELETE requests
@@ -124,4 +164,20 @@ public interface ApiService {
 
     @DELETE("vendor/{id}")
     Call<Vendor[]> deleteVendor(@Path("id") int id);
+
+    @DELETE("service/{id}")
+    Call<Service[]> deleteService(@Path("id") int id);
+
+    @DELETE("customer_invoice/{id}")
+    Call<Invoice[]> deleteCustomerInvoice(@Path("id") int id);
+
+    @DELETE("vendor_invoice/{id}")
+    Call<models.vendors.Invoice[]> deleteVendorInvoice(@Path("id") int id);
+
+    @DELETE("customer_invoice_line/{id}")
+    Call<InvoiceLine[]> deleteCustomerInvoiceLine(@Path("id")int id);
+
+    @DELETE("vendor_invoice_line/{id}")
+    Call<models.vendors.InvoiceLine[]> deleteVendorInvoiceLine(@Path("id")int id);
+
 }

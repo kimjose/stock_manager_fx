@@ -62,10 +62,7 @@ public class CreateCustomer implements Initializable {
         Utility.restrictInputNum(tfPhone);
 
         btnSave.setOnAction(event -> save());
-        btnCancel.setOnAction(event -> {
-            Stage stage = (Stage) vbParent.getScene().getWindow();
-            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-        });
+        btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
 
     }
     private void save(){
@@ -90,8 +87,7 @@ public class CreateCustomer implements Initializable {
                     if (dataInterface!=null){
                         Platform.runLater(()->{
                             dataInterface.updateData("The customer has been saved", response.body());
-                            Stage stage = (Stage) vbParent.getScene().getWindow();
-                            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                            Utility.closeWindow(vbParent);
                         });
                     }
                 }else{

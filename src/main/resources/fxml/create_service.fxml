@@ -11,8 +11,8 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.CreateUOM"
-      prefHeight="197.0" prefWidth="280.0"
+      fx:controller="controllers.CreateService"
+      prefHeight="197.0" prefWidth="350.0"
       stylesheets="@../css/Main.css"
       fx:id="vbParent">
     <children>
@@ -21,14 +21,14 @@
             <children>
                 <HBox>
                     <children>
-                        <Label prefHeight="40.0" prefWidth="120.0" text="Unit ID:" />
+                        <Label prefHeight="40.0" prefWidth="120.0" text="Service ID:" />
                         <Label fx:id="labelId" prefHeight="40.0" prefWidth="134.0" />
                     </children>
                 </HBox>
                 <HBox>
                     <children>
-                        <Label fx:id="labelId1" prefHeight="40.0" prefWidth="120.0" text="Unit Name:" />
-                        <TextField fx:id="tfName" prefHeight="25.0" prefWidth="203.0" promptText="Unit name">
+                        <Label fx:id="labelId1" prefHeight="40.0" prefWidth="120.0" text="Service Name:" />
+                        <TextField fx:id="tfName" prefHeight="25.0" prefWidth="203.0" promptText="Service name">
                             <HBox.margin>
                                 <Insets top="7.0" />
                             </HBox.margin>
