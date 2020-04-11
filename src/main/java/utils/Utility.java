@@ -4,8 +4,18 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import network.ApiError;
+import network.RetrofitBuilder;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.controlsfx.control.NotificationPane;
 import org.jetbrains.annotations.NotNull;
+import retrofit2.Converter;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author kim jose
@@ -45,6 +55,37 @@ public class Utility {
                 t.setText(oldValue!=null?oldValue:"");
             }
         });
+    }
+
+    /**
+     * This method is for handling api errors.
+     * When an API request returns an error the message is too general and this method gets the specific details of the error.
+     * @param defaultMessage
+     * The default general message.
+     * @param responseBody
+     * The error body from the response.
+     * @param keys
+     * An array of strings against which specific messages are obtained.
+     *
+     * @return The specific message or general message if an error is caught.
+     * ****/
+    public static String handleApiErrors(@NotNull String defaultMessage, @NotNull ResponseBody responseBody, String[] keys){
+        Converter<ResponseBody, ApiError> converter = RetrofitBuilder.retrofit.responseBodyConverter(ApiError.class, new Annotation[0]);
+        try{
+            ApiError apiError = converter.convert(responseBody);
+            String message = "";
+            assert apiError != null;
+            for (Map.Entry<String, List<String>> error: apiError.getErrors().entrySet()) {
+                for (String key: keys) {
+                    if (error.getKey().equals(key)) message = message.concat(message.equals("")?error.getValue().get(0):"\n"+error.getValue().get(0));
+                }
+            }
+            if (message.equals("")) throw new Exception();
+            return message;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return defaultMessage;
     }
 
 }

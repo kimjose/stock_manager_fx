@@ -149,7 +149,12 @@ public class VendorInvoice implements Initializable {
                     if (response.isSuccessful()) {
                         Utility.closeWindow(vbParent);
                         dataInterface.updateData("The invoice has been saved successfully", response.body());
-                    } else notificationPane.show(response.message());
+                    } {
+                        Platform.runLater(() -> {
+                            assert response.errorBody() != null;
+                            notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"invoiceNo"}));
+                        });
+                    }
                 }
 
                 @Override

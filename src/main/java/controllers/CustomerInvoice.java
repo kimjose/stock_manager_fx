@@ -160,7 +160,29 @@ public class CustomerInvoice implements Initializable {
             }
         });
     }
-    private void save(){}
+    private void save(){
+        String invNo = tfNo.getText().trim();
+        Customer customer = cbOwner.getValue();
+        Warehouse warehouse = cbWarehouse.getValue();
+        String date = "";
+        String errorMessage = "";
+        if (invNo.equals("")) errorMessage += "Invoice number is required.";
+        if (customer == null) errorMessage += errorMessage.equals("")?"Select a valid customer":"\nSelect a valid customer";
+        if (warehouse == null) errorMessage += errorMessage.equals("")?"Select a valid warehouse":"\nSelect a valid warehouse";
+        try {
+            date = dpDate.getValue().toString();
+            if (date.equals("")) throw new Exception();
+        }catch (Exception e){
+            errorMessage += errorMessage.equals("")?"The invoice date is invalid.":"The invoice date is invalid";
+        }
+        if (!errorMessage.equals("")){
+            notificationPane.show(errorMessage);return;
+        }
+        Call<Invoice[]> call;
+        if (invoice == null){
+            call = apiService.addCustomerInvoice(invNo, customer.getId(), warehouse.getId(), date, 1);
+        }else{}
+    }
     private void post(){}
     private void reverse(){}
     private void addLine(){}

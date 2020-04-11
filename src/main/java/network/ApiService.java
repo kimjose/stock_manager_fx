@@ -1,6 +1,6 @@
 package network;
 
-import models.ApiResponse;
+import models.auth.User;
 import models.customers.Customer;
 import models.customers.Invoice;
 import models.customers.InvoiceLine;
@@ -10,6 +10,13 @@ import retrofit2.Call;
 import retrofit2.http.*;
 
 public interface ApiService {
+    @POST("user/login ")
+    @FormUrlEncoded
+    Call<User> login(@Field("userName") String username, @Field("password")String password, @Field("password_confirmation")String passwordConfirm);
+
+
+
+
     /**
      * GET requests
      * ***/

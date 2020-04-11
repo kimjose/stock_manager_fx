@@ -85,7 +85,12 @@ public class CreateService implements Initializable {
                             Utility.closeWindow(vbParent);
                             dataInterface.updateData("Service has been saved.", response.body());
                         });
-                    }else notificationPane.show(response.message());
+                    }else {
+                        Platform.runLater(() -> {
+                            assert response.errorBody() != null;
+                            notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"name"}));
+                        });
+                    }
                 }
             }
 

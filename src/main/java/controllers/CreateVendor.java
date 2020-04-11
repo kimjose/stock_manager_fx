@@ -91,7 +91,10 @@ public class CreateVendor implements Initializable {
                         });
                     }
                 } else {
-                    Platform.runLater(() -> notificationPane.show(response.message()));
+                    Platform.runLater(() -> {
+                        assert response.errorBody() != null;
+                        notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"name","email","phone"}));
+                    });
                 }
             }
 

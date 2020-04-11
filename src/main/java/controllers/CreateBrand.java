@@ -92,7 +92,8 @@ public class CreateBrand implements Initializable {
                             });
                         }
                     }else{
-                        createNotification(-1, response.message());
+                        assert response.errorBody() != null;
+                        createNotification(-1, Utility.handleApiErrors(response.message(),response.errorBody(), new String[]{"name"}));
                     }
                 }
 

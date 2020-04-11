@@ -888,16 +888,17 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 models.customers.Invoice invoice = (models.customers.Invoice ) object;
                 try{
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoice_creator.fxml")));
+                    CustomerInvoice controller = new CustomerInvoice();
+                    controller.setDataInterface(this);
+                    controller.setInvoice(invoice);
+                    loader.setController(controller);
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 730, 460);
                     Stage stage = new Stage();
                     stage.setScene(scene);
-                    CustomerInvoice controller = new CustomerInvoice();
-                    controller.setDataInterface(this);
-                    controller.setInvoice(invoice);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setResizable(false);
-                    stage.setTitle("Edit Vendor Invoice");
+                    stage.setTitle("Edit Customer Invoice");
                     stage.show();
                 }catch(Exception e){
                     e.printStackTrace();
