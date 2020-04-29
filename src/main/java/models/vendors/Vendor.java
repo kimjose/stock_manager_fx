@@ -5,6 +5,7 @@ public class Vendor {
 
     private int id;
     private String name, email, phone;
+    private double balance;
 
     public int getId() {
         return id;
@@ -32,6 +33,14 @@ public class Vendor {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     @Override

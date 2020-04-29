@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.NotificationPane?>
 
-
 <VBox fx:id="vbParent" prefHeight="456.0" prefWidth="727.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <NotificationPane fx:id="notificationPane" />
@@ -65,9 +64,10 @@
             <Separator prefWidth="200.0" />
             <HBox prefHeight="21.0" prefWidth="719.0" spacing="4.0">
                <children>
-                  <Label prefHeight="27.0" prefWidth="155.0" text="Line Type" />
-                  <Label layoutX="20.0" layoutY="10.0" prefHeight="27.0" prefWidth="187.0" text="Description" />
-                  <Label layoutX="171.0" layoutY="10.0" prefHeight="30.0" prefWidth="120.0" text="Unit Price" />
+                  <Label prefHeight="21.0" prefWidth="130.0" text="Line Type" />
+                  <Label layoutX="20.0" layoutY="10.0" prefHeight="21.0" prefWidth="138.0" text="Product/Service" />
+                  <Label layoutX="20.0" layoutY="10.0" prefHeight="21.0" prefWidth="145.0" text="Description" />
+                  <Label layoutX="171.0" layoutY="10.0" prefHeight="21.0" prefWidth="99.0" text="Unit Price" />
                   <Label layoutX="355.0" layoutY="10.0" prefHeight="30.0" prefWidth="120.0" text="Quantity" />
                </children>
                <padding>
@@ -76,18 +76,19 @@
             </HBox>
             <HBox prefHeight="33.0" prefWidth="719.0" spacing="4.0">
                <children>
-                  <ComboBox fx:id="cbType" prefWidth="150.0" />
-                  <TextField fx:id="tfDescription" prefHeight="26.0" prefWidth="184.0" />
-                  <TextField fx:id="tfUnitPrice" layoutX="244.0" layoutY="10.0" prefHeight="26.0" prefWidth="123.0" />
-                  <TextField fx:id="tfQuantity" layoutX="344.0" layoutY="10.0" prefHeight="26.0" prefWidth="123.0" />
-                  <Button fx:id="btnAddLine" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" styleClass="btn_neutral" text="Add">
+                  <ComboBox fx:id="cbType" prefHeight="25.0" prefWidth="102.0" promptText="Select type" />
+                  <ComboBox fx:id="cbPS" layoutX="20.0" layoutY="10.0" prefHeight="25.0" prefWidth="164.0" promptText="Select product/service" />
+                  <TextField fx:id="tfDescription" prefHeight="26.0" prefWidth="150.0" />
+                  <TextField fx:id="tfUnitPrice" layoutX="244.0" layoutY="10.0" prefHeight="26.0" prefWidth="98.0" />
+                  <TextField fx:id="tfQuantity" layoutX="344.0" layoutY="10.0" prefHeight="26.0" prefWidth="70.0" />
+                  <Button fx:id="btnAddLine" mnemonicParsing="false" prefHeight="25.0" prefWidth="101.0" styleClass="btn_neutral" text="Add">
                      <graphic>
                         <FontAwesomeIconView fill="WHITE" glyphName="PLUS" />
                      </graphic>
                   </Button>
                </children>
                <padding>
-                  <Insets left="10.0" />
+                  <Insets left="6.0" />
                </padding>
             </HBox>
             <Separator prefWidth="200.0" />
@@ -115,7 +116,7 @@
                         <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="30" />
                      </graphic>
                   </Button>
-                  <Button fx:id="btnReverse" contentDisplay="GRAPHIC_ONLY" layoutX="275.0" layoutY="18.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_cancel" text="Cancel">
+                  <Button fx:id="btnReverse" contentDisplay="GRAPHIC_ONLY" disable="true" layoutX="275.0" layoutY="18.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_cancel" text="Cancel">
                      <graphic>
                         <FontAwesomeIconView fill="WHITE" glyphName="UNDO" size="30" />
                      </graphic>

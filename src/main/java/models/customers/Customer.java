@@ -1,15 +1,18 @@
 package models.customers;
 
+import utils.Utility;
+
 public class Customer {
     //'name', 'is_active','email','phone','addedBy','isActive'
 
     private int id;
+    private String name, email, phone;
+    private double balance;
 
     public int getId() {
         return id;
     }
 
-    private String name, email, phone;
 
     public String getName() {
         return name;
@@ -33,6 +36,18 @@ public class Customer {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public String getBalanceString() {
+        return Utility.formatNumber(balance);
     }
 
     @Override

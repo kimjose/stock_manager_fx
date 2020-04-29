@@ -2,6 +2,8 @@ package utils;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import network.ApiError;
@@ -12,8 +14,12 @@ import org.controlsfx.control.NotificationPane;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Converter;
 
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.lang.annotation.Annotation;
+import java.text.NumberFormat;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +47,10 @@ public class Utility {
         stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
+    /**
+     * This method sets a textfield to only accept decimals.
+     * @param t the textfield
+     * **/
     public static void restrictInputDec(TextField t){
         t.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*([.]\\d{0,4})?")) {
@@ -49,8 +59,14 @@ public class Utility {
         });
     }
 
+    /**
+     * This method sets a textfield to only accept numbers(+integers).
+     * of length 15 characters
+     * @param t the textfield
+     * **/
     public static void restrictInputNum(TextField t){
         t.textProperty().addListener((observable, oldValue, newValue) -> {
+            assert newValue != null;
             if (!newValue.matches("\\d{0,15}")) {
                 t.setText(oldValue!=null?oldValue:"");
             }
@@ -82,10 +98,45 @@ public class Utility {
             }
             if (message.equals("")) throw new Exception();
             return message;
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        }catch (Exception ignored) {}
         return defaultMessage;
     }
+    /**
+     * Formats a double number to a string that is easily readable
+     * @param number The number
+     * ***/
+    public static String formatNumber(double number){
+        return NumberFormat.getInstance().format(number);
 
+    }
+    /**
+     * Removes commas from a string number format
+     * @param number The string number
+     * ***/
+    public static String reformatNumber(String number){
+        return number.replace(",", "");
+    }
+
+    public static String encodeImage(String imagePath){
+        String base64Image = "";
+        File file = new File(imagePath);
+        try  (FileInputStream inputStream = new FileInputStream(file)){
+            byte imageData[] = new byte[(int) file.length()];
+            inputStream.read(imageData);
+            base64Image = Base64.getEncoder().encodeToString(imageData);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return base64Image;
+    }
+
+    public static void decodeImage (String base64Image, ImageView holder){
+        try {
+            byte[] imageData = Base64.getDecoder().decode(base64Image);
+            /*BufferedImage bufferedImage = ImageIO.
+            holder.setImage(new Image());*/
+        }catch (Exception ignored){}
+    }
 }

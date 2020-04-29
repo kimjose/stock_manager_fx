@@ -13,6 +13,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import utils.SessionManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,19 +57,31 @@ public class MainStage implements Initializable, ChangeListener {
         TreeItem<String> uomTI = new TreeItem<>("Units of Measure");
         TreeItem<String> warehouseTI = new TreeItem<>("Warehouses");
         TreeItem<String> serviceTI = new TreeItem<>("Services");
-        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI, serviceTI);
+        TreeItem<String> eSaleTI = new TreeItem<>("Express Sales");
+        TreeItem<String> peSaleTI = new TreeItem<>("Posted Express Sales");
+        TreeItem<String> reSaleTI = new TreeItem<>("Reversed Express Sales");
+        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI, serviceTI, eSaleTI,
+                peSaleTI, reSaleTI);
 
         TreeItem<String> allVendors = new TreeItem<>("All Vendors");
         TreeItem<String> vInvoiceTree = new TreeItem<>("Vendor Invoices");
         TreeItem<String> pvInvoiceTree = new TreeItem<>("Posted Vendor Invoices");
         TreeItem<String> rvInvoiceTree = new TreeItem<>("Reversed Vendor Invoices");
-        vendorsTree.getChildren().addAll(allVendors, vInvoiceTree, pvInvoiceTree, rvInvoiceTree);
+        TreeItem<String> paymentVoucherTree = new TreeItem<>("Payment Vouchers");
+        TreeItem<String> pPaymentVoucherTree = new TreeItem<>("Posted Payment Vouchers");
+        TreeItem<String> rPaymentVoucherTree = new TreeItem<>("Reversed Payment Vouchers");
+        vendorsTree.getChildren().addAll(allVendors, vInvoiceTree, pvInvoiceTree, rvInvoiceTree,
+                paymentVoucherTree, pPaymentVoucherTree, rPaymentVoucherTree);
 
         TreeItem<String> allCustomers = new TreeItem<>("All Customers");
         TreeItem<String> cInvoiceTree = new TreeItem<>("Customer Invoices");
         TreeItem<String> pcInvoiceTree = new TreeItem<>("Posted Customer Invoices");
         TreeItem<String> rcInvoiceTree = new TreeItem<>("Reversed Customer Invoices");
-        customerTree.getChildren().addAll(allCustomers, cInvoiceTree, pcInvoiceTree, rcInvoiceTree);
+        TreeItem<String> receiptsTree = new TreeItem<>("Receipts");
+        TreeItem<String> pReceiptsTree = new TreeItem<>("Posted Receipts");
+        TreeItem<String> rReceiptsTree = new TreeItem<>("Reversed Receipts");
+        customerTree.getChildren().addAll(allCustomers, cInvoiceTree, pcInvoiceTree, rcInvoiceTree,
+                receiptsTree, pReceiptsTree, rReceiptsTree);
 
 
         treeItemList.add(homeTree);
@@ -93,11 +106,20 @@ public class MainStage implements Initializable, ChangeListener {
             case "Warehouses":
             case "Brands":
             case "Services":
+            case "Express Sales":
+            case "Posted Express Sales":
+            case "Reversed Express Sales":
             case "All Customers":
             case "Customer Invoices":
             case "Posted Customer Invoices":
             case "Reversed Customer Invoices":
+            case "Receipts":
+            case "Posted Receipts":
+            case "Reversed Receipts":
             case "All Vendors":
+            case "Payment Vouchers":
+            case "Posted Payment Vouchers":
+            case "Reversed Payment Vouchers":
             case "Vendor Invoices":
             case "Posted Vendor Invoices":
             case "Reversed Vendor Invoices":{
@@ -123,5 +145,7 @@ public class MainStage implements Initializable, ChangeListener {
     @FXML
     void showDims(ActionEvent event) {
         System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
+        SessionManager sessionManager = SessionManager.INSTANCE;
+        System.out.println(sessionManager.getUser().getUserName());
     }
 }

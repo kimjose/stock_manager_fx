@@ -1,46 +1,26 @@
-package models.vendors;
+package models.products;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.LinesInterface;
 import javafx.scene.control.Button;
+import models.customers.InvoiceLine;
 import network.ApiService;
 import network.RetrofitBuilder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InvoiceLine {
-    //'invId', 'type','typeId','description','unitPrice','quantity'
-
-    private int id;
-    private int invId;
-    private String type;
-    private int typeId;
-    private String description;
+public class ExpressSaleLine {
+    //'type', 'typeId', 'unitPrice', 'quantity'
+    private String type, name;
+    private int quantity, typeId;
     private double unitPrice;
-    private int quantity;
+    private int id;
     private LinesInterface linesInterface;
-    private String name;
 
     public int getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getInvId() {
-        return invId;
-    }
-
-    public void setInvId(int invId) {
-        this.invId = invId;
     }
 
     public String getType() {
@@ -51,28 +31,12 @@ public class InvoiceLine {
         this.type = type;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public String getName() {
+        return name;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getQuantity() {
@@ -83,12 +47,20 @@ public class InvoiceLine {
         this.quantity = quantity;
     }
 
-    public void setLinesInterface(LinesInterface linesInterface) {
-        this.linesInterface = linesInterface;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public double getTotal(){
-        return unitPrice * quantity;
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public Button getRemoveLine(){
@@ -99,10 +71,10 @@ public class InvoiceLine {
         deleteBtn.setGraphic(icon);
         deleteBtn.setOnAction(event -> {
             ApiService apiService = RetrofitBuilder.createService(ApiService.class);
-            Call<InvoiceLine[]> call = apiService.deleteVendorInvoiceLine(id);
+            Call<ExpressSaleLine[]> call = apiService.deleteSaleLine(id);
             call.enqueue(new Callback<>() {
                 @Override
-                public void onResponse(Call<InvoiceLine[]> call, Response<InvoiceLine[]> response) {
+                public void onResponse(Call<ExpressSaleLine[]> call, Response<ExpressSaleLine[]> response) {
                     if (linesInterface!=null){
                         if (response.isSuccessful()) linesInterface.updateData(response.body());
                         else linesInterface.notifyError(response.message());
@@ -110,12 +82,19 @@ public class InvoiceLine {
                 }
 
                 @Override
-                public void onFailure(Call<InvoiceLine[]> call, Throwable throwable) {
+                public void onFailure(Call<ExpressSaleLine[]> call, Throwable throwable) {
                     if (linesInterface!=null) linesInterface.notifyError(throwable.getMessage());
                 }
             });
         });
 
         return deleteBtn;
+    }
+    public double getTotal(){
+        return unitPrice * quantity;
+    }
+
+    public void setLinesInterface(LinesInterface linesInterface) {
+        this.linesInterface = linesInterface;
     }
 }

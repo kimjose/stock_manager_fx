@@ -21,8 +21,11 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.MyTableColumn;
 import models.customers.Customer;
+import models.customers.Receipt;
+import models.finance.Bank;
 import models.products.*;
 import models.vendors.Invoice;
+import models.vendors.PaymentVoucher;
 import models.vendors.Vendor;
 import network.ApiService;
 import network.RetrofitBuilder;
@@ -37,12 +40,11 @@ import java.util.*;
 /**
  * @author kim jose
  * @see javafx.fxml.Initializable
- *
+ * <p>
  * This class controls the center scene and loads different data to it.
- * ***/
+ ***/
 
 public class GeneralCenter implements Initializable, HomeDataInterface {
-
 
 
     @FXML
@@ -80,12 +82,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         btnAdd.setOnAction(event -> addObject());
         btnEdit.setOnAction(event -> {
             Object o = tvGeneral.getSelectionModel().getSelectedItem();
-            if (o==null)createNotification(1, "You must select an item first");
+            if (o == null) createNotification(1, "You must select an item first");
             else editObject(o);
         });
         btnDelete.setOnAction(event -> {
             Object o = tvGeneral.getSelectionModel().getSelectedItem();
-            if (o==null)createNotification(1, "You must select an item first");
+            if (o == null) createNotification(1, "You must select an item first");
             else deleteObject(o);
         });
     }
@@ -96,16 +98,16 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         setData(data);
     }
 
-    private void setupColumns(){
-        assert type!=null;
-        System.out.println("Setting up "+type);
-        switch (type){
-            case "Products":{
+    private void setupColumns() {
+        assert type != null;
+        System.out.println("Setting up " + type);
+        switch (type) {
+            case "Products": {
                 /**
                  * 'name', 'is_active', 'description', 'sku_code', 'upc_code', 'quantity',
                  *         'price', 'brand', 'category', 'uom', 'image'**/
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                             new MyTableColumn("Product Name", "name", 0.15),
                             new MyTableColumn("SKU Code", "skuCode", 0.25),
@@ -117,7 +119,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Brands":{
+            case "Brands": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 TableColumn[] columns = createColumns(new MyTableColumn[]{
                         new MyTableColumn("Brand Id", "id", 0.25),
@@ -126,7 +128,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 tvGeneral.getColumns().setAll(columns);
                 break;
             }
-            case "Categories":{
+            case "Categories": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Category Id", "id", 0.25),
@@ -134,7 +136,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Units of Measure":{
+            case "Units of Measure": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("UOM Id", "id", 0.10),
@@ -143,7 +145,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Warehouses":{
+            case "Warehouses": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Id", "id", 0.10),
@@ -152,7 +154,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Services":{
+            case "Services": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Service Id", "id", 0.10),
@@ -161,10 +163,46 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
+            case "Express Sales": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Sale No", "saleNo", 0.15),
+                        new MyTableColumn("Bank", "bank", 0.20),
+                        new MyTableColumn("Sale Date", "saleDate", 0.25),
+                        new MyTableColumn("Warehouse", "warehouse", 0.20),
+                        new MyTableColumn("Total", "totalString", 0.20),
+                }));
+                break;
+            }
+            case "Posted Express Sales": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Sale No", "saleNo", 0.15),
+                        new MyTableColumn("Bank", "bank", 0.15),
+                        new MyTableColumn("Sale Date", "saleDate", 0.20),
+                        new MyTableColumn("Warehouse", "warehouse", 0.15),
+                        new MyTableColumn("Total", "totalString", 0.15),
+                        new MyTableColumn("Posted On", "postedOn", 0.20),
+                }));
+                break;
+            }
+            case "Reversed Express Sales": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Sale No", "saleNo", 0.10),
+                        new MyTableColumn("Bank", "bank", 0.15),
+                        new MyTableColumn("Sale Date", "saleDate", 0.20),
+                        new MyTableColumn("Warehouse", "warehouse", 0.15),
+                        new MyTableColumn("Total", "totalString", 0.10),
+                        new MyTableColumn("Posted On", "postedOn", 0.15),
+                        new MyTableColumn("Reversed On", "reversedOn", 0.15),
+                }));
+                break;
+            }
 
 
             //Vendors
-            case "All Vendors":{
+            case "All Vendors": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Vendor Name", "name", 0.35),
@@ -173,7 +211,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Vendor Invoices":{
+            case "Vendor Invoices": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Invoice No", "invoiceNo", 0.15),
@@ -184,7 +222,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Posted Vendor Invoices":{
+            case "Posted Vendor Invoices": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Invoice No", "invoiceNo", 0.15),
@@ -196,7 +234,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Reversed Vendor Invoices":{
+            case "Reversed Vendor Invoices": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Invoice No", "invoiceNo", 0.10),
@@ -209,19 +247,56 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-
-
-            //Customers
-            case "All Customers":{
+            case "Payment Vouchers": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
-                        new MyTableColumn("Customer Name", "name", 0.35),
-                        new MyTableColumn("Email", "email", 0.35),
-                        new MyTableColumn("Phone No.", "phone", 0.30),
+                        new MyTableColumn("Voucher No", "voucherNo", 0.1),
+                        new MyTableColumn("Date", "voucherDate", 0.3),
+                        new MyTableColumn("Vendor", "vendor", 0.2),
+                        new MyTableColumn("Bank", "bank", 0.2),
+                        new MyTableColumn("Amount", "amountString", 0.2),
                 }));
                 break;
             }
-            case "Customer Invoices":{
+            case "Posted Payment Vouchers": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Voucher No", "voucherNo", 0.15),
+                        new MyTableColumn("Date", "voucherDate", 0.20),
+                        new MyTableColumn("Vendor", "vendor", 0.15),
+                        new MyTableColumn("Bank", "bank", 0.15),
+                        new MyTableColumn("Posted On", "postedOn", 0.20),
+                        new MyTableColumn("Amount", "amountString", 0.15),
+                }));
+                break;
+            }
+            case "Reversed Payment Vouchers": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Voucher No", "voucherNo", 0.1),
+                        new MyTableColumn("Date", "voucherDate", 0.20),
+                        new MyTableColumn("Vendor", "vendor", 0.15),
+                        new MyTableColumn("Bank", "bank", 0.15),
+                        new MyTableColumn("Posted On", "postedOn", 0.15),
+                        new MyTableColumn("Reversed On", "reversedOn", 0.15),
+                        new MyTableColumn("Amount", "amountString", 0.1),
+                }));
+                break;
+            }
+
+
+            //Customers
+            case "All Customers": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Customer Name", "name", 0.30),
+                        new MyTableColumn("Email", "email", 0.30),
+                        new MyTableColumn("Phone No.", "phone", 0.25),
+                        new MyTableColumn("Balance", "balanceString", 0.15),
+                }));
+                break;
+            }
+            case "Customer Invoices": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Invoice No", "invoiceNo", 0.15),
@@ -232,7 +307,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Posted Customer Invoices":{
+            case "Posted Customer Invoices": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Invoice No", "invoiceNo", 0.15),
@@ -244,7 +319,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Reversed Customer Invoices":{
+            case "Reversed Customer Invoices": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Invoice No", "invoiceNo", 0.10),
@@ -257,25 +332,60 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
+            case "Receipts": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Receipt No", "no", 0.1),
+                        new MyTableColumn("Date", "receiptDate", 0.3),
+                        new MyTableColumn("Customer", "customer", 0.2),
+                        new MyTableColumn("Bank", "bank", 0.2),
+                        new MyTableColumn("Amount", "amountString", 0.2),
+                }));
+                break;
+            }
+            case "Posted Receipts": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Voucher No", "no", 0.15),
+                        new MyTableColumn("Date", "receiptDate", 0.20),
+                        new MyTableColumn("Customer", "customer", 0.15),
+                        new MyTableColumn("Bank", "bank", 0.15),
+                        new MyTableColumn("Posted On", "postedOn", 0.20),
+                        new MyTableColumn("Amount", "amountString", 0.15),
+                }));
+                break;
+            }
+            case "Reversed Receipts": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Receipt No", "no", 0.1),
+                        new MyTableColumn("Date", "receiptDate", 0.20),
+                        new MyTableColumn("Customer", "customer", 0.15),
+                        new MyTableColumn("Bank", "bank", 0.15),
+                        new MyTableColumn("Posted On", "postedOn", 0.15),
+                        new MyTableColumn("Reversed On", "reversedOn", 0.15),
+                        new MyTableColumn("Amount", "amountString", 0.1),
+                }));
+                break;
+            }
         }
     }
 
     /**
      * This method fetches data from the server and loads it to a table
-     *
-     * ***/
-    private void loadData(){
-        assert type!=null;
-        switch (type){
+     ***/
+    private void loadData() {
+        assert type != null;
+        switch (type) {
             //for shop
-            case "Products":{
+            case "Products": {
                 Call<Product[]> call = apiService.products();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Product[]> call, Response<Product[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
-                        }else{
+                        } else {
                             tvGeneral.setItems(FXCollections.emptyObservableList());
                         }
                     }
@@ -287,15 +397,15 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Brands":{
+            case "Brands": {
                 Call<Brand[]> call = apiService.brands();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Brand[]> call, Response<Brand[]> response) {
                         System.out.println(response.body());
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
-                        }else{
+                        } else {
                             tvGeneral.setItems(FXCollections.emptyObservableList());
                         }
                     }
@@ -307,12 +417,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Categories":{
+            case "Categories": {
                 Call<Category[]> call = apiService.categories();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Category[]> call, Response<Category[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
                         }
                     }
@@ -324,7 +434,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Units of Measure":{
+            case "Units of Measure": {
                 Call<UnitOfMeasure[]> call = apiService.unitsOfMeasure();
                 call.enqueue(new Callback<>() {
                     @Override
@@ -339,7 +449,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Warehouses":{
+            case "Warehouses": {
                 Call<Warehouse[]> call = apiService.warehouses();
                 call.enqueue(new Callback<>() {
                     @Override
@@ -354,7 +464,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Services":{
+            case "Services": {
                 Call<Service[]> call = apiService.services();
                 call.enqueue(new Callback<>() {
                     @Override
@@ -369,17 +479,51 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
+            case "Express Sales":
+            case "Posted Express Sales":
+            case "Reversed Express Sales":{
+                Call<ExpressSale[]> call = apiService.expressSales();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<ExpressSale[]> call, Response<ExpressSale[]> response) {
+                        if (response.isSuccessful()) {
+                            List<ExpressSale> filtered = new ArrayList<>();
+                            for (ExpressSale sale : response.body()) {
+                                switch (type) {
+                                    case "Express Sales":
+                                        if (!sale.isPosted()) filtered.add(sale);
+                                        break;
+                                    case "Posted Express Sales":
+                                        if (sale.isPosted() && !sale.isReversed()) filtered.add(sale);
+                                        break;
+                                    case "Reversed Express Sales":
+                                        if (sale.isReversed()) filtered.add(sale);
+                                        break;
+                                }
+                            }
+                            setData(filtered.toArray());
+                        }else {
+                            createNotification(-1, response.message());
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<ExpressSale[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
 
             //Vendors
-            case "All Vendors":{
+            case "All Vendors": {
                 Call<Vendor[]> call = apiService.vendors();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Vendor[]> call, Response<Vendor[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -391,18 +535,18 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Vendor Invoices":{
+            case "Vendor Invoices": {
                 Call<models.vendors.Invoice[]> call = apiService.vendorInvoices();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             List<Invoice> filtered = new ArrayList<>();
                             for (Invoice i : response.body()) {
                                 if (!i.isPosted()) filtered.add(i);
                             }
                             setData(filtered.toArray());
-                        }else createNotification(-1, response.message());
+                        } else createNotification(-1, response.message());
                     }
 
                     @Override
@@ -412,18 +556,18 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Posted Vendor Invoices":{
+            case "Posted Vendor Invoices": {
                 Call<models.vendors.Invoice[]> call = apiService.vendorInvoices();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             List<Invoice> filtered = new ArrayList<>();
                             for (Invoice i : response.body()) {
                                 if (i.isPosted() && !i.isReversed()) filtered.add(i);
                             }
                             setData(filtered.toArray());
-                        }else createNotification(-1, response.message());
+                        } else createNotification(-1, response.message());
                     }
 
                     @Override
@@ -433,22 +577,85 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Reversed Vendor Invoices":{
+            case "Reversed Vendor Invoices": {
                 Call<models.vendors.Invoice[]> call = apiService.vendorInvoices();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             List<Invoice> filtered = new ArrayList<>();
                             for (Invoice i : response.body()) {
                                 if (i.isPosted() && i.isReversed()) filtered.add(i);
                             }
                             setData(filtered.toArray());
-                        }else createNotification(-1, response.message());
+                        } else createNotification(-1, response.message());
                     }
 
                     @Override
                     public void onFailure(Call<Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Payment Vouchers": {
+                Call<PaymentVoucher[]> call = apiService.paymentVouchers();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<PaymentVoucher[]> call, Response<PaymentVoucher[]> response) {
+                        if (response.isSuccessful()) {
+                            List<PaymentVoucher> filtered = new ArrayList<>();
+                            for (PaymentVoucher voucher : response.body()) {
+                                if (!voucher.isPosted()) filtered.add(voucher);
+                            }
+                            Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(filtered)));
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<PaymentVoucher[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Posted Payment Vouchers": {
+                Call<PaymentVoucher[]> call = apiService.paymentVouchers();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<PaymentVoucher[]> call, Response<PaymentVoucher[]> response) {
+                        if (response.isSuccessful()) {
+                            List<PaymentVoucher> filtered = new ArrayList<>();
+                            for (PaymentVoucher voucher : response.body()) {
+                                if (voucher.isPosted() && !voucher.isReversed()) filtered.add(voucher);
+                            }
+                            Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(filtered)));
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<PaymentVoucher[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Reversed Payment Vouchers": {
+                Call<PaymentVoucher[]> call = apiService.paymentVouchers();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<PaymentVoucher[]> call, Response<PaymentVoucher[]> response) {
+                        if (response.isSuccessful()) {
+                            List<PaymentVoucher> filtered = new ArrayList<>();
+                            for (PaymentVoucher voucher : response.body()) {
+                                if (voucher.isReversed()) filtered.add(voucher);
+                            }
+                            Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(filtered)));
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<PaymentVoucher[]> call, Throwable throwable) {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
@@ -457,14 +664,14 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
 
             //Customers
-            case "All Customers":{
+            case "All Customers": {
                 Call<Customer[]> call = apiService.customers();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Customer[]> call, Response<Customer[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -476,18 +683,18 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Customer Invoices":{
+            case "Customer Invoices": {
                 Call<models.customers.Invoice[]> call = apiService.customerInvoices();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             List<models.customers.Invoice> filtered = new ArrayList<>();
-                            for (models.customers.Invoice i: response.body()) {
+                            for (models.customers.Invoice i : response.body()) {
                                 if (!i.isPosted()) filtered.add(i);
                             }
                             setData(filtered.toArray());
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -499,18 +706,18 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Posted Customer Invoices":{
+            case "Posted Customer Invoices": {
                 Call<models.customers.Invoice[]> call = apiService.customerInvoices();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             List<models.customers.Invoice> filtered = new ArrayList<>();
-                            for (models.customers.Invoice i: response.body()) {
+                            for (models.customers.Invoice i : response.body()) {
                                 if (i.isPosted() && !i.isReversed()) filtered.add(i);
                             }
                             setData(filtered.toArray());
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -522,24 +729,87 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Reversed Customer Invoices":{
+            case "Reversed Customer Invoices": {
                 Call<models.customers.Invoice[]> call = apiService.customerInvoices();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             List<models.customers.Invoice> filtered = new ArrayList<>();
-                            for (models.customers.Invoice i: response.body()) {
+                            for (models.customers.Invoice i : response.body()) {
                                 if (i.isReversed()) filtered.add(i);
                             }
                             setData(filtered.toArray());
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<models.customers.Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Receipts": {
+                Call<Receipt[]> call = apiService.receipts();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Receipt[]> call, Response<Receipt[]> response) {
+                        if (response.isSuccessful()) {
+                            List<Receipt> filtered = new ArrayList<>();
+                            for (Receipt r : response.body()) {
+                                if (!r.isPosted()) filtered.add(r);
+                            }
+                            Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(filtered)));
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Receipt[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Posted Receipts": {
+                Call<Receipt[]> call = apiService.receipts();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Receipt[]> call, Response<Receipt[]> response) {
+                        if (response.isSuccessful()) {
+                            List<Receipt> filtered = new ArrayList<>();
+                            for (Receipt r : response.body()) {
+                                if (r.isPosted() && !r.isReversed()) filtered.add(r);
+                            }
+                            Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(filtered)));
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Receipt[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Reversed Receipts": {
+                Call<Receipt[]> call = apiService.receipts();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Receipt[]> call, Response<Receipt[]> response) {
+                        if (response.isSuccessful()) {
+                            List<Receipt> filtered = new ArrayList<>();
+                            for (Receipt r : response.body()) {
+                                if (r.isReversed()) filtered.add(r);
+                            }
+                            Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(filtered)));
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Receipt[]> call, Throwable throwable) {
                         createNotification(-1, throwable.getMessage());
                     }
                 });
@@ -550,12 +820,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
     /**
      * This method triggers a scene that adds an object
-     *
-     * ****/
-    private void addObject(){
-        switch (type){
-            case "Brands":{
-                try{
+     ****/
+    private void addObject() {
+        try {
+            switch (type) {
+                case "Brands": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_brand.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -567,13 +837,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Brand");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Warehouses":{
-                try{
+                case "Warehouses": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_warehouse.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -585,13 +853,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Warehouse");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Categories":{
-                try{
+                case "Categories": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_category.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -603,13 +869,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Category");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Units of Measure":{
-                try{
+                case "Units of Measure": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_uom.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -621,13 +885,27 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Unit Of Measure");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Services":{
-                try{
+                case "Products": {
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_product.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 870, 370);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateProduct controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Product");
+                    stage.show();
+
+                    break;
+                }
+                case "Services": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_service.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -639,13 +917,26 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Service");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "All Customers":{
-                try{
+                case "Express Sales":{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/express_sale.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 730, 460);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    ExpressSaleController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Sale");
+                    stage.show();
+                    
+                    break;
+                }
+                case "All Customers": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_customer.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -657,13 +948,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Customer");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "All Vendors":{
-                try{
+                case "All Vendors": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_vendor.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -675,13 +964,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Vendor");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Vendor Invoices":{
-                try{
+                case "Vendor Invoices": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoices_creator.fxml")));
                     VendorInvoice controller = new VendorInvoice();
                     loader.setController(controller);
@@ -694,13 +981,27 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Vendor Invoice");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Customer Invoices":{
-                try{
+                case "Payment Vouchers": {
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/payment_voucher.fxml")));
+                    VBox vBox = loader.load();
+                    PaymentVoucherController controller = loader.getController();
+                    Scene scene = new Scene(vBox, 490, 320);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Payment Voucher");
+                    stage.show();
+
+                    break;
+                }
+                case "Customer Invoices": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoices_creator.fxml")));
                     CustomerInvoice controller = new CustomerInvoice();
                     loader.setController(controller);
@@ -713,21 +1014,44 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Customer Invoice");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
+                case "Receipts": {
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/customer_receipt.fxml")));
+                    VBox vBox = loader.load();
+                    CustomerReceipt controller = loader.getController();
+                    controller.setDataInterface(this);
+                    Scene scene = new Scene(vBox, 490, 320);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Customer Receipt");
+                    stage.show();
+
+                    break;
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            createNotification(-1, "The program is unable to properly load new view.");
         }
     }
+
     /**
      * This method triggers a interface that edits/updates an object
+     *
      * @param object the object being edited
-     * **/
-    private void editObject(Object object){
-        switch (type){
-            case "Brands":{
-                try{
+     **/
+    private void editObject(Object object) {
+        try {
+
+            switch (type) {
+                case "Brands": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_brand.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -740,13 +1064,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Edit Brand");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Warehouses":{
-                try{
+                case "Warehouses": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_warehouse.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -759,13 +1081,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Edit Warehouse");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Categories":{
-                try{
+                case "Categories": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_category.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -778,13 +1098,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Edit Category");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Units of Measure":{
-                try{
+                case "Units of Measure": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_uom.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -797,13 +1115,28 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Edit unit of measure");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Services":{
-                try{
+                case "Products": {
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_product.fxml")));
+                    VBox vBox = loader.load();//, 870, 370
+                    Scene scene = new Scene(vBox);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    CreateProduct controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setProduct((Product) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Product");
+                    stage.show();
+
+                    break;
+                }
+                case "Services": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_service.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -816,13 +1149,29 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Edit Service");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "All Customers":{
-                try{
+                case "Express Sales":
+                case "Posted Express Sales":
+                case "Reversed Express Sales":{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/express_sale.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox, 730, 460);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    ExpressSaleController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setExpressSale((ExpressSale) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Sale");
+                    stage.showAndWait();
+                    loadData();
+                    break;
+                }
+                case "All Customers": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_customer.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -835,13 +1184,31 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Edit customer");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "All Vendors":{
-                try{
+                case "Receipts":
+                case "Posted Receipts":
+                case "Reversed Receipts": {
+                    Receipt receipt = (Receipt) object;
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/customer_receipt.fxml")));
+                    VBox vBox = loader.load();
+                    CustomerReceipt controller = loader.getController();
+                    Scene scene = new Scene(vBox, 490, 320);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    controller.setDataInterface(this);
+                    controller.setReceipt(receipt);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Customer Receipt");
+                    stage.show();
+
+                    break;
+                }
+                case "All Vendors": {
+
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_vendor.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 450, 200);
@@ -854,44 +1221,62 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Edit Vendor");
                     stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+
+                    break;
                 }
-                break;
-            }
-            case "Vendor Invoices":
-            case "Posted Vendor Invoices":
-            case "Reversed Vendor Invoices":{
-                models.vendors.Invoice invoice = (Invoice) object;
-                try{
-                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoice_creator.fxml")));
+                case "Vendor Invoices":
+                case "Posted Vendor Invoices":
+                case "Reversed Vendor Invoices": {
+                    models.vendors.Invoice invoice = (Invoice) object;
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoices_creator.fxml")));
                     VendorInvoice controller = new VendorInvoice();
                     controller.setDataInterface(this);
-                    controller.setInvoice(invoice);
                     loader.setController(controller);
                     VBox vBox = loader.load();
+                    controller.setInvoice(invoice);
                     Scene scene = new Scene(vBox, 730, 460);
                     Stage stage = new Stage();
                     stage.setScene(scene);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setResizable(false);
                     stage.setTitle("Edit Vendor Invoice");
-                    stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+                    stage.showAndWait();
+                    loadData();
+
+                    break;
                 }
-                break;
-            }
-            case "Customer Invoices":
-            case "Posted Customer Invoices":
-            case "Reversed Customer Invoices":{
-                models.customers.Invoice invoice = (models.customers.Invoice ) object;
-                try{
-                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoice_creator.fxml")));
+                case "Payment Vouchers":
+                case "Posted Payment Vouchers":
+                case "Reversed Payment Vouchers": {
+                    PaymentVoucher voucher = (PaymentVoucher) object;
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/payment_voucher.fxml")));
+                    VBox vBox = loader.load();
+                    PaymentVoucherController controller = loader.getController();
+                    Scene scene = new Scene(vBox, 490, 320);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    controller.setDataInterface(this);
+                    controller.setPaymentVoucher(voucher);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Payment Voucher");
+                    stage.showAndWait();
+                    loadData();
+
+                    break;
+                }
+                case "Customer Invoices":
+                case "Posted Customer Invoices":
+                case "Reversed Customer Invoices": {
+                    models.customers.Invoice invoice = (models.customers.Invoice) object;
+
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/invoices_creator.fxml")));
                     CustomerInvoice controller = new CustomerInvoice();
                     controller.setDataInterface(this);
-                    controller.setInvoice(invoice);
                     loader.setController(controller);
+                    controller.setInvoice(invoice);
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 730, 460);
                     Stage stage = new Stage();
@@ -899,31 +1284,36 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setResizable(false);
                     stage.setTitle("Edit Customer Invoice");
-                    stage.show();
-                }catch(Exception e){
-                    e.printStackTrace();
+                    stage.showAndWait();
+                    loadData();
+
+                    break;
                 }
-                break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            createNotification(-1, "The program is unable to properly load new view.");
         }
     }
+
     /**
      * This method invokes delete requests
+     *
      * @param object the object being deleted
-     * ***/
-    private void deleteObject(Object object){
-        switch (type){
+     ***/
+    private void deleteObject(Object object) {
+        switch (type) {
             //Products
-            case "Brands":{
+            case "Brands": {
                 Brand brand = (Brand) object;
                 Call<Brand[]> call = apiService.deleteBrand(brand.getId());
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Brand[]> call, Response<Brand[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
                             createNotification(0, "The brand has been deleted successfully.");
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -935,16 +1325,16 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Warehouses":{
+            case "Warehouses": {
                 Warehouse warehouse = (Warehouse) object;
                 Call<Warehouse[]> call = apiService.deleteWarehouse(warehouse.getId());
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Warehouse[]> call, Response<Warehouse[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
                             createNotification(0, "The warehouse has been deleted successfully.");
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -956,16 +1346,16 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Categories":{
+            case "Categories": {
                 Category category = (Category) object;
                 Call<Category[]> call = apiService.deleteCategory(category.getId());
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Category[]> call, Response<Category[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
                             createNotification(0, "The category has been deleted successfully.");
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -977,16 +1367,16 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Units of Measure":{
+            case "Units of Measure": {
                 UnitOfMeasure uom = (UnitOfMeasure) object;
                 Call<UnitOfMeasure[]> call = apiService.deleteUOM(uom.getId());
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<UnitOfMeasure[]> call, Response<UnitOfMeasure[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
                             createNotification(0, "The unit has been deleted successfully.");
-                        }else{
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -998,7 +1388,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Services":{
+            case "Services": {
                 Service service = (Service) object;
                 Call<Service[]> call = apiService.deleteService(service.getId());
                 call.enqueue(new Callback<>() {
@@ -1019,17 +1409,52 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
+            case "Express Sales":
+            case "Posted Express Sales":
+            case "Reversed Express Sales":{
+                ExpressSale sale = (ExpressSale) object;
+                Call<ExpressSale[]> call = apiService.deleteSale(sale.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<ExpressSale[]> call, Response<ExpressSale[]> response) {
+                        if (response.isSuccessful()) {
+                            List<ExpressSale> filtered = new ArrayList<>();
+                            for (ExpressSale sale : response.body()) {
+                                switch (type) {
+                                    case "Express Sales":
+                                        if (!sale.isPosted()) filtered.add(sale);
+                                        break;
+                                    case "Posted Express Sales":
+                                        if (sale.isPosted() && !sale.isReversed()) filtered.add(sale);
+                                        break;
+                                    case "Reversed Express Sales":
+                                        if (sale.isReversed()) filtered.add(sale);
+                                        break;
+                                }
+                            }
+                            setData(filtered.toArray());
+                        } else {
+                            createNotification(-1, response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ExpressSale[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+            }
             //Vendors
-            case "All Vendors":{
+            case "All Vendors": {
                 Vendor vendor = (Vendor) object;
                 Call<Vendor[]> call = apiService.deleteVendor(vendor.getId());
                 call.enqueue(new Callback<Vendor[]>() {
                     @Override
                     public void onResponse(Call<Vendor[]> call, Response<Vendor[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
                             createNotification(0, "Vendor has been deleted");
-                        }else createNotification(-1, response.message());
+                        } else createNotification(-1, response.message());
                     }
 
                     @Override
@@ -1039,20 +1464,37 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Vendor Invoices":{
+            case "Vendor Invoices":
+            case "Posted Vendor Invoices":
+            case "Recersed Vendor Invoices": {
+                Invoice invoice = (Invoice) object;
+                Call<Invoice[]> call = apiService.deleteVendorInvoice(invoice.getId());
+                call.enqueue(new Callback<Invoice[]>() {
+                    @Override
+                    public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
+                        if (response.isSuccessful()) {
+                            setData(response.body());
+                            createNotification(0, "Vendor invoice has been deleted");
+                        } else createNotification(-1, response.message());
+                    }
 
+                    @Override
+                    public void onFailure(Call<Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
             }
             //Customers
-            case "All Customers":{
+            case "All Customers": {
                 Customer customer = (Customer) object;
                 Call<Customer[]> call = apiService.deleteCustomer(customer.getId());
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Customer[]> call, Response<Customer[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             setData(response.body());
                             createNotification(0, "Customer has been deleted");
-                        }else createNotification(-1, response.message());
+                        } else createNotification(-1, response.message());
                     }
 
                     @Override
@@ -1062,8 +1504,70 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Customer Invoices":{
 
+            case "Receipts":
+            case "Posted Receipts":
+            case "Reversed Receipts": {
+                Receipt receipt = (Receipt) object;
+                Call<Receipt[]> call = apiService.deleteReceipt(receipt.getId());
+                call.enqueue(new Callback<Receipt[]>() {
+                    @Override
+                    public void onResponse(Call<Receipt[]> call, Response<Receipt[]> response) {
+                        if (response.isSuccessful()) {
+                            setData(response.body());
+                            createNotification(0, "Receipt has been deleted");
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Receipt[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Payment Vouchers":
+            case "Posted Payment Vouchers":
+            case "Reversed Payment Vouchers": {
+                PaymentVoucher voucher = (PaymentVoucher) object;
+                Call<PaymentVoucher[]> call = apiService.deletePaymentVoucher(voucher.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<PaymentVoucher[]> call, Response<PaymentVoucher[]> response) {
+                        if (response.isSuccessful()) {
+                            setData(response.body());
+                            createNotification(0, "The voucher has been deleted");
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<PaymentVoucher[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+
+            case "Customer Invoices":
+            case "Posted Customer Invoices":
+            case "Reversed Customer Invoices": {
+                models.customers.Invoice invoice = (models.customers.Invoice) object;
+                Call<models.customers.Invoice[]> call = apiService.deleteCustomerInvoice(invoice.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
+                        if (response.isSuccessful()) {
+                            setData(response.body());
+                            createNotification(0, "The customer invoice has been deleted");
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<models.customers.Invoice[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
             }
         }
     }
@@ -1081,10 +1585,10 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         tvGeneral.setItems(FXCollections.observableArrayList(Arrays.asList(data)));
     }
 
-    private TableColumn[] createColumns(MyTableColumn[] myTableColumns){
+    private TableColumn[] createColumns(MyTableColumn[] myTableColumns) {
         TableColumn[] tableColumns = new TableColumn[]{};
         List<TableColumn<String, String>> tableColumnList = new ArrayList<>();
-        for (MyTableColumn m: myTableColumns) {
+        for (MyTableColumn m : myTableColumns) {
             TableColumn<String, String> tableColumn = new TableColumn<>(m.getName());
             tableColumn.setCellValueFactory(new PropertyValueFactory<>(m.getProperty()));
             tableColumn.prefWidthProperty().bind(tvGeneral.prefWidthProperty().multiply(m.getMultiplier()));
@@ -1094,18 +1598,23 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         return tableColumnList.toArray(tableColumns);
     }
 
-    private void createNotification(int type, String message){
+    private void createNotification(int type, String message) {
         Notifications n = Notifications.create()
                 .owner(vbParent)
                 .text(message)
                 .hideAfter(Duration.seconds(8))
                 .darkStyle()
                 .position(Pos.BOTTOM_RIGHT);
-        Platform.runLater(()->{
-            switch (type){
-                case -1: n.showError();break;
-                case 0: n.showInformation();break;
-                default: n.showWarning();
+        Platform.runLater(() -> {
+            switch (type) {
+                case -1:
+                    n.showError();
+                    break;
+                case 0:
+                    n.showInformation();
+                    break;
+                default:
+                    n.showWarning();
             }
 
         });

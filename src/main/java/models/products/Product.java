@@ -10,7 +10,7 @@ public class Product {
      *         'price', 'brand', 'category', 'uom', 'image'**/
 
     private int id;
-    private String name, description;
+    private String name, description, image;
     @SerializedName("sku_code")
     private String skuCode;
     @SerializedName("upc_code")
@@ -97,8 +97,20 @@ public class Product {
         this.uom = uom;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return name;
+    }
+
+    public int getId() {
+        return id;
     }
 }

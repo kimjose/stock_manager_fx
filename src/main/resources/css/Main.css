@@ -1,5 +1,5 @@
 .button{
-    -fx-font-family:Monospaced;
+    -fx-font-family:Arial;
 }
 .tree-view {
 	-fx-background-color:  #4338AE;
@@ -15,6 +15,11 @@
 	-fx-text-fill: white;
 	-fx-font-weight: bold ;
 }
+.btn_save{
+	-fx-background-color:CYAN;
+	-fx-text-fill: white;
+	-fx-font-weight: bold ;
+}
 .btn_cancel{
 	-fx-background-color:#f80707;
 	-fx-text-fill: white;
@@ -24,6 +29,9 @@
 	-fx-text-fill: white;
 }
 .label{
-	-fx-font-family:Monospaced;
+	-fx-font-family:Arial;
 	-fx-font-weight: bold ;
+}
+.text-field{
+	-fx-font-family:Arial;
 }

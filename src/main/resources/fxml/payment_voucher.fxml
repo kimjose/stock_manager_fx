@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.NotificationPane?>
+
+<VBox fx:id="vbParent" prefHeight="313.0" prefWidth="485.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PaymentVoucherController">
+    <padding>
+        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+    </padding>
+    <children>
+        <VBox fx:id="vbHolder" prefHeight="368.0" prefWidth="480.0">
+            <children>
+                <HBox>
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Voucher ID:" />
+                        <Label fx:id="labelId" prefHeight="28.0" prefWidth="118.0" />
+                    </children>
+                </HBox>
+                <HBox layoutX="10.0" layoutY="10.0">
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Voucher No:" />
+                        <TextField fx:id="tfNo" prefHeight="25.0" prefWidth="168.0" promptText="Voucher No" />
+                    </children>
+                </HBox>
+                <HBox layoutX="10.0" layoutY="38.0">
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Voucher Date:" />
+                        <DatePicker fx:id="dbDate" prefHeight="25.0" prefWidth="265.0" />
+                    </children>
+                </HBox>
+                <HBox layoutX="10.0" layoutY="66.0">
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Vendor:" />
+                        <ComboBox fx:id="cbVendor" prefHeight="25.0" prefWidth="267.0" promptText="Select Vendor" />
+                    </children>
+                </HBox>
+                <HBox layoutX="10.0" layoutY="10.0">
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Vendor Balance:" />
+                        <Label fx:id="labelBalance" prefHeight="28.0" prefWidth="150.0" />
+                    </children>
+                </HBox>
+                <HBox layoutX="10.0" layoutY="122.0">
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Amount:" />
+                        <TextField fx:id="tfAmount" prefHeight="25.0" prefWidth="170.0" promptText="Amount" />
+                    </children>
+                </HBox>
+                <HBox layoutX="10.0" layoutY="94.0">
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Bank:" />
+                        <ComboBox fx:id="cbBank" prefHeight="25.0" prefWidth="269.0" promptText="Select Bank" />
+                    </children>
+                </HBox>
+                <HBox layoutX="10.0" layoutY="150.0">
+                    <children>
+                        <Label prefHeight="28.0" prefWidth="145.0" text="Ref No:" />
+                        <TextField fx:id="tfExtDocNo" prefHeight="25.0" prefWidth="268.0" promptText="Reference No" />
+                    </children>
+                </HBox>
+                <HBox spacing="8.0">
+                    <children>
+                        <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_cancel" text="Cancel">
+                            <graphic>
+                                <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="15.0" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_save" text="Save">
+                            <graphic>
+                                <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15.0" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnPost" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_success" text="Post">
+                            <graphic>
+                                <FontAwesomeIconView fill="WHITE" glyphName="PLAY" size="15" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="btnReverse" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_cancel" text="Reverse">
+                            <graphic>
+                                <FontAwesomeIconView fill="WHITE" glyphName="UNDO" size="15" />
+                            </graphic>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets left="15.0" />
+                    </padding>
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+        <NotificationPane fx:id="notificationPane" />
+    </children>
+</VBox>

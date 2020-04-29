@@ -4,7 +4,10 @@ import models.auth.User;
 import models.customers.Customer;
 import models.customers.Invoice;
 import models.customers.InvoiceLine;
+import models.customers.Receipt;
+import models.finance.Bank;
 import models.products.*;
+import models.vendors.PaymentVoucher;
 import models.vendors.Vendor;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -53,7 +56,17 @@ public interface ApiService {
     @GET("service")
     Call<Service[]> services();
 
+    @GET("receipt")
+    Call<Receipt[]> receipts();
 
+    @GET("payment_voucher")
+    Call<PaymentVoucher[]> paymentVouchers();
+
+    @GET("bank")
+    Call<Bank[]> banks();
+
+    @GET("express_sale")
+    Call<ExpressSale[]> expressSales();
 
 
 
@@ -97,10 +110,27 @@ public interface ApiService {
     @FormUrlEncoded
     Call<Service[]> addService(@Field("name") String name, @Field("description") String description);
 
+    @POST
+    @FormUrlEncoded
+    Call<Bank[]> addBank(@Field("name") String name, @Field("branch") String branch,@Field("accountNo") String accountNo,
+                         @Field("enabled") boolean enabled,@Field("addedBy") int addedBy ,@Field("requireRefNo")boolean requireRefNo);
+
     @POST("customer_invoice")
     @FormUrlEncoded
     Call<Invoice[]> addCustomerInvoice(@Field("invoiceNo") String invoiceNo, @Field("customerId") int customer,
-                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date,@Field("addedBy") int addedBy);
+                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date,@Field("createdBy") int createdBy);
+
+    @POST("post_customer_invoice/{id}/{postedBy}")
+    Call<Invoice[]> postCustomerInvoice(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("reverse_customer_invoice/{id}/{postedBy}")
+    Call<Invoice[]> reverseCustomerInvoice(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("post_customer_receipt/{id}/{postedBy}")
+    Call<Receipt[]> postCustomerReceipt(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("reverse_customer_receipt/{id}/{postedBy}")
+    Call<Receipt[]> reverseCustomerReceipt(@Path("id") int id, @Path("postedBy") int postedBy);
 
     @POST("customer_invoice_line")
     @FormUrlEncoded
@@ -117,6 +147,47 @@ public interface ApiService {
     @FormUrlEncoded
     Call<models.vendors.Invoice[]> addVendorInvoice(@Field("invoiceNo") String invoiceNo, @Field("vendorId") int vendor,
                                        @Field("warehouseId") int warehouse,@Field("invoiceDate")String date, @Field("addedBy") int addedBy);
+
+    @POST("post_vendor_invoice/{id}/{postedBy}")
+    Call<models.vendors.Invoice[]> postVendorInvoice(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("reverse_vendor_invoice/{id}/{postedBy}")
+    Call<models.vendors.Invoice[]> reverseVendorInvoice(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("post_vendor_voucher/{id}/{postedBy}")
+    Call<PaymentVoucher[]> postPaymentVoucher(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("reverse_vendor_voucher/{id}/{postedBy}")
+    Call<PaymentVoucher[]> reversePaymentVoucher(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("payment_voucher")
+    @FormUrlEncoded
+    Call<PaymentVoucher[]> addPaymentVoucher(@Field("voucherNo") String voucherNo, @Field("vendorId")int vendorId ,@Field("voucherDate") String voucherDate,
+                                             @Field("bankId")int bankId , @Field("amount") double amount ,@Field("extDocNo")String extDocNo, @Field("createdBy") int id);
+
+    @POST("receipt")
+    @FormUrlEncoded
+    Call<Receipt[]> addReceipt(@Field("no") String no,@Field("customerId")int customerId, @Field("receiptDate")String receiptDate,
+                               @Field("createdBy")int createdBy,@Field("bankId")int bankId,@Field("amount")double amount,
+                               @Field("extDocNo")String extDocNo);
+
+    @POST("express_sale")
+    @FormUrlEncoded
+    Call<ExpressSale[]> addSale(@Field("saleNo") String saleNo, @Field("description") String description, @Field("saleDate") String saleDate,
+                                @Field("bankId") int bankId, @Field("warehouseId") int warehouseId, @Field("refNo") String refNo,
+                                @Field("createdBy") int createdBy);
+
+    @POST("post_sale/{id}/{postedBy}")
+    Call<ExpressSale[]> postSale(@Path("id") int id, @Path("postedBy") int postedBy);
+
+    @POST("reverse_sale/{id}/{postedBy}")
+    Call<ExpressSale[]> reverseSale(@Path("id") int id, @Path("postedBy") int postedBy);
+
+
+    @POST("add_sale_line/{id}")
+    @FormUrlEncoded
+    Call<ExpressSaleLine[]> addSaleLine(@Path("id") int id, @Field("type") String type, @Field("typeId") int typeId,
+                                        @Field("unitPrice") double unitPrice, @Field("quantity") int quantity);
 
     /***
      * PUT requests
@@ -150,6 +221,23 @@ public interface ApiService {
     @PUT("vendor_invoice/{id}")
     Call<models.vendors.Invoice[]> updateVendorInvoice(@Path("id")int id,@Query("invoiceNo") String invoiceNo, @Query("vendorId") int vendor,
                                           @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
+
+
+    @PUT("payment_voucher/{id}")
+    Call<PaymentVoucher[]> updatePaymentVoucher(@Path("id")int id, @Query("voucherNo") String voucherNo, @Query("vendorId")int vendorId ,@Query("voucherDate") String voucherDate,
+                                             @Query("bankId")int bankId , @Query("amount") double amount ,@Query("extDocNo")String extDocNo);
+
+    @PUT("receipt/{id}")
+    Call<Receipt[]> updateReceipt(@Path("id")int id, @Query("no") String no,@Query("customerId")int customerId, @Query("receiptDate")String receiptDate,
+                               @Query("bankId")int bankId,@Query("amount")double amount, @Query("extDocNo")String extDocNo);
+    
+    @PUT("bank/{id}")
+    Call<Bank[]> updateBank(@Path("id")int id, @Query("name") String name, @Query("branch") String branch,@Query("accountNo") String accountNo,
+                         @Query("enabled") boolean enabled,@Query("addedBy") int addedBy ,@Query("requireRefNo")boolean requireRefNo);
+// 'saleNo', 'description', 'saleDate', 'bankId', 'warehouseId', 'refNo', 'createdBy'
+    @PUT("express_sale/{id}")
+    Call<ExpressSale[]> updateSale(@Path("id") int id, @Query("saleNo") String saleNo, @Query("description") String description, @Query("saleDate") String saleDate,
+                                   @Query("bankId") int bankId, @Query("warehouseId") int warehouseId, @Query("refNo") String refNo);
 
     /**
      * DELETE requests
@@ -186,5 +274,20 @@ public interface ApiService {
 
     @DELETE("vendor_invoice_line/{id}")
     Call<models.vendors.InvoiceLine[]> deleteVendorInvoiceLine(@Path("id")int id);
+
+    @DELETE("receipt/{id}")
+    Call<Receipt[]> deleteReceipt(@Path("id")int id);
+
+    @DELETE("payment_voucher/{id}")
+    Call<PaymentVoucher[]> deletePaymentVoucher(@Path("id")int id);
+
+    @DELETE("bank/{id}")
+    Call<Bank[]> deleteBank(@Path("id") int id);
+
+    @DELETE("express_sale/{id}")
+    Call<ExpressSale[]> deleteSale(@Path("id") int id);
+
+    @DELETE("remove_sale_line/{id}")
+    Call<ExpressSaleLine[]> deleteSaleLine(@Path("id") int id);
 
 }

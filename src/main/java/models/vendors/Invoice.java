@@ -2,7 +2,6 @@ package models.vendors;
 
 import models.products.Warehouse;
 
-import java.util.Date;
 
 public class Invoice {
     /**
@@ -11,10 +10,10 @@ public class Invoice {
     private int id;
     private Vendor vendor;
     private String invoiceNo;
-    private Date invoiceDate;
+    private String invoiceDate;
     private Warehouse warehouse;
     private boolean posted, reversed;
-    private Date postedOn, reversedOn;
+    private String postedOn, reversedOn;
     private InvoiceLine[] invoiceLines;
     private double total;
 
@@ -39,11 +38,11 @@ public class Invoice {
         this.invoiceNo = invoiceNo;
     }
 
-    public Date getInvoiceDate() {
+    public String getInvoiceDate() {
         return invoiceDate;
     }
 
-    public void setInvoiceDate(Date invoiceDate) {
+    public void setInvoiceDate(String invoiceDate) {
         this.invoiceDate = invoiceDate;
     }
 
@@ -71,19 +70,19 @@ public class Invoice {
         this.reversed = reversed;
     }
 
-    public Date getPostedOn() {
+    public String getPostedOn() {
         return postedOn;
     }
 
-    public void setPostedOn(Date postedOn) {
+    public void setPostedOn(String postedOn) {
         this.postedOn = postedOn;
     }
 
-    public Date getReversedOn() {
+    public String getReversedOn() {
         return reversedOn;
     }
 
-    public void setReversedOn(Date reversedOn) {
+    public void setReversedOn(String reversedOn) {
         this.reversedOn = reversedOn;
     }
 
