@@ -248,7 +248,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         Warehouse warehouse = cbWarehouse.getValue();
         String refNo = tfRefNo.getText().trim();
         String errorMessage = "";
-        if (saleNo.equals("")) errorMessage += "Sale number is required.";
+        //if (saleNo.equals("")) errorMessage += "Sale number is required.";
         try{
             date = dpDate.getValue().toString();
         }catch (Exception e){
@@ -265,10 +265,10 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             return;
         }
         Call<ExpressSale[]> call;
-        if (expressSale == null) call = apiService.addSale(saleNo, "", date, bank.getId(), warehouse.getId(), refNo, user.getId());
+        if (expressSale == null) call = apiService.addSale("", date, bank.getId(), warehouse.getId(), refNo, user.getId());
         else{
             saleNo = expressSale.getSaleNo().equals(saleNo)?null:saleNo;
-            call = apiService.updateSale(expressSale.getId(), saleNo, "", date, bank.getId(), warehouse.getId(), refNo);
+            call = apiService.updateSale(expressSale.getId(), "", date, bank.getId(), warehouse.getId(), refNo);
         }
         call.enqueue(new Callback<>() {
             @Override
@@ -342,7 +342,8 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                         });
                     }
                 } else {
-                    Platform.runLater(() -> notificationPane.show(response.message()));
+                    Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                            new String[]{"message"})));
                 }
             }
 

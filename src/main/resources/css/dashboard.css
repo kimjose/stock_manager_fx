@@ -1,0 +1,9 @@
+.parent {
+	-fx-background-color: #254117; 
+}
+.label {
+	-fx-text-fill: #fff;
+}
+.label-header {
+	-fx-font-weight: bold;
+}

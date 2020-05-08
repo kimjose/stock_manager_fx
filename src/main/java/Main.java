@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +11,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import utils.SessionManager;
+
+import java.io.InterruptedIOException;
 
 public class Main extends Application {
 
@@ -24,6 +27,11 @@ public class Main extends Application {
         primaryStage.show();
     }
     private void login(){
+        try{
+            Thread.sleep(60);
+        } catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
         ApiService apiService = RetrofitBuilder.createService(ApiService.class);
         Call<User> call = apiService.login("admin", "admin123", "admin123");
         call.enqueue(new Callback<>() {
@@ -32,6 +40,7 @@ public class Main extends Application {
                 if (response.isSuccessful()){
                     SessionManager sessionManager = SessionManager.INSTANCE;
                     sessionManager.setUser(response.body());
+                    Platform.runLater(call::notify);
                 }else System.exit(-2);
             }
 

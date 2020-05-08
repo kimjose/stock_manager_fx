@@ -26,7 +26,7 @@
                         <HBox>
                            <children>
                               <Label prefHeight="25.0" prefWidth="108.0" text="Invoice No" />
-                              <TextField fx:id="tfNo" />
+                              <TextField fx:id="tfNo" editable="false"/>
                            </children>
                         </HBox>
                         <HBox>
@@ -121,7 +121,7 @@
                         <FontAwesomeIconView fill="WHITE" glyphName="UNDO" size="30" />
                      </graphic>
                   </Button>
-                  <Button fx:id="btnPost" contentDisplay="GRAPHIC_ONLY" layoutX="222.0" layoutY="10.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_success" text="Post">
+                  <Button fx:id="btnPost" disable="true" contentDisplay="GRAPHIC_ONLY" layoutX="222.0" layoutY="10.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_success" text="Post">
                      <graphic>
                         <FontAwesomeIconView fill="WHITE" glyphName="PLAY" size="30" />
                      </graphic>

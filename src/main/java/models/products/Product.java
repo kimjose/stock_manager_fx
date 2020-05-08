@@ -17,6 +17,7 @@ public class Product {
     private String upcCode;
     private int quantity;
     private double price;
+    private double buyingPrice;
     private Brand brand;
     private Category category;
     private UnitOfMeasure uom;
@@ -71,6 +72,14 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getBuyingPrice() {
+        return buyingPrice;
+    }
+
+    public void setBuyingPrice(double buyingPrice) {
+        this.buyingPrice = buyingPrice;
     }
 
     public Brand getBrand() {

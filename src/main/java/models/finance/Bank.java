@@ -1,5 +1,7 @@
 package models.finance;
 
+import javafx.scene.control.CheckBox;
+
 public class Bank {
     //'name', 'branch', 'accountNo','enabled','addedBy','requireRefNo',
     private String name, branch, accountNo;
@@ -57,6 +59,13 @@ public class Bank {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public CheckBox getEnabledBox(){
+        CheckBox box = new CheckBox();
+        box.setSelected(isEnabled());
+        box.setDisable(true);
+        return box;
     }
 
     @Override

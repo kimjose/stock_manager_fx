@@ -115,6 +115,6 @@ public class CreateVendor implements Initializable {
         labelId.setText(String.valueOf(vendor.getId()));
         tfName.setText(vendor.getName());
         tfEmail.setText(vendor.getEmail());
-        tfPhone.setText(vendor.getPhone());
+        tfPhone.setText(vendor.getPhone()==null?"":vendor.getPhone());
     }
 }

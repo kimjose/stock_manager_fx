@@ -162,7 +162,7 @@ public class CustomerReceipt implements Initializable {
         }catch (Exception e){
             errorMessage = errorMessage.concat("Select a valid date.");
         }
-        if (no.equals("")) errorMessage += errorMessage.equals("")?"Receipt no is required.":"\nReceipt no is required.";
+        //if (no.equals("")) errorMessage += errorMessage.equals("")?"Receipt no is required.":"\nReceipt no is required.";
         if (amountString.equals("")) errorMessage += errorMessage.equals("")?"Amount is required.":"\nAmount is required.";
         if (customer == null) errorMessage += errorMessage.equals("")?"Select a valid customer.":"\nSelect a valid customer.";
         if (bank == null) errorMessage += errorMessage.equals("")?"Select a valid bank.":"\nSelect a valid bank.";
@@ -178,10 +178,10 @@ public class CustomerReceipt implements Initializable {
             return;
         }
         Call<Receipt[]> call;
-        if (receipt == null) call = apiService.addReceipt(no, customer.getId(), date, user.getId(), bank.getId(), amount, extDocNo);
+        if (receipt == null) call = apiService.addReceipt(customer.getId(), date, user.getId(), bank.getId(), amount, extDocNo);
         else {
             no = receipt.getNo().equals(no)?null:no;
-            call = apiService.updateReceipt(receipt.getId(), no, customer.getId(), date, bank.getId(), amount, extDocNo);
+            call = apiService.updateReceipt(receipt.getId(), customer.getId(), date, bank.getId(), amount, extDocNo);
         }
         call.enqueue(new Callback<>() {
             @Override
@@ -216,7 +216,8 @@ public class CustomerReceipt implements Initializable {
                         Utility.closeWindow(vbHolder);
                         dataInterface.updateData("The receipt has been posted", response.body());
                     });
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                        new String[]{"message"})));
             }
 
             @Override
@@ -236,7 +237,8 @@ public class CustomerReceipt implements Initializable {
                         Utility.closeWindow(vbHolder);
                         dataInterface.updateData("The receipt has been reversed", response.body());
                     });
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                        new String[]{"message"})));
             }
 
             @Override
@@ -259,6 +261,7 @@ public class CustomerReceipt implements Initializable {
         tfExtDocNo.setText(receipt.getExtDocNo());
         btnPost.setDisable(receipt.isPosted());
         dbDate.setValue(LocalDate.parse(receipt.getReceiptDate()));
+        if (!receipt.isPosted()) btnPost.setDisable(false);
         if (receipt.isPosted() && !receipt.isReversed()) btnReverse.setDisable(false);
     }
 }

@@ -206,7 +206,7 @@ public class VendorInvoice implements Initializable, LinesInterface {
         Vendor vendor = cbOwner.getValue();
         Warehouse warehouse = cbWarehouse.getValue();
         String errorMessage = "";
-        if (invNo.equals("")) errorMessage = errorMessage.concat("Invoice Number is required.");
+        //if (invNo.equals("")) errorMessage = errorMessage.concat("Invoice Number is required.");
         try{
             date = dpDate.getValue().toString();
             if (date == null ) throw new Exception();
@@ -221,13 +221,13 @@ public class VendorInvoice implements Initializable, LinesInterface {
             if (invoice == null) {
                 assert vendor != null;
                 assert warehouse != null;
-                call = apiService.addVendorInvoice(invNo, vendor.getId(), warehouse.getId(), date, user.getId());
+                call = apiService.addVendorInvoice(vendor.getId(), warehouse.getId(), date, user.getId());
             }
             else{
                 invNo = invNo.equals(invoice.getInvoiceNo())?null:invNo;
                 assert vendor != null;
                 assert warehouse != null;
-                call = apiService.updateVendorInvoice(invoice.getId(), invNo, vendor.getId(), warehouse.getId(), date);
+                call = apiService.updateVendorInvoice(invoice.getId(), vendor.getId(), warehouse.getId(), date);
             }
             call.enqueue(new Callback<>() {
                 @Override
@@ -241,7 +241,7 @@ public class VendorInvoice implements Initializable, LinesInterface {
                             }
                             dataInterface.updateData("The invoice has been saved successfully", filtered.toArray());
                         });
-                    } {
+                    } else{
                         Platform.runLater(() -> {
                             assert response.errorBody() != null;
                             notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"invoiceNo"}));
@@ -268,7 +268,8 @@ public class VendorInvoice implements Initializable, LinesInterface {
                             dataInterface.updateData("The invoice has been posted successfully", response.body());
                         });
                     }
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                        new String[]{"message"})));
             }
 
             @Override
@@ -289,7 +290,8 @@ public class VendorInvoice implements Initializable, LinesInterface {
                             dataInterface.updateData("The invoice has been reversed successfully", response.body());
                         });
                     }
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                        new String[]{"message"})));
             }
 
             @Override
@@ -396,7 +398,7 @@ public class VendorInvoice implements Initializable, LinesInterface {
             @Override
             public void onResponse(Call<Product[]> call, Response<Product[]> response) {
                 if (response.isSuccessful()) products = response.body();
-                else notificationPane.show(response.message());
+                else Platform.runLater(()->notificationPane.show(response.message()));
             }
 
             @Override

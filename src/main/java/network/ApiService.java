@@ -7,8 +7,7 @@ import models.customers.InvoiceLine;
 import models.customers.Receipt;
 import models.finance.Bank;
 import models.products.*;
-import models.vendors.PaymentVoucher;
-import models.vendors.Vendor;
+import models.vendors.*;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -68,6 +67,12 @@ public interface ApiService {
     @GET("express_sale")
     Call<ExpressSale[]> expressSales();
 
+    @GET("product_group")
+    Call<ProductGroup[]> productGroups();
+
+    @GET("unpacking")
+    Call<Unpacking[]> unpackings();
+
 
 
     /**
@@ -96,6 +101,11 @@ public interface ApiService {
                              @Field("categoryId")int categoryId, @Field("sku_code")String skuCode, @Field("upc_code")String upcCode,
                              @Field("image")String image);
 
+    @POST("bank")
+    @FormUrlEncoded
+    Call<Bank[]> addBank(@Field("name") String name, @Field("branch") String branch, @Field("accountNo") String accountNo,
+                         @Field("requireRefNo") int requireRefNo, @Field("addedBy") int addedBy);
+
     @POST("customer")
     @FormUrlEncoded
     Call<Customer[]> addCustomer(@Field("name") String name, @Field("email") String email,
@@ -110,14 +120,9 @@ public interface ApiService {
     @FormUrlEncoded
     Call<Service[]> addService(@Field("name") String name, @Field("description") String description);
 
-    @POST
-    @FormUrlEncoded
-    Call<Bank[]> addBank(@Field("name") String name, @Field("branch") String branch,@Field("accountNo") String accountNo,
-                         @Field("enabled") boolean enabled,@Field("addedBy") int addedBy ,@Field("requireRefNo")boolean requireRefNo);
-
     @POST("customer_invoice")
     @FormUrlEncoded
-    Call<Invoice[]> addCustomerInvoice(@Field("invoiceNo") String invoiceNo, @Field("customerId") int customer,
+    Call<Invoice[]> addCustomerInvoice(@Field("customerId") int customer,
                                        @Field("warehouseId") int warehouse,@Field("invoiceDate")String date,@Field("createdBy") int createdBy);
 
     @POST("post_customer_invoice/{id}/{postedBy}")
@@ -145,7 +150,7 @@ public interface ApiService {
 
     @POST("vendor_invoice")
     @FormUrlEncoded
-    Call<models.vendors.Invoice[]> addVendorInvoice(@Field("invoiceNo") String invoiceNo, @Field("vendorId") int vendor,
+    Call<models.vendors.Invoice[]> addVendorInvoice(@Field("vendorId") int vendor,
                                        @Field("warehouseId") int warehouse,@Field("invoiceDate")String date, @Field("addedBy") int addedBy);
 
     @POST("post_vendor_invoice/{id}/{postedBy}")
@@ -162,18 +167,18 @@ public interface ApiService {
 
     @POST("payment_voucher")
     @FormUrlEncoded
-    Call<PaymentVoucher[]> addPaymentVoucher(@Field("voucherNo") String voucherNo, @Field("vendorId")int vendorId ,@Field("voucherDate") String voucherDate,
+    Call<PaymentVoucher[]> addPaymentVoucher(@Field("vendorId")int vendorId ,@Field("voucherDate") String voucherDate,
                                              @Field("bankId")int bankId , @Field("amount") double amount ,@Field("extDocNo")String extDocNo, @Field("createdBy") int id);
 
     @POST("receipt")
     @FormUrlEncoded
-    Call<Receipt[]> addReceipt(@Field("no") String no,@Field("customerId")int customerId, @Field("receiptDate")String receiptDate,
+    Call<Receipt[]> addReceipt(@Field("customerId")int customerId, @Field("receiptDate")String receiptDate,
                                @Field("createdBy")int createdBy,@Field("bankId")int bankId,@Field("amount")double amount,
                                @Field("extDocNo")String extDocNo);
 
     @POST("express_sale")
     @FormUrlEncoded
-    Call<ExpressSale[]> addSale(@Field("saleNo") String saleNo, @Field("description") String description, @Field("saleDate") String saleDate,
+    Call<ExpressSale[]> addSale(@Field("description") String description, @Field("saleDate") String saleDate,
                                 @Field("bankId") int bankId, @Field("warehouseId") int warehouseId, @Field("refNo") String refNo,
                                 @Field("createdBy") int createdBy);
 
@@ -188,6 +193,23 @@ public interface ApiService {
     @FormUrlEncoded
     Call<ExpressSaleLine[]> addSaleLine(@Path("id") int id, @Field("type") String type, @Field("typeId") int typeId,
                                         @Field("unitPrice") double unitPrice, @Field("quantity") int quantity);
+
+    @POST("product_group")
+    @FormUrlEncoded
+    Call<ProductGroup[]> addGroup(@Field("name") String name, @Field("description") String description, @Field("productId") int product,
+                                  @Field("quantity") int quantity,@Field("price") double price);
+
+    @POST("unpacking")
+    @FormUrlEncoded
+    Call<Unpacking[]> addUnpacking(@Field("groupId") int groupId, @Field("quantity") int quantity, @Field("productQuantity") int productQuantity,
+                                   @Field("warehouseId") int warehouseId, @Field("createdBy") int createdBy);
+
+    @POST("post_unpacking/{id}/{postedBy}")
+    Call<Unpacking[]> postUnpacking(@Path("id")int id, @Path("postedBy") int postedBy);
+
+    @POST("reverse_unpacking/{id}/{postedBy}")
+    Call<Unpacking[]> reverseUnpacking(@Path("id")int id, @Path("postedBy") int postedBy);
+
 
     /***
      * PUT requests
@@ -205,6 +227,10 @@ public interface ApiService {
     @PUT("uom/{id}")
     Call<UnitOfMeasure[]> updateUOM(@Path("id")int id, @Query("name") String name, @Query("description") String description);
 
+    @PUT("bank/{id}")
+    Call<Bank[]> updateBank(@Path("id") int id, @Query("name") String name, @Query("branch") String branch, @Query("accountNo") String accountNo,
+                         @Query("requireRefNo") int requireRefNo, @Query("enabled") int enabled);
+
     @PUT("customer/{id}")
     Call<Customer[]> updateCustomer(@Path("id") int id, @Query("name") String name, @Query("email") String email, @Query("phone")String phone);
 
@@ -215,30 +241,34 @@ public interface ApiService {
     Call<Service[]> updateService(@Path("id")int id, @Query("name") String name, @Query("description") String description);
 
     @PUT("customer_invoice/{id}")
-    Call<Invoice[]> updateCustomerInvoice(@Path("id")int id,@Query("invoiceNo") String invoiceNo, @Query("customerId") int customer,
+    Call<Invoice[]> updateCustomerInvoice(@Path("id")int id,@Query("customerId") int customer,
                                           @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
 
     @PUT("vendor_invoice/{id}")
-    Call<models.vendors.Invoice[]> updateVendorInvoice(@Path("id")int id,@Query("invoiceNo") String invoiceNo, @Query("vendorId") int vendor,
+    Call<models.vendors.Invoice[]> updateVendorInvoice(@Path("id")int id,@Query("vendorId") int vendor,
                                           @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
 
 
     @PUT("payment_voucher/{id}")
-    Call<PaymentVoucher[]> updatePaymentVoucher(@Path("id")int id, @Query("voucherNo") String voucherNo, @Query("vendorId")int vendorId ,@Query("voucherDate") String voucherDate,
+    Call<PaymentVoucher[]> updatePaymentVoucher(@Path("id")int id, @Query("vendorId")int vendorId ,@Query("voucherDate") String voucherDate,
                                              @Query("bankId")int bankId , @Query("amount") double amount ,@Query("extDocNo")String extDocNo);
 
     @PUT("receipt/{id}")
-    Call<Receipt[]> updateReceipt(@Path("id")int id, @Query("no") String no,@Query("customerId")int customerId, @Query("receiptDate")String receiptDate,
+    Call<Receipt[]> updateReceipt(@Path("id")int id, @Query("customerId")int customerId, @Query("receiptDate")String receiptDate,
                                @Query("bankId")int bankId,@Query("amount")double amount, @Query("extDocNo")String extDocNo);
-    
-    @PUT("bank/{id}")
-    Call<Bank[]> updateBank(@Path("id")int id, @Query("name") String name, @Query("branch") String branch,@Query("accountNo") String accountNo,
-                         @Query("enabled") boolean enabled,@Query("addedBy") int addedBy ,@Query("requireRefNo")boolean requireRefNo);
-// 'saleNo', 'description', 'saleDate', 'bankId', 'warehouseId', 'refNo', 'createdBy'
+
     @PUT("express_sale/{id}")
-    Call<ExpressSale[]> updateSale(@Path("id") int id, @Query("saleNo") String saleNo, @Query("description") String description, @Query("saleDate") String saleDate,
+    Call<ExpressSale[]> updateSale(@Path("id") int id, @Query("description") String description, @Query("saleDate") String saleDate,
                                    @Query("bankId") int bankId, @Query("warehouseId") int warehouseId, @Query("refNo") String refNo);
 
+    @POST("product_group/{id}")
+    Call<ProductGroup[]> updateGroup(@Path("id") int id, @Field("name") String name, @Field("description") String description, @Field("productId") int product,
+                                  @Field("quantity") int quantity,@Field("price") double price);
+
+    @PUT("unpacking/{id}")
+    Call<Unpacking[]> updateUnpacking(@Path("id") int id, @Query("groupId") int groupId, @Query("quantity") int quantity,
+                                      @Query("productQuantity") int productQuantity,@Query("warehouseId") int warehouseId);
+    
     /**
      * DELETE requests
      * ***/
@@ -289,5 +319,11 @@ public interface ApiService {
 
     @DELETE("remove_sale_line/{id}")
     Call<ExpressSaleLine[]> deleteSaleLine(@Path("id") int id);
+
+    @DELETE("product_group/{id}")
+    Call<ProductGroup[]> deleteGroup(@Path("id") int id);
+
+    @DELETE("unpacking/{id}")
+    Call<Unpacking[]> deleteUnpacking(@Path("id") int id);
 
 }

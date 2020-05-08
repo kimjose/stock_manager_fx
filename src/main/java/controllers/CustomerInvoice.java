@@ -290,7 +290,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         Warehouse warehouse = cbWarehouse.getValue();
         String date = "";
         String errorMessage = "";
-        if (invNo.equals("")) errorMessage += "Invoice number is required.";
+        //if (invNo.equals("")) errorMessage += "Invoice number is required.";
         if (customer == null) errorMessage += errorMessage.equals("")?"Select a valid customer":"\nSelect a valid customer";
         if (warehouse == null) errorMessage += errorMessage.equals("")?"Select a valid warehouse":"\nSelect a valid warehouse";
         try {
@@ -304,10 +304,10 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         }
         Call<Invoice[]> call;
         if (invoice == null){
-            call = apiService.addCustomerInvoice(invNo, customer.getId(), warehouse.getId(), date, user.getId());
+            call = apiService.addCustomerInvoice(customer.getId(), warehouse.getId(), date, user.getId());
         }else{
             invNo = invoice.getInvoiceNo().equals(invNo)?null:invNo;
-            call = apiService.updateCustomerInvoice(invoice.getId(), invNo, customer.getId(), warehouse.getId(), date);
+            call = apiService.updateCustomerInvoice(invoice.getId(), customer.getId(), warehouse.getId(), date);
         }
         call.enqueue(new Callback<>() {
             @Override
@@ -348,7 +348,8 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                             dataInterface.updateData("The invoice has been posted successfully", response.body());
                         });
                     }
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                        new String[]{"message"})));
             }
 
             @Override
@@ -369,7 +370,8 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                             dataInterface.updateData("The invoice has been posted successfully", response.body());
                         });
                     }
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                        new String[]{"message"})));
             }
 
             @Override

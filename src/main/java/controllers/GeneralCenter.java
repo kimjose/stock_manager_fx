@@ -15,6 +15,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,6 +52,9 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
     private VBox vbParent;
 
     @FXML
+    private HBox hbActions;
+
+    @FXML
     private Button btnAdd;
 
     @FXML
@@ -58,6 +62,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
     @FXML
     private Button btnDelete;
+
+    @FXML
+    private Button btnRefresh;
+
+    @FXML
+    private HBox hbReports;
 
     @FXML
     private TextField tfSearch;
@@ -90,6 +100,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             if (o == null) createNotification(1, "You must select an item first");
             else deleteObject(o);
         });
+        btnRefresh.setOnAction(event -> loadData());
     }
 
     @Override
@@ -154,6 +165,65 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
+            case "Product Groups": {
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Id", "id", 0.10),
+                        new MyTableColumn("Name", "name", 0.20),
+                        new MyTableColumn("Description", "description", 0.30),
+                        new MyTableColumn("Product", "product", 0.20),
+                        new MyTableColumn("No of Products", "quantity", 0.10),
+                        new MyTableColumn("Price", "price", 0.10),
+                }));
+                break;
+            }
+            case "Banks":{//'name', 'branch', 'accountNo','enabled','addedBy','requireRefNo',
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Id", "id", 0.15),
+                        new MyTableColumn("Name", "name", 0.20),
+                        new MyTableColumn("Branch", "branch", 0.30),
+                        new MyTableColumn("Account Number", "accountNo", 0.20),
+                        new MyTableColumn("Posting Allowed", "enabledBox", 0.15),
+                }));
+                break;
+            }
+            case "Unpackings": {//'groupId', 'quantity', 'productQuantity', 'warehouseId',
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Id", "id", 0.10),
+                        new MyTableColumn("Package", "group", 0.30),
+                        new MyTableColumn("Warehouse", "warehouse", 0.30),
+                        new MyTableColumn("Quantity", "quantity", 0.15),
+                        new MyTableColumn("No of Products", "productQuantity", 0.15),
+                }));
+                break;
+            }
+            case "Posted Unpackings": {//'groupId', 'quantity', 'productQuantity', 'warehouseId',
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Id", "id", 0.10),
+                        new MyTableColumn("Package", "group", 0.20),
+                        new MyTableColumn("Warehouse", "warehouse", 0.20),
+                        new MyTableColumn("Quantity", "quantity", 0.10),
+                        new MyTableColumn("No of Products", "productQuantity", 0.10),
+                        new MyTableColumn("Posted On", "postedOn", 0.30),
+                }));
+                break;
+            }
+            case "Reversed Unpackings": {//'groupId', 'quantity', 'productQuantity', 'warehouseId',
+                tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
+                tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
+                        new MyTableColumn("Id", "id", 0.10),
+                        new MyTableColumn("Package", "group", 0.15),
+                        new MyTableColumn("Warehouse", "warehouse", 0.15),
+                        new MyTableColumn("Quantity", "quantity", 0.10),
+                        new MyTableColumn("No of Products", "productQuantity", 0.10),
+                        new MyTableColumn("Posted On", "postedOn", 0.20),
+                        new MyTableColumn("Reversed On", "reversedOn", 0.20),
+                }));
+                break;
+            }
             case "Services": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
@@ -205,9 +275,10 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             case "All Vendors": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
-                        new MyTableColumn("Vendor Name", "name", 0.35),
-                        new MyTableColumn("Email", "email", 0.35),
-                        new MyTableColumn("Phone No.", "phone", 0.30),
+                        new MyTableColumn("Vendor Name", "name", 0.30),
+                        new MyTableColumn("Email", "email", 0.30),
+                        new MyTableColumn("Phone No.", "phone", 0.25),
+                        new MyTableColumn("Balance.", "balance", 0.15),
                 }));
                 break;
             }
@@ -464,12 +535,79 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
+            case "Product Groups":{
+                Call<ProductGroup[]> call = apiService.productGroups();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<ProductGroup[]> call, Response<ProductGroup[]> response) {
+                        if (response.isSuccessful()) setData(response.body());
+                        else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductGroup[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Unpackings":
+            case "Posted Unpackings":
+            case "Reversed Unpackings": {
+                Call<Unpacking[]> call = apiService.unpackings();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Unpacking[]> call, Response<Unpacking[]> response) {
+                        if (response.isSuccessful()) {
+                            List<Unpacking> filtered = new ArrayList<>();
+                            for (Unpacking u: response.body() ) {
+                                switch (type) {
+                                    case "Unpackings":
+                                        if (!u.isPosted()) filtered.add(u);
+                                        break;
+                                    case "Posted Unpackings":
+                                        if (u.isPosted() && !u.isReversed()) filtered.add(u);
+                                        break;
+                                    case "Reversed Unpackings":
+                                        if (u.isReversed()) filtered.add(u);
+                                        break;
+                                }
+                            }
+                            setData(filtered.toArray());
+                        }
+                        else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Unpacking[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Banks":{
+                Call<Bank[]> call = apiService.banks();
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Bank[]> call, Response<Bank[]> response) {
+                        if (response.isSuccessful()) setData(response.body());
+                        else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Bank[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
             case "Services": {
                 Call<Service[]> call = apiService.services();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Service[]> call, Response<Service[]> response) {
                         if (response.isSuccessful()) setData(response.body());
+                        else createNotification(-1, response.message());
                     }
 
                     @Override
@@ -904,6 +1042,48 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     break;
                 }
+                case "Product Groups": {
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_product_group.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    ProductGroupController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Product Group");
+                    stage.show();
+                    break;
+                }
+                case "Banks":{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_bank.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    BankController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Create Bank");
+                    stage.show();
+                    break;
+                }
+                case "Unpackings":{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_unpacking.fxml")));
+                    VBox vBox = loader.load();
+                    Scene scene = new Scene(vBox);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    UnpackingController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Unpack Product");
+                    stage.show();
+                    break;
+                }
                 case "Services": {
 
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_service.fxml")));
@@ -1133,6 +1313,55 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setTitle("Edit Product");
                     stage.show();
 
+                    break;
+                }
+                case "Product Groups":{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_product_group.fxml")));
+                    VBox vBox = loader.load();//, 870, 370
+                    Scene scene = new Scene(vBox);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    ProductGroupController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setGroup((ProductGroup) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Group");
+                    stage.show();
+
+                    break;
+                }
+                case "Banks":{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_bank.fxml")));
+                    VBox vBox = loader.load();//, 870, 370
+                    Scene scene = new Scene(vBox);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    BankController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setBank((Bank) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit/View Bank");
+                    stage.show();
+
+                    break;
+                }
+                case "Unpackings":
+                case "Posted Unpackings":
+                case "Reversed Unpackings":{
+                    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_unpacking.fxml")));
+                    VBox vBox = loader.load();//, 870, 370
+                    Scene scene = new Scene(vBox);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    UnpackingController controller = loader.getController();
+                    controller.setDataInterface(this);
+                    controller.setUnpacking((Unpacking) object);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setResizable(false);
+                    stage.setTitle("Edit Unpacking");
+                    stage.show();
                     break;
                 }
                 case "Services": {
@@ -1388,6 +1617,84 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
+            case "Product Groups":{
+                ProductGroup group = (ProductGroup) object;
+                Call<ProductGroup[]> call = apiService.deleteGroup(group.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<ProductGroup[]> call, Response<ProductGroup[]> response) {
+                        if (response.isSuccessful()) {
+                            setData(response.body());
+                            createNotification(0, "The group has been deleted successfully.");
+                        } else {
+                            createNotification(-1, response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductGroup[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+
+                break;
+            }
+            case "Banks":{
+                Bank bank = (Bank) object;
+                Call<Bank[]> call = apiService.deleteBank(bank.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Bank[]> call, Response<Bank[]> response) {
+                        if (response.isSuccessful()) {
+                            setData(response.body());
+                            createNotification(0, "The bank has been deleted successfully.");
+                        } else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Bank[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+                break;
+            }
+            case "Unpackings":
+            case "Posted Unpackings":
+            case "Reversed Unpackings":{
+                Unpacking unpacking = (Unpacking) object;
+                Call<Unpacking[]> call = apiService.deleteUnpacking(unpacking.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Unpacking[]> call, Response<Unpacking[]> response) {
+                        if (response.isSuccessful()){
+                            List<Unpacking> filtered = new ArrayList<>();
+                            for (Unpacking u:response.body()) {
+                                switch(type) {
+                                    case "Unpackings":{
+                                        if (!u.isPosted()) filtered.add(u);
+                                        break;
+                                    }
+                                    case "Posted Unpackings":{
+                                        if (u.isPosted() && !u.isReversed()) filtered.add(u);
+                                        break;
+                                    }
+                                    case "Reversed Unpackings":{
+                                        if (u.isReversed()) filtered.add(u);
+                                        break;
+                                    }
+                                }
+                            }
+                            setData(filtered.toArray());
+
+                        }else createNotification(-1, response.message());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Unpacking[]> call, Throwable throwable) {
+                        createNotification(-1, throwable.getMessage());
+                    }
+                });
+            }
             case "Services": {
                 Service service = (Service) object;
                 Call<Service[]> call = apiService.deleteService(service.getId());
@@ -1582,7 +1889,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
     public void setData(Object[] data) {
         this.data = data;
-        tvGeneral.setItems(FXCollections.observableArrayList(Arrays.asList(data)));
+        Platform.runLater(()->tvGeneral.setItems(FXCollections.observableArrayList(Arrays.asList(data))));
     }
 
     private TableColumn[] createColumns(MyTableColumn[] myTableColumns) {

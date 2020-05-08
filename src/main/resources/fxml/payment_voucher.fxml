@@ -27,7 +27,7 @@
                 <HBox layoutX="10.0" layoutY="10.0">
                     <children>
                         <Label prefHeight="28.0" prefWidth="145.0" text="Voucher No:" />
-                        <TextField fx:id="tfNo" prefHeight="25.0" prefWidth="168.0" promptText="Voucher No" />
+                        <TextField fx:id="tfNo" prefHeight="25.0" prefWidth="168.0" promptText="Voucher No" editable="false" />
                     </children>
                 </HBox>
                 <HBox layoutX="10.0" layoutY="38.0">
@@ -78,12 +78,12 @@
                                 <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15.0" />
                             </graphic>
                         </Button>
-                        <Button fx:id="btnPost" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_success" text="Post">
+                        <Button fx:id="btnPost" disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_success" text="Post">
                             <graphic>
                                 <FontAwesomeIconView fill="WHITE" glyphName="PLAY" size="15" />
                             </graphic>
                         </Button>
-                        <Button fx:id="btnReverse" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_cancel" text="Reverse">
+                        <Button fx:id="btnReverse" disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="88.0" styleClass="btn_cancel" text="Reverse">
                             <graphic>
                                 <FontAwesomeIconView fill="WHITE" glyphName="UNDO" size="15" />
                             </graphic>

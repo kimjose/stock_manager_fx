@@ -1,5 +1,7 @@
 package controllers;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -9,10 +11,12 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import utils.SessionManager;
 
 import java.io.IOException;
@@ -34,7 +38,10 @@ public class MainStage implements Initializable, ChangeListener {
     private TreeView<String> tvMain;
 
     @FXML
-    private VBox vbTop;
+    private Label labelUserName;
+
+    @FXML
+    private FontAwesomeIconView faivExit;
 
     @FXML
     private AnchorPane apCenter;
@@ -44,24 +51,44 @@ public class MainStage implements Initializable, ChangeListener {
         createTreeItems();
         tvMain.getSelectionModel().selectedItemProperty().addListener(this);
     }
+    //private void
     private void createTreeItems(){
         List<TreeItem<String>> treeItemList = new ArrayList<>();
         TreeItem<String> homeTree = new TreeItem<>("Dashboard");
+        FontAwesomeIconView iconView = new FontAwesomeIconView();
+        iconView.setIcon(FontAwesomeIcon.DASHBOARD);
+        iconView.setFill(Paint.valueOf("#FFFFFF"));
+        homeTree.setGraphic(iconView);
         TreeItem<String> shopTree = new TreeItem<>("Shop");
+        iconView = new FontAwesomeIconView();
+        iconView.setIcon(FontAwesomeIcon.SHOPPING_CART);
+        shopTree.setGraphic(iconView);
+        TreeItem<String> financeTree = new TreeItem<>("Finance");
+        iconView = new FontAwesomeIconView();
+        iconView.setIcon(FontAwesomeIcon.MONEY);
+        financeTree.setGraphic(iconView);
         TreeItem<String> vendorsTree = new TreeItem<>("Vendors");
         TreeItem<String> customerTree = new TreeItem<>("Customers");
+
+        TreeItem<String> banksTI = new TreeItem<>("Banks");
+        TreeItem<String> profitNLossTI = new TreeItem<>("Profits and Losses");
+        financeTree.getChildren().addAll(banksTI, profitNLossTI);
 
         TreeItem<String> productsTree = new TreeItem<>("Products");
         TreeItem<String> brandsTI = new TreeItem<>("Brands");
         TreeItem<String> categoriesTI = new TreeItem<>("Categories");
         TreeItem<String> uomTI = new TreeItem<>("Units of Measure");
         TreeItem<String> warehouseTI = new TreeItem<>("Warehouses");
+        TreeItem<String> productGroupsTI = new TreeItem<>("Product Groups");
+        TreeItem<String> unpackingTI = new TreeItem<>("Unpackings");
+        TreeItem<String> postedUnpackingTI = new TreeItem<>("Posted Unpackings");
+        TreeItem<String> reversedUnpackingTI = new TreeItem<>("Reversed Unpackings");
         TreeItem<String> serviceTI = new TreeItem<>("Services");
         TreeItem<String> eSaleTI = new TreeItem<>("Express Sales");
         TreeItem<String> peSaleTI = new TreeItem<>("Posted Express Sales");
         TreeItem<String> reSaleTI = new TreeItem<>("Reversed Express Sales");
-        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI, serviceTI, eSaleTI,
-                peSaleTI, reSaleTI);
+        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI,productGroupsTI, unpackingTI,
+                postedUnpackingTI, reversedUnpackingTI, serviceTI, eSaleTI, peSaleTI, reSaleTI);
 
         TreeItem<String> allVendors = new TreeItem<>("All Vendors");
         TreeItem<String> vInvoiceTree = new TreeItem<>("Vendor Invoices");
@@ -86,10 +113,12 @@ public class MainStage implements Initializable, ChangeListener {
 
         treeItemList.add(homeTree);
         treeItemList.add(shopTree);
+        treeItemList.add(financeTree);
         treeItemList.add(vendorsTree);
         treeItemList.add(customerTree);
         TreeItem<String> rootItem = new TreeItem<>("Inventory Manager");
         rootItem.getChildren().addAll(treeItemList);
+        rootItem.setExpanded(true);
         tvMain.setRoot(rootItem);
     }
 
@@ -100,11 +129,17 @@ public class MainStage implements Initializable, ChangeListener {
         System.out.println(selected.getValue());
         switch (selected.getValue()){
 
+            case "Banks":
+            case "Profits and Losses":
             case "Products":
             case "Categories":
             case "Units of Measure":
             case "Warehouses":
             case "Brands":
+            case "Product Groups":
+            case "Unpackings":
+            case "Posted Unpackings":
+            case "Reversed Unpackings":
             case "Services":
             case "Express Sales":
             case "Posted Express Sales":
@@ -127,9 +162,9 @@ public class MainStage implements Initializable, ChangeListener {
                     FXMLLoader loader = new FXMLLoader();
                     apCenter.getChildren().clear();
                     VBox vBox = loader.load(getClass().getResource("/fxml/general_center.fxml").openStream());
-                    System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
                     vBox.prefWidthProperty().bind(apCenter.widthProperty());
                     vBox.prefHeightProperty().bind(apCenter.heightProperty());
+                    System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
                     GeneralCenter generalCenter = loader.getController();
                     generalCenter.setType(selected.getValue());
                     apCenter.getChildren().setAll(vBox);

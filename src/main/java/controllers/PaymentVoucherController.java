@@ -91,10 +91,11 @@ public class PaymentVoucherController implements Initializable {
         Utility.restrictInputDec(tfAmount);
 
         
-        cbBank.setOnAction(event -> {
+        cbVendor.setOnAction(event -> {
             Vendor v = cbVendor.getValue();
             labelBalance.setText(String.valueOf(v.getBalance()));
         });
+
         
         btnSave.setOnAction(event -> save());
         btnPost.setOnAction(event -> post());
@@ -162,10 +163,11 @@ public class PaymentVoucherController implements Initializable {
         }catch (Exception e){
             errorMessage = errorMessage.concat("Select a valid date.");
         }
-        if (no.equals("")) errorMessage += errorMessage.equals("")?"Voucher no is required.":"\nVoucher no is required.";
+        //if (no.equals("")) errorMessage += errorMessage.equals("")?"Voucher no is required.":"\nVoucher no is required.";
         if (amountString.equals("")) errorMessage += errorMessage.equals("")?"Amount is required.":"\nAmount is required.";
         if (vendor == null) errorMessage += errorMessage.equals("")?"Select a valid vendor.":"\nSelect a valid vendor.";
         if (bank == null) errorMessage += errorMessage.equals("")?"Select a valid bank.":"\nSelect a valid bank.";
+        else if (bank.isRequireRefNo() && extDocNo.equals("")) errorMessage += errorMessage.equals("")?"Reference number is required.":"\nReference number is required.";
         double amount = 0;
         try {
             amount = Double.parseDouble(amountString);
@@ -178,10 +180,10 @@ public class PaymentVoucherController implements Initializable {
             return;
         }
         Call<PaymentVoucher[]> call;
-        if (paymentVoucher == null) call = apiService.addPaymentVoucher(no, vendor.getId(), date, bank.getId(), amount, extDocNo, user.getId());
+        if (paymentVoucher == null) call = apiService.addPaymentVoucher(vendor.getId(), date, bank.getId(), amount, extDocNo, user.getId());
         else {
             no = paymentVoucher.getVoucherNo().equals(no)?null:no;
-            call = apiService.updatePaymentVoucher(paymentVoucher.getId(), no, vendor.getId(), date, bank.getId(), amount, extDocNo);
+            call = apiService.updatePaymentVoucher(paymentVoucher.getId(),vendor.getId(), date, bank.getId(), amount, extDocNo);
         }
         call.enqueue(new Callback<>() {
             @Override
@@ -189,7 +191,11 @@ public class PaymentVoucherController implements Initializable {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
                         Utility.closeWindow(vbHolder);
-                        dataInterface.updateData("The voucher has been saved", response.body());
+                        List<PaymentVoucher> filtered = new ArrayList<>();
+                        for (PaymentVoucher p: response.body()) {
+                            if (!p.isPosted()) filtered.add(p);
+                        }
+                        dataInterface.updateData("The voucher has been saved", filtered.toArray());
                     });
                 }else {
                     Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
@@ -205,21 +211,28 @@ public class PaymentVoucherController implements Initializable {
     }
     private void post(){
         assert paymentVoucher != null;
+        if (paymentVoucher == null) return;
         Call<PaymentVoucher[]> call = apiService.postPaymentVoucher(paymentVoucher.getId(), user.getId());
-        call.enqueue(new Callback<PaymentVoucher[]>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<PaymentVoucher[]> call, Response<PaymentVoucher[]> response) {
-                if (response.isSuccessful()){
-                    Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
                         Utility.closeWindow(vbHolder);
-                        dataInterface.updateData("The voucher has been posted", response.body());
+                        List<PaymentVoucher> filtered = new ArrayList<>();
+                        for (PaymentVoucher p: response.body()) {
+                            if (!p.isPosted()) filtered.add(p);
+                        }
+                        dataInterface.updateData("The voucher has been posted", filtered.toArray());
                     });
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                } else
+                    Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                            new String[]{"message"})));
             }
 
             @Override
             public void onFailure(Call<PaymentVoucher[]> call, Throwable throwable) {
-                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+                Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
             }
         });
     }
@@ -234,11 +247,12 @@ public class PaymentVoucherController implements Initializable {
                         Utility.closeWindow(vbHolder);
                         List<PaymentVoucher> filtered = new ArrayList<>();
                         for (PaymentVoucher v: response.body()) {
-                            if (!v.isPosted()) filtered.add(v);
+                            if (v.isPosted()) filtered.add(v);
                         }
                         dataInterface.updateData("The voucher has been reversed", filtered.toArray());
                     });
-                }else Platform.runLater(()->notificationPane.show(response.message()));
+                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                        new String[]{"message"})));
             }
 
             @Override
@@ -261,6 +275,8 @@ public class PaymentVoucherController implements Initializable {
         tfExtDocNo.setText(paymentVoucher.getExtDocNo());
         btnPost.setDisable(paymentVoucher.isPosted());
         dbDate.setValue(LocalDate.parse(paymentVoucher.getVoucherDate()));
+        btnSave.setDisable(paymentVoucher.isPosted());
+        if (!paymentVoucher.isPosted()) btnPost.setDisable(false);
         if (paymentVoucher.isPosted() && !paymentVoucher.isReversed()) btnReverse.setDisable(false);
     }
 }
