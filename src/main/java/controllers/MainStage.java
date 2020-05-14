@@ -11,12 +11,15 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import models.auth.User;
 import utils.SessionManager;
 
 import java.io.IOException;
@@ -33,6 +36,8 @@ import java.util.ResourceBundle;
 
 public class MainStage implements Initializable, ChangeListener {
 
+    @FXML
+    private BorderPane bpParent;
 
     @FXML
     private TreeView<String> tvMain;
@@ -46,10 +51,13 @@ public class MainStage implements Initializable, ChangeListener {
     @FXML
     private AnchorPane apCenter;
 
+    private final User user = SessionManager.INSTANCE.getUser();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         createTreeItems();
         tvMain.getSelectionModel().selectedItemProperty().addListener(this);
+        if (user != null) labelUserName.setText(user.getUserName());
     }
     //private void
     private void createTreeItems(){
@@ -129,6 +137,22 @@ public class MainStage implements Initializable, ChangeListener {
         System.out.println(selected.getValue());
         switch (selected.getValue()){
 
+            case "Dashboard":{
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    AnchorPane anchorPane = loader.load(getClass().getResource("/fxml/dashboard.fxml").openStream());
+                    anchorPane.prefWidthProperty().bind(bpParent.widthProperty().subtract(225));
+                    anchorPane.prefHeightProperty().bind(bpParent.heightProperty().subtract(80));
+                    System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
+                    List<Node> nodeList = new ArrayList<>();
+                    nodeList.add(anchorPane);
+                    apCenter.getChildren().setAll(nodeList);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+
             case "Banks":
             case "Profits and Losses":
             case "Products":
@@ -160,14 +184,13 @@ public class MainStage implements Initializable, ChangeListener {
             case "Reversed Vendor Invoices":{
                 try {
                     FXMLLoader loader = new FXMLLoader();
-                    apCenter.getChildren().clear();
                     VBox vBox = loader.load(getClass().getResource("/fxml/general_center.fxml").openStream());
-                    vBox.prefWidthProperty().bind(apCenter.widthProperty());
-                    vBox.prefHeightProperty().bind(apCenter.heightProperty());
                     System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
                     GeneralCenter generalCenter = loader.getController();
                     generalCenter.setType(selected.getValue());
                     apCenter.getChildren().setAll(vBox);
+                    vBox.prefWidthProperty().bind(bpParent.widthProperty().subtract(225));
+                    vBox.prefHeightProperty().bind(bpParent.heightProperty().subtract(80));
                 }catch (IOException e){
                     e.printStackTrace();
                 }

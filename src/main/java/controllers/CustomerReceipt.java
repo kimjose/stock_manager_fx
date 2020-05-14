@@ -166,6 +166,10 @@ public class CustomerReceipt implements Initializable {
         if (amountString.equals("")) errorMessage += errorMessage.equals("")?"Amount is required.":"\nAmount is required.";
         if (customer == null) errorMessage += errorMessage.equals("")?"Select a valid customer.":"\nSelect a valid customer.";
         if (bank == null) errorMessage += errorMessage.equals("")?"Select a valid bank.":"\nSelect a valid bank.";
+        else {
+            if (bank.isRequireRefNo() && extDocNo.equals(""))
+                errorMessage += errorMessage.equals("")?"Reference number is required for this mode of payment.":"\nReference number is required for this mode of payment.";
+        }
         double amount = 0;
         try {
             amount = Double.parseDouble(amountString);
@@ -261,7 +265,10 @@ public class CustomerReceipt implements Initializable {
         tfExtDocNo.setText(receipt.getExtDocNo());
         btnPost.setDisable(receipt.isPosted());
         dbDate.setValue(LocalDate.parse(receipt.getReceiptDate()));
-        if (!receipt.isPosted()) btnPost.setDisable(false);
+        if (!receipt.isPosted()) {
+            btnPost.setDisable(false);
+            btnSave.setDisable(true);
+        }
         if (receipt.isPosted() && !receipt.isReversed()) btnReverse.setDisable(false);
     }
 }

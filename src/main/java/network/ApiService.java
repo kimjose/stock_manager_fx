@@ -1,5 +1,6 @@
 package network;
 
+import models.DashboardData;
 import models.auth.User;
 import models.customers.Customer;
 import models.customers.Invoice;
@@ -22,6 +23,10 @@ public interface ApiService {
     /**
      * GET requests
      * ***/
+
+    @GET("dashboard_data")
+    Call<DashboardData> dashboardData();
+
     @GET("brand")
     Call<Brand[]> brands();
 

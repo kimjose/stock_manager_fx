@@ -21,9 +21,9 @@ public class Main extends Application {
         login();
         Parent root = FXMLLoader.load(getClass().getResource("fxml/main_stage.fxml"));
         primaryStage.setTitle("Inventory Manager");
-        primaryStage.setScene(new Scene(root, 1020, 700));
-        primaryStage.setMinHeight(600);
+        primaryStage.setMinHeight(550);
         primaryStage.setMinWidth(900);
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
     private void login(){

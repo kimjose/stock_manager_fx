@@ -11,6 +11,9 @@
     -fx-background-color: transparent;
     -fx-color: black;
 }
+.dashboard .parent{
+	-fx-background-color: #FFFDD0; 
+}
 .tree-cell {
 	-fx-background-color: #696969;
 	-fx-text-fill:#ffffff;
@@ -28,8 +31,9 @@
 }
 .button:hover{
 	-fx-cursor: hand;
-	-fx-background-color: #696969 !important;
+	-fx-background-color: #ADD8E6 !important;
 	-fx-text-fill:#ffffff;
+    -fx-border-color: white;
 }
 /*.tree-view {
 	-fx-background-color:  #4338AE;

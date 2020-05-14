@@ -4,6 +4,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.LinesInterface;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Paint;
 import network.ApiService;
 import network.RetrofitBuilder;
 import retrofit2.Call;
@@ -94,7 +95,7 @@ public class InvoiceLine {
     public Button getRemoveLine(){
         Button deleteBtn = new Button("Remove");
         FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.TRASH);
-        icon.setStyle("-fx-fill: #d32f2f;");
+        icon.setFill(Paint.valueOf("#DC143C"));
         icon.setSize("16.0");
         deleteBtn.setGraphic(icon);
         deleteBtn.setOnAction(event -> {

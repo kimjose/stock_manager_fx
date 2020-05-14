@@ -1,5 +1,7 @@
 package controllers;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.HomeDataInterface;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -10,13 +12,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -84,6 +84,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
         Platform.runLater(this::setupColumns);
         Platform.runLater(this::loadData);
+        Platform.runLater(this::reportBtns);
         tvGeneral.prefWidthProperty().bind(vbParent.widthProperty());
         tvGeneral.prefHeightProperty().bind(vbParent.heightProperty().subtract(140));
 
@@ -177,7 +178,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Banks":{//'name', 'branch', 'accountNo','enabled','addedBy','requireRefNo',
+            case "Banks": {//'name', 'branch', 'accountNo','enabled','addedBy','requireRefNo',
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Id", "id", 0.15),
@@ -442,6 +443,22 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         }
     }
 
+    private void reportBtns(){
+        switch (type){
+            case "All Customers":{
+                CustomButton customButton = new CustomButton("Customer Report", new FontAwesomeIconView(FontAwesomeIcon.FILE_PDF_ALT));
+                customButton.setOnAction(event -> {
+                    Object o = tvGeneral.getSelectionModel().getSelectedItem();
+                    if (o == null){
+                        createNotification(1, "You must select a customer first.");return;
+                    }
+                    Customer c = (Customer) o;
+                });
+                hbReports.getChildren().add(customButton);
+            }
+        }
+    }
+
     /**
      * This method fetches data from the server and loads it to a table
      ***/
@@ -535,7 +552,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Product Groups":{
+            case "Product Groups": {
                 Call<ProductGroup[]> call = apiService.productGroups();
                 call.enqueue(new Callback<>() {
                     @Override
@@ -560,7 +577,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     public void onResponse(Call<Unpacking[]> call, Response<Unpacking[]> response) {
                         if (response.isSuccessful()) {
                             List<Unpacking> filtered = new ArrayList<>();
-                            for (Unpacking u: response.body() ) {
+                            for (Unpacking u : response.body()) {
                                 switch (type) {
                                     case "Unpackings":
                                         if (!u.isPosted()) filtered.add(u);
@@ -574,8 +591,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                                 }
                             }
                             setData(filtered.toArray());
-                        }
-                        else createNotification(-1, response.message());
+                        } else createNotification(-1, response.message());
                     }
 
                     @Override
@@ -585,7 +601,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Banks":{
+            case "Banks": {
                 Call<Bank[]> call = apiService.banks();
                 call.enqueue(new Callback<>() {
                     @Override
@@ -619,7 +635,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             }
             case "Express Sales":
             case "Posted Express Sales":
-            case "Reversed Express Sales":{
+            case "Reversed Express Sales": {
                 Call<ExpressSale[]> call = apiService.expressSales();
                 call.enqueue(new Callback<>() {
                     @Override
@@ -640,7 +656,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                                 }
                             }
                             setData(filtered.toArray());
-                        }else {
+                        } else {
                             createNotification(-1, response.message());
                         }
                     }
@@ -1056,7 +1072,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.show();
                     break;
                 }
-                case "Banks":{
+                case "Banks": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_bank.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox);
@@ -1070,7 +1086,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.show();
                     break;
                 }
-                case "Unpackings":{
+                case "Unpackings": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_unpacking.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox);
@@ -1100,7 +1116,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     break;
                 }
-                case "Express Sales":{
+                case "Express Sales": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/express_sale.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 730, 460);
@@ -1112,7 +1128,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setResizable(false);
                     stage.setTitle("Create Sale");
                     stage.show();
-                    
+
                     break;
                 }
                 case "All Customers": {
@@ -1315,7 +1331,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     break;
                 }
-                case "Product Groups":{
+                case "Product Groups": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_product_group.fxml")));
                     VBox vBox = loader.load();//, 870, 370
                     Scene scene = new Scene(vBox);
@@ -1331,7 +1347,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     break;
                 }
-                case "Banks":{
+                case "Banks": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_bank.fxml")));
                     VBox vBox = loader.load();//, 870, 370
                     Scene scene = new Scene(vBox);
@@ -1349,7 +1365,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }
                 case "Unpackings":
                 case "Posted Unpackings":
-                case "Reversed Unpackings":{
+                case "Reversed Unpackings": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_unpacking.fxml")));
                     VBox vBox = loader.load();//, 870, 370
                     Scene scene = new Scene(vBox);
@@ -1383,7 +1399,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }
                 case "Express Sales":
                 case "Posted Express Sales":
-                case "Reversed Express Sales":{
+                case "Reversed Express Sales": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/express_sale.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 730, 460);
@@ -1617,7 +1633,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Product Groups":{
+            case "Product Groups": {
                 ProductGroup group = (ProductGroup) object;
                 Call<ProductGroup[]> call = apiService.deleteGroup(group.getId());
                 call.enqueue(new Callback<>() {
@@ -1639,7 +1655,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                 break;
             }
-            case "Banks":{
+            case "Banks": {
                 Bank bank = (Bank) object;
                 Call<Bank[]> call = apiService.deleteBank(bank.getId());
                 call.enqueue(new Callback<>() {
@@ -1660,25 +1676,25 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             }
             case "Unpackings":
             case "Posted Unpackings":
-            case "Reversed Unpackings":{
+            case "Reversed Unpackings": {
                 Unpacking unpacking = (Unpacking) object;
                 Call<Unpacking[]> call = apiService.deleteUnpacking(unpacking.getId());
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<Unpacking[]> call, Response<Unpacking[]> response) {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             List<Unpacking> filtered = new ArrayList<>();
-                            for (Unpacking u:response.body()) {
-                                switch(type) {
-                                    case "Unpackings":{
+                            for (Unpacking u : response.body()) {
+                                switch (type) {
+                                    case "Unpackings": {
                                         if (!u.isPosted()) filtered.add(u);
                                         break;
                                     }
-                                    case "Posted Unpackings":{
+                                    case "Posted Unpackings": {
                                         if (u.isPosted() && !u.isReversed()) filtered.add(u);
                                         break;
                                     }
-                                    case "Reversed Unpackings":{
+                                    case "Reversed Unpackings": {
                                         if (u.isReversed()) filtered.add(u);
                                         break;
                                     }
@@ -1686,7 +1702,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                             }
                             setData(filtered.toArray());
 
-                        }else createNotification(-1, response.message());
+                        } else createNotification(-1, response.message());
                     }
 
                     @Override
@@ -1718,7 +1734,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             }
             case "Express Sales":
             case "Posted Express Sales":
-            case "Reversed Express Sales":{
+            case "Reversed Express Sales": {
                 ExpressSale sale = (ExpressSale) object;
                 Call<ExpressSale[]> call = apiService.deleteSale(sale.getId());
                 call.enqueue(new Callback<>() {
@@ -1889,7 +1905,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
     public void setData(Object[] data) {
         this.data = data;
-        Platform.runLater(()->tvGeneral.setItems(FXCollections.observableArrayList(Arrays.asList(data))));
+        Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(Arrays.asList(data))));
     }
 
     private TableColumn[] createColumns(MyTableColumn[] myTableColumns) {
@@ -1926,5 +1942,17 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
         });
 
+    }
+
+    public static class CustomButton extends Button {
+        public CustomButton(String text, FontAwesomeIconView icon) {
+            super(text);
+            icon.setFill(Paint.valueOf("#800000"));
+            icon.setSize("18.0");
+            setGraphic(icon);
+            setStyle("-fx-background-color: transparent;");
+            setPrefHeight(76);
+            setContentDisplay(ContentDisplay.TOP);
+        }
     }
 }
