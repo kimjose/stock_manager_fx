@@ -1,6 +1,8 @@
 package models.products;
 
-public class Warehouse {
+import models.SuperModel;
+
+public class Warehouse implements SuperModel {
 
     //'name', 'isActive', 'location','addedBy'
 
@@ -34,6 +36,11 @@ public class Warehouse {
 
     @Override
     public String toString() {
+        return name;
+    }
+
+    @Override
+    public String getSearchString() {
         return name;
     }
 }

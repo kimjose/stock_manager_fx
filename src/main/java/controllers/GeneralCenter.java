@@ -1,16 +1,20 @@
 package controllers;
 
+import com.google.gson.Gson;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.HomeDataInterface;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,6 +25,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.MyTableColumn;
+import models.SuperModel;
 import models.customers.Customer;
 import models.customers.Receipt;
 import models.finance.Bank;
@@ -30,12 +35,16 @@ import models.vendors.PaymentVoucher;
 import models.vendors.Vendor;
 import network.ApiService;
 import network.RetrofitBuilder;
+import org.controlsfx.control.MaskerPane;
 import org.controlsfx.control.Notifications;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import utils.Utility;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -73,11 +82,16 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
     private TextField tfSearch;
 
     @FXML
-    private TableView<Object> tvGeneral;
+    private TableView<SuperModel> tvGeneral;
+
+    @FXML
+    private MaskerPane maskerPane;
 
     private String type;
-    private Object[] data;
+    private SuperModel[] data;
     private ApiService apiService;
+    private Separator separator = new Separator(Orientation.VERTICAL);
+    private final Gson gson = new Gson();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -85,10 +99,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         Platform.runLater(this::setupColumns);
         Platform.runLater(this::loadData);
         Platform.runLater(this::reportBtns);
+        Platform.runLater(this::firstTabBtns);
         tvGeneral.prefWidthProperty().bind(vbParent.widthProperty());
         tvGeneral.prefHeightProperty().bind(vbParent.heightProperty().subtract(140));
 
         apiService = RetrofitBuilder.createService(ApiService.class);
+        tfSearch.textProperty().addListener((observable, oldValue, newValue) -> searchData(newValue));
 
         btnAdd.setOnAction(event -> addObject());
         btnEdit.setOnAction(event -> {
@@ -106,8 +122,31 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
     @Override
     public void updateData(String message, Object[] data) {
-        createNotification(0, message);
-        setData(data);
+        createNotification(data==null?1:0, message);
+        if (data != null) setData((SuperModel[]) data);
+    }
+
+    @Override
+    public void sellProduct(Product product) {
+        if (product.getQuantity() <= 0) {
+            createNotification(1, "There is not enough products.");return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/sell_product.fxml")));
+            VBox vBox = loader.load();
+            Scene scene = new Scene(vBox);
+            SellProduct sellProduct = loader.getController();
+            sellProduct.setDataInterface(this);
+            sellProduct.setProduct(product);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.showAndWait();
+            stage.setResizable(false);
+            loadData();
+        } catch (Exception e){
+            e.printStackTrace();
+            createNotification(-1, "We are unable to load the scene.");
+        }
     }
 
     private void setupColumns() {
@@ -121,13 +160,17 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 Platform.runLater(() -> {
                     tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
-                            new MyTableColumn("Product Name", "name", 0.15),
+                            new MyTableColumn("Product Name", "name", 0.25),
                             new MyTableColumn("SKU Code", "skuCode", 0.25),
-                            new MyTableColumn("Brand", "brand", 0.10),
-                            new MyTableColumn("Category", "category", 0.20),
-                            new MyTableColumn("Quantity", "quantity", 0.15),
-                            new MyTableColumn("Unit of Measure", "uom", 0.15),
+                            new MyTableColumn("UPC Code", "upcCode", 0.25),
+                            new MyTableColumn("Quantity", "quantity", 0.10),
                     }));
+                    TableColumn sellCol = new TableColumn<>("Sell");
+                    sellCol.setCellValueFactory(new PropertyValueFactory<>("sellButton"));
+                    sellCol.setPrefWidth(80);
+                    sellCol.setResizable(false);
+                    sellCol.setReorderable(false);
+                    tvGeneral.getColumns().add(sellCol);
                 });
                 break;
             }
@@ -234,7 +277,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Express Sales": {
+            case "Sales": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Sale No", "saleNo", 0.15),
@@ -245,7 +288,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Posted Express Sales": {
+            case "Posted Sales": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Sale No", "saleNo", 0.15),
@@ -257,7 +300,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 }));
                 break;
             }
-            case "Reversed Express Sales": {
+            case "Reversed Sales": {
                 tvGeneral.getColumns().removeAll(tvGeneral.getColumns());
                 tvGeneral.getColumns().addAll(createColumns(new MyTableColumn[]{
                         new MyTableColumn("Sale No", "saleNo", 0.10),
@@ -443,26 +486,174 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         }
     }
 
-    private void reportBtns(){
-        switch (type){
-            case "All Customers":{
-                CustomButton customButton = new CustomButton("Customer Report", new FontAwesomeIconView(FontAwesomeIcon.FILE_PDF_ALT));
+    private void reportBtns() {
+        switch (type) {
+            case "All Customers": {
+                FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.FILE_PDF_ALT);
+                icon.setFill(Paint.valueOf("#800000"));
+                CustomButton customButton = new CustomButton("Customer Report", icon);
                 customButton.setOnAction(event -> {
                     Object o = tvGeneral.getSelectionModel().getSelectedItem();
-                    if (o == null){
-                        createNotification(1, "You must select a customer first.");return;
+                    if (o == null) {
+                        createNotification(1, "You must select a customer first.");
+                        return;
                     }
                     Customer c = (Customer) o;
                 });
                 hbReports.getChildren().add(customButton);
             }
+            case "Posted Sales": {
+                FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.FILE_PDF_ALT);
+                icon.setFill(Paint.valueOf("#800000"));
+                CustomButton customButton = new CustomButton("Sale Report", icon);
+                customButton.setOnAction(event -> {
+                    Object o = tvGeneral.getSelectionModel().getSelectedItem();
+                    if (o == null) {
+                        createNotification(1, "You must select a sale first.");
+                        return;
+                    }
+                    ExpressSale sale = (ExpressSale) o;
+                    HashMap<String, Object> params = new LinkedHashMap<>();
+                    params.put("saleNo", sale.getSaleNo());
+                    params.put("saleDate", sale.getSaleDate());
+                    params.put("saleTotal", "Kshs " + sale.getTotalString());
+                    Node n = Utility.showProgressBar("Getting report...");
+                    Call<Object[]> call = apiService.saleReport(sale.getId());
+                    call.enqueue(new Callback<>() {
+                        @Override
+                        public void onResponse(Call<Object[]> call, Response<Object[]> response) {
+                            Platform.runLater(() -> {
+                                Utility.closeWindow(n);
+                                if (response.isSuccessful())
+                                    Utility.showReport("sale_report.jasper", params, gson.toJson(response.body()));
+                                else createNotification(-1, response.message());
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Call<Object[]> call, Throwable throwable) {
+                            Utility.closeWindow(n);
+                            createNotification(-1, throwable.getMessage());
+                        }
+                    });
+                });
+                CustomButton salesReport = new CustomButton("General Report", icon);
+                salesReport.setOnAction(event -> {
+                    Dialog dialog = new Dialog<>();
+                    DialogPane pane = null;
+                    try {
+                        pane = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/date_filter.fxml"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    ButtonType nextButtonType = new ButtonType("Go", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    pane.getButtonTypes().addAll(nextButtonType, cancelButtonType);
+                    Node nextButton = pane.lookupButton(nextButtonType);
+                    Node cancelButton = pane.lookupButton(cancelButtonType);
+                    nextButton.setStyle("-fx-background-color:#19D019;");
+                    cancelButton.setStyle("-fx-background-color:#f80707; -fx-text-fill: white;");
+                    VBox parent = (VBox) pane.getContent();
+                    DatePicker startDatePicker = (DatePicker) ((HBox)parent.getChildren().get(1)).getChildren().get(1);
+                    startDatePicker.setValue(LocalDate.now());
+                    DatePicker endDatePicker = (DatePicker) ((HBox)parent.getChildren().get(2)).getChildren().get(1);
+                    endDatePicker.setValue(LocalDate.now());
+                    nextButton.addEventFilter(ActionEvent.ACTION, event1 -> {
+                        try {
+                            String startDate = startDatePicker.getValue().toString();
+                            String endDate = endDatePicker.getValue().toString();
+                            if (startDate.equals("")||endDate.equals("")) throw new Exception("Invalid date values");
+                            dialog.close();
+
+                            Node n = Utility.showProgressBar("Getting report...");
+                            Call<Object[]> call = apiService.salesReport(startDate, endDate);
+                            call.enqueue(new Callback<>() {
+                                @Override
+                                public void onResponse(Call<Object[]> call, Response<Object[]> response) {
+                                    Platform.runLater(() -> {
+                                        if (response.isSuccessful()) {
+                                            Utility.closeWindow(n);
+                                            if (response.body().length == 0){
+                                                createNotification(-1, "No data found for this period.");
+                                            }
+                                            Utility.showReport("sales_report.jasper", null, gson.toJson(response.body()));
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(Call<Object[]> call, Throwable throwable) {
+                                    Platform.runLater(() -> createNotification(-1, throwable.getMessage()));
+                                }
+                            });
+
+                        } catch (Exception e){
+                            e.printStackTrace();
+                            dialog.close();
+                            createNotification(-1, "We are unable to proceed with your request.");
+                        }
+                    });
+                    cancelButton.addEventFilter(ActionEvent.ACTION, event1 -> dialog.close());
+                    dialog.setDialogPane(pane);
+                    dialog.show();
+                });
+                hbReports.getChildren().addAll(customButton, separator, salesReport);
+            }
         }
+    }
+
+    private void firstTabBtns() {
+        switch (type) {
+            case "Products":{
+                FontAwesomeIconView fontAwesomeIconView = new FontAwesomeIconView(FontAwesomeIcon.PLUS_SQUARE_ALT);
+                fontAwesomeIconView.setFill(Paint.valueOf("#19D019"));
+                CustomButton customButton = new CustomButton("Add Stock", fontAwesomeIconView);
+                customButton.setOnAction(event -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/add_to_stock.fxml"));
+                        VBox vBox = loader.load();
+                        AddToStock addToStock = loader.getController();
+                        addToStock.setDataInterface(this);
+                        Scene scene = new Scene(vBox);
+                        Stage stage = new Stage();
+                        stage.setScene(scene);
+                        stage.setResizable(false);
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setTitle("Add To Stock");
+                        stage.show();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                        createNotification(-1, "Error encountered. Consult ICT.");
+                    }
+                });
+                hbActions.getChildren().addAll(customButton, separator);
+            }
+        }
+    }
+
+
+    /**
+     * This method searches the table data
+     *
+     * @param searchString string to be searched
+     **/
+    private void searchData(String searchString) {
+        if (searchString.trim().equals("")) {
+            tvGeneral.setItems(FXCollections.observableArrayList(data));
+            return;
+        }
+        List<SuperModel> filtered = new ArrayList<>();
+        for (SuperModel model : data) {
+            if (model.getSearchString().contains(searchString)) filtered.add(model);
+        }
+        tvGeneral.setItems(FXCollections.observableArrayList(filtered));
     }
 
     /**
      * This method fetches data from the server and loads it to a table
      ***/
     private void loadData() {
+        maskerPane.setVisible(true);
         assert type != null;
         switch (type) {
             //for shop
@@ -472,10 +663,14 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<Product[]> call, Response<Product[]> response) {
                         if (response.isSuccessful()) {
+                            for (Product p: response.body()) {
+                                p.setDataInterface(GeneralCenter.this);
+                            }
                             setData(response.body());
                         } else {
                             tvGeneral.setItems(FXCollections.emptyObservableList());
                         }
+                        Platform.runLater(() -> maskerPane.setVisible(false));
                     }
 
                     @Override
@@ -576,6 +771,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<Unpacking[]> call, Response<Unpacking[]> response) {
                         if (response.isSuccessful()) {
+                            Unpacking[] unpackings = {};
                             List<Unpacking> filtered = new ArrayList<>();
                             for (Unpacking u : response.body()) {
                                 switch (type) {
@@ -590,7 +786,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                                         break;
                                 }
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(unpackings));
                         } else createNotification(-1, response.message());
                     }
 
@@ -608,6 +804,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     public void onResponse(Call<Bank[]> call, Response<Bank[]> response) {
                         if (response.isSuccessful()) setData(response.body());
                         else createNotification(-1, response.message());
+                        Platform.runLater(() -> maskerPane.setVisible(false));
                     }
 
                     @Override
@@ -633,32 +830,34 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Express Sales":
-            case "Posted Express Sales":
-            case "Reversed Express Sales": {
+            case "Sales":
+            case "Posted Sales":
+            case "Reversed Sales": {
                 Call<ExpressSale[]> call = apiService.expressSales();
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<ExpressSale[]> call, Response<ExpressSale[]> response) {
                         if (response.isSuccessful()) {
+                            ExpressSale[] sales = {};
                             List<ExpressSale> filtered = new ArrayList<>();
                             for (ExpressSale sale : response.body()) {
                                 switch (type) {
-                                    case "Express Sales":
+                                    case "Sales":
                                         if (!sale.isPosted()) filtered.add(sale);
                                         break;
-                                    case "Posted Express Sales":
+                                    case "Posted Sales":
                                         if (sale.isPosted() && !sale.isReversed()) filtered.add(sale);
                                         break;
-                                    case "Reversed Express Sales":
+                                    case "Reversed Sales":
                                         if (sale.isReversed()) filtered.add(sale);
                                         break;
                                 }
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(sales));
                         } else {
                             createNotification(-1, response.message());
                         }
+                        Platform.runLater(() -> maskerPane.setVisible(false));
                     }
 
                     @Override
@@ -695,11 +894,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
                         if (response.isSuccessful()) {
+                            Invoice[] invoices = {};
                             List<Invoice> filtered = new ArrayList<>();
                             for (Invoice i : response.body()) {
                                 if (!i.isPosted()) filtered.add(i);
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(invoices));
                         } else createNotification(-1, response.message());
                     }
 
@@ -716,11 +916,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
                         if (response.isSuccessful()) {
+                            Invoice[] invoices = {};
                             List<Invoice> filtered = new ArrayList<>();
                             for (Invoice i : response.body()) {
                                 if (i.isPosted() && !i.isReversed()) filtered.add(i);
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(invoices));
                         } else createNotification(-1, response.message());
                     }
 
@@ -737,11 +938,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
                         if (response.isSuccessful()) {
+                            Invoice[] invoices = {};
                             List<Invoice> filtered = new ArrayList<>();
                             for (Invoice i : response.body()) {
                                 if (i.isPosted() && i.isReversed()) filtered.add(i);
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(invoices));
                         } else createNotification(-1, response.message());
                     }
 
@@ -843,11 +1045,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
                         if (response.isSuccessful()) {
+                            models.customers.Invoice[] invoices = {};
                             List<models.customers.Invoice> filtered = new ArrayList<>();
                             for (models.customers.Invoice i : response.body()) {
                                 if (!i.isPosted()) filtered.add(i);
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(invoices));
                         } else {
                             createNotification(-1, response.message());
                         }
@@ -866,11 +1069,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
                         if (response.isSuccessful()) {
+                            models.customers.Invoice[] invoices = {};
                             List<models.customers.Invoice> filtered = new ArrayList<>();
                             for (models.customers.Invoice i : response.body()) {
                                 if (i.isPosted() && !i.isReversed()) filtered.add(i);
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(invoices));
                         } else {
                             createNotification(-1, response.message());
                         }
@@ -889,11 +1093,12 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<models.customers.Invoice[]> call, Response<models.customers.Invoice[]> response) {
                         if (response.isSuccessful()) {
+                            models.customers.Invoice[] invoices = {};
                             List<models.customers.Invoice> filtered = new ArrayList<>();
                             for (models.customers.Invoice i : response.body()) {
                                 if (i.isReversed()) filtered.add(i);
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(invoices));
                         } else {
                             createNotification(-1, response.message());
                         }
@@ -1116,7 +1321,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     break;
                 }
-                case "Express Sales": {
+                case "Sales": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/express_sale.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 730, 460);
@@ -1397,9 +1602,9 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     break;
                 }
-                case "Express Sales":
-                case "Posted Express Sales":
-                case "Reversed Express Sales": {
+                case "Sales":
+                case "Posted Sales":
+                case "Reversed Sales": {
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/express_sale.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox, 730, 460);
@@ -1683,6 +1888,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     @Override
                     public void onResponse(Call<Unpacking[]> call, Response<Unpacking[]> response) {
                         if (response.isSuccessful()) {
+                            Unpacking[] unpackings = {};
                             List<Unpacking> filtered = new ArrayList<>();
                             for (Unpacking u : response.body()) {
                                 switch (type) {
@@ -1700,7 +1906,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                                     }
                                 }
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(unpackings));
 
                         } else createNotification(-1, response.message());
                     }
@@ -1732,30 +1938,31 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                 });
                 break;
             }
-            case "Express Sales":
-            case "Posted Express Sales":
-            case "Reversed Express Sales": {
+            case "Sales":
+            case "Posted Sales":
+            case "Reversed Sales": {
                 ExpressSale sale = (ExpressSale) object;
                 Call<ExpressSale[]> call = apiService.deleteSale(sale.getId());
                 call.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<ExpressSale[]> call, Response<ExpressSale[]> response) {
                         if (response.isSuccessful()) {
+                            ExpressSale[] sales = {};
                             List<ExpressSale> filtered = new ArrayList<>();
                             for (ExpressSale sale : response.body()) {
                                 switch (type) {
-                                    case "Express Sales":
+                                    case "Sales":
                                         if (!sale.isPosted()) filtered.add(sale);
                                         break;
-                                    case "Posted Express Sales":
+                                    case "Posted Sales":
                                         if (sale.isPosted() && !sale.isReversed()) filtered.add(sale);
                                         break;
-                                    case "Reversed Express Sales":
+                                    case "Reversed Sales":
                                         if (sale.isReversed()) filtered.add(sale);
                                         break;
                                 }
                             }
-                            setData(filtered.toArray());
+                            setData(filtered.toArray(sales));
                         } else {
                             createNotification(-1, response.message());
                         }
@@ -1903,16 +2110,16 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         return type;
     }
 
-    public void setData(Object[] data) {
+    public void setData(SuperModel[] data) {
         this.data = data;
         Platform.runLater(() -> tvGeneral.setItems(FXCollections.observableArrayList(Arrays.asList(data))));
     }
 
     private TableColumn[] createColumns(MyTableColumn[] myTableColumns) {
         TableColumn[] tableColumns = new TableColumn[]{};
-        List<TableColumn<String, String>> tableColumnList = new ArrayList<>();
+        List<TableColumn<String, Object>> tableColumnList = new ArrayList<>();
         for (MyTableColumn m : myTableColumns) {
-            TableColumn<String, String> tableColumn = new TableColumn<>(m.getName());
+            TableColumn<String, Object> tableColumn = new TableColumn<>(m.getName());
             tableColumn.setCellValueFactory(new PropertyValueFactory<>(m.getProperty()));
             tableColumn.prefWidthProperty().bind(tvGeneral.prefWidthProperty().multiply(m.getMultiplier()));
             tableColumn.setResizable(true);
@@ -1947,7 +2154,6 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
     public static class CustomButton extends Button {
         public CustomButton(String text, FontAwesomeIconView icon) {
             super(text);
-            icon.setFill(Paint.valueOf("#800000"));
             icon.setSize("18.0");
             setGraphic(icon);
             setStyle("-fx-background-color: transparent;");

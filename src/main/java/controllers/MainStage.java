@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -57,7 +58,22 @@ public class MainStage implements Initializable, ChangeListener {
     public void initialize(URL location, ResourceBundle resources) {
         createTreeItems();
         tvMain.getSelectionModel().selectedItemProperty().addListener(this);
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            AnchorPane anchorPane = loader.load(getClass().getResource("/fxml/dashboard.fxml").openStream());
+            anchorPane.prefWidthProperty().bind(bpParent.widthProperty().subtract(225));
+            anchorPane.prefHeightProperty().bind(bpParent.heightProperty().subtract(80));
+            System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
+            List<Node> nodeList = new ArrayList<>();
+            nodeList.add(anchorPane);
+            apCenter.getChildren().setAll(nodeList);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
         if (user != null) labelUserName.setText(user.getUserName());
+        faivExit.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            System.exit(0);
+        });
     }
     //private void
     private void createTreeItems(){
@@ -83,20 +99,10 @@ public class MainStage implements Initializable, ChangeListener {
         financeTree.getChildren().addAll(banksTI, profitNLossTI);
 
         TreeItem<String> productsTree = new TreeItem<>("Products");
-        TreeItem<String> brandsTI = new TreeItem<>("Brands");
-        TreeItem<String> categoriesTI = new TreeItem<>("Categories");
-        TreeItem<String> uomTI = new TreeItem<>("Units of Measure");
-        TreeItem<String> warehouseTI = new TreeItem<>("Warehouses");
-        TreeItem<String> productGroupsTI = new TreeItem<>("Product Groups");
-        TreeItem<String> unpackingTI = new TreeItem<>("Unpackings");
-        TreeItem<String> postedUnpackingTI = new TreeItem<>("Posted Unpackings");
-        TreeItem<String> reversedUnpackingTI = new TreeItem<>("Reversed Unpackings");
-        TreeItem<String> serviceTI = new TreeItem<>("Services");
-        TreeItem<String> eSaleTI = new TreeItem<>("Express Sales");
-        TreeItem<String> peSaleTI = new TreeItem<>("Posted Express Sales");
-        TreeItem<String> reSaleTI = new TreeItem<>("Reversed Express Sales");
-        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI,productGroupsTI, unpackingTI,
-                postedUnpackingTI, reversedUnpackingTI, serviceTI, eSaleTI, peSaleTI, reSaleTI);
+        TreeItem<String> eSaleTI = new TreeItem<>("Sales");
+        TreeItem<String> peSaleTI = new TreeItem<>("Posted Sales");
+        TreeItem<String> reSaleTI = new TreeItem<>("Reversed Sales");
+        shopTree.getChildren().addAll(productsTree, eSaleTI, peSaleTI, reSaleTI);
 
         TreeItem<String> allVendors = new TreeItem<>("All Vendors");
         TreeItem<String> vInvoiceTree = new TreeItem<>("Vendor Invoices");
@@ -122,8 +128,8 @@ public class MainStage implements Initializable, ChangeListener {
         treeItemList.add(homeTree);
         treeItemList.add(shopTree);
         treeItemList.add(financeTree);
-        treeItemList.add(vendorsTree);
-        treeItemList.add(customerTree);
+        //treeItemList.add(vendorsTree);
+        //treeItemList.add(customerTree);
         TreeItem<String> rootItem = new TreeItem<>("Inventory Manager");
         rootItem.getChildren().addAll(treeItemList);
         rootItem.setExpanded(true);
@@ -165,9 +171,9 @@ public class MainStage implements Initializable, ChangeListener {
             case "Posted Unpackings":
             case "Reversed Unpackings":
             case "Services":
-            case "Express Sales":
-            case "Posted Express Sales":
-            case "Reversed Express Sales":
+            case "Sales":
+            case "Posted Sales":
+            case "Reversed Sales":
             case "All Customers":
             case "Customer Invoices":
             case "Posted Customer Invoices":

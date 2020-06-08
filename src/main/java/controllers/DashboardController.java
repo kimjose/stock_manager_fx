@@ -10,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import models.DashboardData;
 import network.ApiService;
@@ -74,9 +73,15 @@ public class DashboardController implements Initializable {
                         XYChart.Series<String, Double> series = new XYChart.Series<>();
                         series.setName("Daily Sales");
                         for (DashboardData.ChartData data : chartData) {
-                            series.getData().add(new XYChart.Data<>(data.getDate(), data.getSales()));
+                            series.getData().add(new XYChart.Data<>(data.getName(), data.getValue()));
                         }
-                        lineChart.getData().setAll(series);
+                        DashboardData.ChartData[] pnls = dashboardData.getPnls();
+                        XYChart.Series<String, Double> profits = new XYChart.Series<>();
+                        profits.setName("Profits/Losses");
+                        for (DashboardData.ChartData pnl : pnls ) {
+                            profits.getData().add(new XYChart.Data<>(pnl.getName(), pnl.getValue()));
+                        }
+                        lineChart.getData().setAll(series, profits);
                         labelTodaySale.setText(dashboardData.getTodaySalesString());
                         labelTotalSale.setText(dashboardData.getTotalSalesString());
                         labelCustomerBalance.setText(dashboardData.getCustomerBalanceString());

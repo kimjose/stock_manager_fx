@@ -1,10 +1,11 @@
 package models.vendors;
 
+import models.SuperModel;
 import models.finance.Bank;
 import utils.Utility;
 
 
-public class PaymentVoucher {
+public class PaymentVoucher implements SuperModel {
 
     private Vendor vendor;
     private String description;
@@ -111,5 +112,10 @@ public class PaymentVoucher {
 
     public void setBank(Bank bank) {
         this.bank = bank;
+    }
+
+    @Override
+    public String getSearchString() {
+        return voucherNo;
     }
 }

@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import org.controlsfx.control.NotificationPane?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
 
-
-<VBox fx:id="vbParent" prefHeight="367.0" prefWidth="863.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateProduct">
+<VBox fx:id="vbParent" prefHeight="331.0" prefWidth="863.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateProduct">
    <children>
       <NotificationPane fx:id="notificationPane" />
-      <HBox fx:id="hbHolder" prefHeight="293.0" prefWidth="816.0" spacing="3.0">
+      <HBox fx:id="hbHolder" prefHeight="268.0" prefWidth="859.0" spacing="3.0">
          <children>
             <VBox prefHeight="404.0" prefWidth="325.0" spacing="2.0">
                <children>
@@ -34,19 +27,7 @@
                      </children>
                   </HBox>
                   <Label prefHeight="31.0" prefWidth="92.0" text="Description" />
-                  <TextArea fx:id="taDescription" prefHeight="105.0" prefWidth="388.0" />
-                  <HBox>
-                     <children>
-                        <Label prefHeight="31.0" prefWidth="84.0" text="Brand" />
-                        <ComboBox fx:id="cbBrand" prefHeight="25.0" prefWidth="229.0" promptText="Select Brand" />
-                     </children>
-                  </HBox>
-                  <HBox>
-                     <children>
-                        <Label prefHeight="31.0" prefWidth="85.0" text="Category" />
-                        <ComboBox fx:id="cbCategory" prefHeight="25.0" prefWidth="229.0" promptText="Select Category" />
-                     </children>
-                  </HBox>
+                  <TextArea fx:id="taDescription" prefHeight="139.0" prefWidth="325.0" />
                </children>
                <HBox.margin>
                   <Insets left="4.0" />
@@ -55,21 +36,26 @@
             <Separator orientation="VERTICAL" prefHeight="200.0" />
             <VBox prefHeight="404.0" prefWidth="285.0" spacing="2.0">
                <children>
-                  <Label prefHeight="31.0" prefWidth="137.0" text="Unit Of Measure" />
-                  <ComboBox fx:id="cbUOM" prefHeight="25.0" prefWidth="268.0" promptText="Select Unit of measure" />
-                  <Separator prefWidth="200.0" />
                   <Label prefHeight="31.0" prefWidth="109.0" text="SKU Code" />
                   <TextField fx:id="tfSkuCode" promptText="SKU Code" />
                   <Separator prefWidth="200.0" />
                   <Label prefHeight="31.0" prefWidth="92.0" text="UPC Code" />
                   <TextField fx:id="tfUpcCode" promptText="UPC Code" />
                   <Separator prefWidth="200.0" />
-                  <Label prefHeight="31.0" prefWidth="92.0" text="Unit Price" />
-                  <TextField fx:id="tfPrice" promptText="Unit Price" />
+                  <Label prefHeight="31.0" prefWidth="92.0" text="Buying Price" />
+                  <TextField fx:id="tfPrice" promptText="Buying Price" />
+                  <Separator prefWidth="200.0" />
+                  <Label prefHeight="31.0" prefWidth="92.0" text="Selling Price" />
+                  <TextField fx:id="tfSellingPrice" promptText="Selling Price" />
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <ImageView fx:id="ivPhoto" fitHeight="196.0" fitWidth="228.0" pickOnBounds="true" preserveRatio="true" />
+            <VBox>
+               <children>
+                  <Label prefHeight="31.0" prefWidth="200.0" text="Right click for options." />
+                  <ImageView fx:id="ivPhoto" fitHeight="218.0" fitWidth="228.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </VBox>
          </children>
          <padding>
             <Insets bottom="4.0" top="4.0" />
@@ -77,12 +63,12 @@
       </HBox>
       <HBox prefHeight="59.0" prefWidth="859.0" spacing="20.0">
          <children>
-            <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="48.0" prefWidth="110.0" styleClass="btn_save" text="Save">
+            <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="36.0" prefWidth="110.0" styleClass="btn_save" text="Save">
                <graphic>
                   <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15" />
                </graphic>
             </Button>
-            <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="48.0" prefWidth="110.0" styleClass="btn_cancel" text="Cancel">
+            <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="36.0" prefWidth="110.0" styleClass="btn_cancel" text="Cancel">
                <graphic>
                   <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="15" />
                </graphic>

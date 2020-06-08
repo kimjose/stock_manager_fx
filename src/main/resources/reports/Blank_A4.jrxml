@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c1dbdb26-e249-4406-abea-6afae313feb0">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="sales"/>
+	<queryString language="jsonql">
+		<![CDATA[lines]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="id"/>
+		<fieldDescription><![CDATA[id]]></fieldDescription>
+	</field>
+	<field name="saleId" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="saleId"/>
+		<fieldDescription><![CDATA[saleId]]></fieldDescription>
+	</field>
+	<field name="type" class="java.lang.String">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="type"/>
+		<fieldDescription><![CDATA[type]]></fieldDescription>
+	</field>
+	<field name="typeId" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="typeId"/>
+		<fieldDescription><![CDATA[typeId]]></fieldDescription>
+	</field>
+	<field name="buyingPrice" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="buyingPrice"/>
+		<fieldDescription><![CDATA[buyingPrice]]></fieldDescription>
+	</field>
+	<field name="unitPrice" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="unitPrice"/>
+		<fieldDescription><![CDATA[unitPrice]]></fieldDescription>
+	</field>
+	<field name="quantity" class="java.lang.Integer">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="quantity"/>
+		<fieldDescription><![CDATA[quantity]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<property name="net.sf.jasperreports.jsonql.field.expression" value="name"/>
+		<fieldDescription><![CDATA[name]]></fieldDescription>
+	</field>
+	<group name="id">
+		<groupExpression><![CDATA[$F{id}]]></groupExpression>
+	</group>
+	<group name="saleId">
+		<groupExpression><![CDATA[$F{saleId}]]></groupExpression>
+	</group>
+	<group name="type">
+		<groupExpression><![CDATA[$F{type}]]></groupExpression>
+	</group>
+	<group name="typeId">
+		<groupExpression><![CDATA[$F{typeId}]]></groupExpression>
+	</group>
+	<group name="buyingPrice">
+		<groupExpression><![CDATA[$F{buyingPrice}]]></groupExpression>
+	</group>
+	<group name="unitPrice">
+		<groupExpression><![CDATA[$F{unitPrice}]]></groupExpression>
+	</group>
+	<group name="quantity">
+		<groupExpression><![CDATA[$F{quantity}]]></groupExpression>
+	</group>
+	<group name="name">
+		<groupExpression><![CDATA[$F{name}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

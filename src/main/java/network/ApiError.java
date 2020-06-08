@@ -24,4 +24,12 @@ public class ApiError {
     public void setErrors(Map<String, List<String>> errors) {
         this.errors = errors;
     }
+
+    @Override
+    public String toString() {
+        return "ApiError{" +
+                "message='" + message + '\'' +
+                ", errors=" + errors +
+                '}';
+    }
 }

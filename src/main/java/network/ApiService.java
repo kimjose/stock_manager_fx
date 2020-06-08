@@ -79,6 +79,13 @@ public interface ApiService {
     Call<Unpacking[]> unpackings();
 
 
+    // Reports....
+    @GET("sales_report/{startDate}/{endDate}")
+    Call<Object[]> salesReport(@Path("startDate") String startDate, @Path("endDate") String endDate);
+
+    @GET("sale_report/{id}")
+    Call<Object[]> saleReport(@Path("id") int id);
+
 
     /**
      * POST requests
@@ -102,9 +109,12 @@ public interface ApiService {
     @POST("product")
     @FormUrlEncoded
     Call<Product[]> addProduct(@Field("name")String name, @Field("description")String description,
-                             @Field("price")double price, @Field("brandId")int brandId, @Field("uomId")int uomId,
+                             @Field("buyingPrice")double price, @Field("sellingPrice")double sellingPrice, @Field("brandId")int brandId, @Field("uomId")int uomId,
                              @Field("categoryId")int categoryId, @Field("sku_code")String skuCode, @Field("upc_code")String upcCode,
                              @Field("image")String image);
+    @POST("add_stock/{user}")
+    @FormUrlEncoded
+    Call<Product[]> addStock(@Path("user") int user, @Field("productId") int productId, @Field("quantity") int quantity);
 
     @POST("bank")
     @FormUrlEncoded
@@ -187,6 +197,12 @@ public interface ApiService {
                                 @Field("bankId") int bankId, @Field("warehouseId") int warehouseId, @Field("refNo") String refNo,
                                 @Field("createdBy") int createdBy);
 
+    @POST("sell_product/{user}")
+    @FormUrlEncoded
+    Call<ExpressSale[]> sellProduct(@Path("user") int user, @Field("productId") int productId, @Field("sellingPrice") double sellingPrice,
+                                    @Field("quantity") int quantity, @Field("bankId") int bankId, @Field("refNo") String refNo);
+
+
     @POST("post_sale/{id}/{postedBy}")
     Call<ExpressSale[]> postSale(@Path("id") int id, @Path("postedBy") int postedBy);
 
@@ -197,7 +213,7 @@ public interface ApiService {
     @POST("add_sale_line/{id}")
     @FormUrlEncoded
     Call<ExpressSaleLine[]> addSaleLine(@Path("id") int id, @Field("type") String type, @Field("typeId") int typeId,
-                                        @Field("unitPrice") double unitPrice, @Field("quantity") int quantity);
+                                        @Field("buyingPrice") double buyingPrice, @Field("unitPrice") double unitPrice, @Field("quantity") int quantity);
 
     @POST("product_group")
     @FormUrlEncoded
@@ -220,6 +236,13 @@ public interface ApiService {
      * PUT requests
      * ***/
 
+    @POST("update_product/{id}")
+    @FormUrlEncoded
+    Call<Product[]> updateProduct(@Path("id") int id, @Field("name")String name, @Field("description")String description,
+                               @Field("buyingPrice")double price, @Field("sellingPrice")double sellingPrice,
+                                  @Field("sku_code")String skuCode, @Field("upc_code")String upcCode,
+                               @Field("image")String image);
+    
     @PUT("brand/{id}")
     Call<Brand[]> updateBrand(@Path("id")int id, @Query("name") String name);
 

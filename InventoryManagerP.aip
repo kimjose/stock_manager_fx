@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="15.6" version="15.6" Modules="java" RootPath="." Language="en" Id="{1453427A-698A-4A89-8C9F-C96F3EB5669E}">
+  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="HiddenItems" Value="AppXProductDetailsComponent;AppXDependenciesComponent;AppXAppDetailsComponent;AppXVisualAssetsComponent;AppXCapabilitiesComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent;MsiDriverPackagesComponent;UserAccountsComponent;ScheduledTasksComponent;SqlConnectionComponent;AutorunComponent;FirewallExceptionComponent;GameUxComponent;MsiDirectEditorComponent;SharePointSlnComponent;SilverlightSlnComponent;MultipleInstancesComponent;SccmComponent;ActSyncAppComponent;TilesComponent;FixupComponent"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
+    <ROW Property="AI_EXTERNALUIUNINSTALLERNAME" MultiBuildValue="DefaultBuild:aiui"/>
+    <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
+    <ROW Property="AI_PRODUCTNAME_ARP" Value="InventoryManagerP"/>
+    <ROW Property="AI_UNINSTALLER" Value="msiexec.exe"/>
+    <ROW Property="ALLUSERS" Value="1"/>
+    <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+    <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
+    <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
+    <ROW Property="Manufacturer" Value="Your Company"/>
+    <ROW Property="ProductCode" Value="1033:{792FD280-17DB-48C1-91D2-2E4D15F82EB4} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="InventoryManagerP"/>
+    <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="UpgradeCode" Value="{3484F0B8-4803-4118-9EC5-0F223CAD7D12}"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003 RTM, Windows XP/2003 SP1, Windows XP SP2 x86" ValueLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="InventoryManagerP_Dir" Directory_Parent="APPDIR" DefaultDir="INVENT~1|InventoryManagerP"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="auth_Dir" Directory_Parent="models_Dir" DefaultDir="auth"/>
+    <ROW Directory="controllers_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="CONTRO~1|controllers"/>
+    <ROW Directory="css_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="css"/>
+    <ROW Directory="customers_Dir" Directory_Parent="models_Dir" DefaultDir="CUSTOM~1|customers"/>
+    <ROW Directory="finance_Dir" Directory_Parent="models_Dir" DefaultDir="finance"/>
+    <ROW Directory="fxml_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="fxml"/>
+    <ROW Directory="interfaces_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="INTERF~1|interfaces"/>
+    <ROW Directory="models_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="models"/>
+    <ROW Directory="network_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="network"/>
+    <ROW Directory="products_Dir" Directory_Parent="models_Dir" DefaultDir="products"/>
+    <ROW Directory="reports_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="reports"/>
+    <ROW Directory="sample_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="sample"/>
+    <ROW Directory="utils_Dir" Directory_Parent="InventoryManagerP_Dir" DefaultDir="utils"/>
+    <ROW Directory="vendors_Dir" Directory_Parent="models_Dir" DefaultDir="vendors"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="AI_CustomARPName" ComponentId="{0310E5BA-50E3-418D-8825-308450AA99E3}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
+    <ROW Component="AI_ExePath" ComponentId="{BB8ECA20-03AF-444A-83EF-7EA7CB2E84EF}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
+    <ROW Component="ApiError.class" ComponentId="{DEF14B04-919E-49F9-A4C0-694D8AAFC39F}" Directory_="network_Dir" Attributes="0" KeyPath="ApiError.class" Type="0"/>
+    <ROW Component="ApiResponse.class" ComponentId="{2211C780-B537-4827-93E9-07768E91739B}" Directory_="models_Dir" Attributes="0" KeyPath="ApiResponse.class" Type="0"/>
+    <ROW Component="Bank.class" ComponentId="{410C1D97-5559-4F94-B682-065BA50F54E9}" Directory_="finance_Dir" Attributes="0" KeyPath="Bank.class" Type="0"/>
+    <ROW Component="BankController1.class" ComponentId="{F462CCE9-31CC-4103-86BD-FC9C5ED969B8}" Directory_="controllers_Dir" Attributes="0" KeyPath="BankController1.class" Type="0"/>
+    <ROW Component="Blank_A4.jasper" ComponentId="{03845847-342A-4794-B842-9048FAC17E28}" Directory_="reports_Dir" Attributes="0" KeyPath="Blank_A4.jasper" Type="0"/>
+    <ROW Component="Brand.class" ComponentId="{6A2B322D-B48C-44C6-B1E2-90AC485198A5}" Directory_="products_Dir" Attributes="0" KeyPath="Brand.class" Type="0"/>
+    <ROW Component="Controller.class" ComponentId="{BB5011EB-648F-4938-9498-D0440A888F3C}" Directory_="sample_Dir" Attributes="0" KeyPath="Controller.class" Type="0"/>
+    <ROW Component="Customer.class" ComponentId="{87D845F7-907B-4AFA-A0D0-352A9E39A797}" Directory_="customers_Dir" Attributes="0" KeyPath="Customer.class" Type="0"/>
+    <ROW Component="HomeDataInterface.class" ComponentId="{EB8B6146-1633-4A80-800A-D6855AFD8528}" Directory_="interfaces_Dir" Attributes="0" KeyPath="HomeDataInterface.class" Type="0"/>
+    <ROW Component="InventoryManager1.class" ComponentId="{AE3D542B-9578-4F76-97DC-96ADFAC10C6A}" Directory_="InventoryManagerP_Dir" Attributes="0" KeyPath="InventoryManager1.class" Type="0"/>
+    <ROW Component="Invoice.class" ComponentId="{BF079C94-9010-41EC-8C3F-B6EC4471DBE7}" Directory_="vendors_Dir" Attributes="0" KeyPath="Invoice.class_1" Type="0"/>
+    <ROW Component="ProductInformation" ComponentId="{66A28D50-226B-4DF0-BC7B-8ACAE58B2D09}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
+    <ROW Component="SessionManager.class" ComponentId="{E6E5978F-25FA-4515-AD86-58575F234AD5}" Directory_="utils_Dir" Attributes="0" KeyPath="SessionManager.class" Type="0"/>
+    <ROW Component="User.class" ComponentId="{873B6962-442C-4EC6-AA12-FEBD2E9C4C11}" Directory_="auth_Dir" Attributes="0" KeyPath="User.class" Type="0"/>
+    <ROW Component="create_bank.fxml" ComponentId="{AABF093F-068F-41D9-9A1B-387F51252F41}" Directory_="fxml_Dir" Attributes="0" KeyPath="create_bank.fxml" Type="0"/>
+    <ROW Component="dashboard.css" ComponentId="{C959A21D-289A-4BBB-A675-9121D747C29C}" Directory_="css_Dir" Attributes="0" KeyPath="dashboard.css" Type="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_CustomARPName AI_ExePath ApiError.class ApiResponse.class Bank.class BankController1.class Blank_A4.jasper Brand.class Controller.class Customer.class HomeDataInterface.class InventoryManager1.class Invoice.class ProductInformation SessionManager.class User.class create_bank.fxml dashboard.css"/>
+    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="ApiError.class" Component_="ApiError.class" FileName="APIERR~1.CLA|ApiError.class" Attributes="0" SourcePath="target\classes\network\ApiError.class" SelfReg="false" NextFile="ApiService.class"/>
+    <ROW File="ApiResponse.class" Component_="ApiResponse.class" FileName="APIRES~1.CLA|ApiResponse.class" Attributes="0" SourcePath="target\classes\models\ApiResponse.class" SelfReg="false" NextFile="User.class"/>
+    <ROW File="ApiService.class" Component_="ApiError.class" FileName="APISER~1.CLA|ApiService.class" Attributes="0" SourcePath="target\classes\network\ApiService.class" SelfReg="false" NextFile="RetrofitBuilder.class"/>
+    <ROW File="Bank.class" Component_="Bank.class" FileName="BANK~1.CLA|Bank.class" Attributes="0" SourcePath="target\classes\models\finance\Bank.class" SelfReg="false" NextFile="MyTableColumn.class"/>
+    <ROW File="BankController.class" Component_="BankController1.class" FileName="BANKCO~3.CLA|BankController.class" Attributes="0" SourcePath="target\classes\controllers\BankController.class" SelfReg="false" NextFile="CreateBrand1.class"/>
+    <ROW File="BankController1.class" Component_="BankController1.class" FileName="BANKCO~1.CLA|BankController$1.class" Attributes="0" SourcePath="target\classes\controllers\BankController$1.class" SelfReg="false" NextFile="BankController2.class"/>
+    <ROW File="BankController2.class" Component_="BankController1.class" FileName="BANKCO~2.CLA|BankController$2.class" Attributes="0" SourcePath="target\classes\controllers\BankController$2.class" SelfReg="false" NextFile="BankController.class"/>
+    <ROW File="Blank_A4.jasper" Component_="Blank_A4.jasper" FileName="BLANK_~1.JAS|Blank_A4.jasper" Attributes="0" SourcePath="target\classes\reports\Blank_A4.jasper" SelfReg="false" NextFile="Blank_A4.jrxml"/>
+    <ROW File="Blank_A4.jrxml" Component_="Blank_A4.jasper" FileName="BLANK_~1.JRX|Blank_A4.jrxml" Attributes="0" SourcePath="target\classes\reports\Blank_A4.jrxml" SelfReg="false" NextFile="sales_report.jasper"/>
+    <ROW File="Brand.class" Component_="Brand.class" FileName="BRAND~1.CLA|Brand.class" Attributes="0" SourcePath="target\classes\models\products\Brand.class" SelfReg="false" NextFile="Category.class"/>
+    <ROW File="Category.class" Component_="Brand.class" FileName="CATEGO~1.CLA|Category.class" Attributes="0" SourcePath="target\classes\models\products\Category.class" SelfReg="false" NextFile="ExpressSale.class"/>
+    <ROW File="Controller.class" Component_="Controller.class" FileName="CONTRO~1.CLA|Controller.class" Attributes="0" SourcePath="target\classes\sample\Controller.class" SelfReg="false" NextFile="user.png"/>
+    <ROW File="CreateBrand.class" Component_="BankController1.class" FileName="CREATE~2.CLA|CreateBrand.class" Attributes="0" SourcePath="target\classes\controllers\CreateBrand.class" SelfReg="false" NextFile="CreateCategory1.class"/>
+    <ROW File="CreateBrand1.class" Component_="BankController1.class" FileName="CREATE~1.CLA|CreateBrand$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateBrand$1.class" SelfReg="false" NextFile="CreateBrand.class"/>
+    <ROW File="CreateCategory.class" Component_="BankController1.class" FileName="CREATE~4.CLA|CreateCategory.class" Attributes="0" SourcePath="target\classes\controllers\CreateCategory.class" SelfReg="false" NextFile="CreateCustomer1.class"/>
+    <ROW File="CreateCategory1.class" Component_="BankController1.class" FileName="CREATE~3.CLA|CreateCategory$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateCategory$1.class" SelfReg="false" NextFile="CreateCategory.class"/>
+    <ROW File="CreateCustomer.class" Component_="BankController1.class" FileName="CREATE~6.CLA|CreateCustomer.class" Attributes="0" SourcePath="target\classes\controllers\CreateCustomer.class" SelfReg="false" NextFile="CreateProduct1.class"/>
+    <ROW File="CreateCustomer1.class" Component_="BankController1.class" FileName="CREATE~5.CLA|CreateCustomer$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateCustomer$1.class" SelfReg="false" NextFile="CreateCustomer.class"/>
+    <ROW File="CreateProduct.class" Component_="BankController1.class" FileName="CREATE~8.CLA|CreateProduct.class" Attributes="0" SourcePath="target\classes\controllers\CreateProduct.class" SelfReg="false" NextFile="CreateService1.class"/>
+    <ROW File="CreateProduct1.class" Component_="BankController1.class" FileName="CREATE~7.CLA|CreateProduct$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateProduct$1.class" SelfReg="false" NextFile="CreateProduct.class"/>
+    <ROW File="CreateService.class" Component_="BankController1.class" FileName="CREAT~10.CLA|CreateService.class" Attributes="0" SourcePath="target\classes\controllers\CreateService.class" SelfReg="false" NextFile="CreateUOM1.class"/>
+    <ROW File="CreateService1.class" Component_="BankController1.class" FileName="CREATE~9.CLA|CreateService$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateService$1.class" SelfReg="false" NextFile="CreateService.class"/>
+    <ROW File="CreateUOM.class" Component_="BankController1.class" FileName="CREAT~12.CLA|CreateUOM.class" Attributes="0" SourcePath="target\classes\controllers\CreateUOM.class" SelfReg="false" NextFile="CreateVendor1.class"/>
+    <ROW File="CreateUOM1.class" Component_="BankController1.class" FileName="CREAT~11.CLA|CreateUOM$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateUOM$1.class" SelfReg="false" NextFile="CreateUOM.class"/>
+    <ROW File="CreateVendor.class" Component_="BankController1.class" FileName="CREAT~14.CLA|CreateVendor.class" Attributes="0" SourcePath="target\classes\controllers\CreateVendor.class" SelfReg="false" NextFile="CreateWarehouse1.class"/>
+    <ROW File="CreateVendor1.class" Component_="BankController1.class" FileName="CREAT~13.CLA|CreateVendor$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateVendor$1.class" SelfReg="false" NextFile="CreateVendor.class"/>
+    <ROW File="CreateWarehouse.class" Component_="BankController1.class" FileName="CREAT~16.CLA|CreateWarehouse.class" Attributes="0" SourcePath="target\classes\controllers\CreateWarehouse.class" SelfReg="false" NextFile="CustomerInvoice1.class"/>
+    <ROW File="CreateWarehouse1.class" Component_="BankController1.class" FileName="CREAT~15.CLA|CreateWarehouse$1.class" Attributes="0" SourcePath="target\classes\controllers\CreateWarehouse$1.class" SelfReg="false" NextFile="CreateWarehouse.class"/>
+    <ROW File="Customer.class" Component_="Customer.class" FileName="CUSTOM~1.CLA|Customer.class" Attributes="0" SourcePath="target\classes\models\customers\Customer.class" SelfReg="false" NextFile="Invoice.class"/>
+    <ROW File="CustomerInvoice.class" Component_="BankController1.class" FileName="CUSTO~10.CLA|CustomerInvoice.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice.class" SelfReg="false" NextFile="CustomerReceipt1.class"/>
+    <ROW File="CustomerInvoice1.class" Component_="BankController1.class" FileName="CUSTOM~1.CLA|CustomerInvoice$1.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$1.class" SelfReg="false" NextFile="CustomerInvoice2.class"/>
+    <ROW File="CustomerInvoice2.class" Component_="BankController1.class" FileName="CUSTOM~2.CLA|CustomerInvoice$2.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$2.class" SelfReg="false" NextFile="CustomerInvoice3.class"/>
+    <ROW File="CustomerInvoice3.class" Component_="BankController1.class" FileName="CUSTOM~3.CLA|CustomerInvoice$3.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$3.class" SelfReg="false" NextFile="CustomerInvoice4.class"/>
+    <ROW File="CustomerInvoice4.class" Component_="BankController1.class" FileName="CUSTOM~4.CLA|CustomerInvoice$4.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$4.class" SelfReg="false" NextFile="CustomerInvoice5.class"/>
+    <ROW File="CustomerInvoice5.class" Component_="BankController1.class" FileName="CUSTOM~5.CLA|CustomerInvoice$5.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$5.class" SelfReg="false" NextFile="CustomerInvoice6.class"/>
+    <ROW File="CustomerInvoice6.class" Component_="BankController1.class" FileName="CUSTOM~6.CLA|CustomerInvoice$6.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$6.class" SelfReg="false" NextFile="CustomerInvoice7.class"/>
+    <ROW File="CustomerInvoice7.class" Component_="BankController1.class" FileName="CUSTOM~7.CLA|CustomerInvoice$7.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$7.class" SelfReg="false" NextFile="CustomerInvoice8.class"/>
+    <ROW File="CustomerInvoice8.class" Component_="BankController1.class" FileName="CUSTOM~8.CLA|CustomerInvoice$8.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$8.class" SelfReg="false" NextFile="CustomerInvoice9.class"/>
+    <ROW File="CustomerInvoice9.class" Component_="BankController1.class" FileName="CUSTOM~9.CLA|CustomerInvoice$9.class" Attributes="0" SourcePath="target\classes\controllers\CustomerInvoice$9.class" SelfReg="false" NextFile="CustomerInvoice.class"/>
+    <ROW File="CustomerReceipt.class" Component_="BankController1.class" FileName="CUSTO~16.CLA|CustomerReceipt.class" Attributes="0" SourcePath="target\classes\controllers\CustomerReceipt.class" SelfReg="false" NextFile="DashboardController1.class"/>
+    <ROW File="CustomerReceipt1.class" Component_="BankController1.class" FileName="CUSTO~11.CLA|CustomerReceipt$1.class" Attributes="0" SourcePath="target\classes\controllers\CustomerReceipt$1.class" SelfReg="false" NextFile="CustomerReceipt2.class"/>
+    <ROW File="CustomerReceipt2.class" Component_="BankController1.class" FileName="CUSTO~12.CLA|CustomerReceipt$2.class" Attributes="0" SourcePath="target\classes\controllers\CustomerReceipt$2.class" SelfReg="false" NextFile="CustomerReceipt3.class"/>
+    <ROW File="CustomerReceipt3.class" Component_="BankController1.class" FileName="CUSTO~13.CLA|CustomerReceipt$3.class" Attributes="0" SourcePath="target\classes\controllers\CustomerReceipt$3.class" SelfReg="false" NextFile="CustomerReceipt4.class"/>
+    <ROW File="CustomerReceipt4.class" Component_="BankController1.class" FileName="CUSTO~14.CLA|CustomerReceipt$4.class" Attributes="0" SourcePath="target\classes\controllers\CustomerReceipt$4.class" SelfReg="false" NextFile="CustomerReceipt5.class"/>
+    <ROW File="CustomerReceipt5.class" Component_="BankController1.class" FileName="CUSTO~15.CLA|CustomerReceipt$5.class" Attributes="0" SourcePath="target\classes\controllers\CustomerReceipt$5.class" SelfReg="false" NextFile="CustomerReceipt.class"/>
+    <ROW File="DashboardController.class" Component_="BankController1.class" FileName="DASHBO~2.CLA|DashboardController.class" Attributes="0" SourcePath="target\classes\controllers\DashboardController.class" SelfReg="false" NextFile="ExpressSaleController1.class"/>
+    <ROW File="DashboardController1.class" Component_="BankController1.class" FileName="DASHBO~1.CLA|DashboardController$1.class" Attributes="0" SourcePath="target\classes\controllers\DashboardController$1.class" SelfReg="false" NextFile="DashboardController.class"/>
+    <ROW File="DashboardData.class" Component_="ApiResponse.class" FileName="DASHBO~2.CLA|DashboardData.class" Attributes="0" SourcePath="target\classes\models\DashboardData.class" SelfReg="false" NextFile="Bank.class"/>
+    <ROW File="DashboardDataChartData.class" Component_="ApiResponse.class" FileName="DASHBO~1.CLA|DashboardData$ChartData.class" Attributes="0" SourcePath="target\classes\models\DashboardData$ChartData.class" SelfReg="false" NextFile="DashboardData.class"/>
+    <ROW File="ExpressSale.class" Component_="Brand.class" FileName="EXPRES~1.CLA|ExpressSale.class" Attributes="0" SourcePath="target\classes\models\products\ExpressSale.class" SelfReg="false" NextFile="ExpressSaleLine1.class"/>
+    <ROW File="ExpressSaleController.class" Component_="BankController1.class" FileName="EXPRES~7.CLA|ExpressSaleController.class" Attributes="0" SourcePath="target\classes\controllers\ExpressSaleController.class" SelfReg="false" NextFile="GeneralCenter1.class"/>
+    <ROW File="ExpressSaleController1.class" Component_="BankController1.class" FileName="EXPRES~1.CLA|ExpressSaleController$1.class" Attributes="0" SourcePath="target\classes\controllers\ExpressSaleController$1.class" SelfReg="false" NextFile="ExpressSaleController2.class"/>
+    <ROW File="ExpressSaleController2.class" Component_="BankController1.class" FileName="EXPRES~2.CLA|ExpressSaleController$2.class" Attributes="0" SourcePath="target\classes\controllers\ExpressSaleController$2.class" SelfReg="false" NextFile="ExpressSaleController3.class"/>
+    <ROW File="ExpressSaleController3.class" Component_="BankController1.class" FileName="EXPRES~3.CLA|ExpressSaleController$3.class" Attributes="0" SourcePath="target\classes\controllers\ExpressSaleController$3.class" SelfReg="false" NextFile="ExpressSaleController4.class"/>
+    <ROW File="ExpressSaleController4.class" Component_="BankController1.class" FileName="EXPRES~4.CLA|ExpressSaleController$4.class" Attributes="0" SourcePath="target\classes\controllers\ExpressSaleController$4.class" SelfReg="false" NextFile="ExpressSaleController5.class"/>
+    <ROW File="ExpressSaleController5.class" Component_="BankController1.class" FileName="EXPRES~5.CLA|ExpressSaleController$5.class" Attributes="0" SourcePath="target\classes\controllers\ExpressSaleController$5.class" SelfReg="false" NextFile="ExpressSaleController6.class"/>
+    <ROW File="ExpressSaleController6.class" Component_="BankController1.class" FileName="EXPRES~6.CLA|ExpressSaleController$6.class" Attributes="0" SourcePath="target\classes\controllers\ExpressSaleController$6.class" SelfReg="false" NextFile="ExpressSaleController.class"/>
+    <ROW File="ExpressSaleLine.class" Component_="Brand.class" FileName="EXPRES~3.CLA|ExpressSaleLine.class" Attributes="0" SourcePath="target\classes\models\products\ExpressSaleLine.class" SelfReg="false" NextFile="Product.class"/>
+    <ROW File="ExpressSaleLine1.class" Component_="Brand.class" FileName="EXPRES~2.CLA|ExpressSaleLine$1.class" Attributes="0" SourcePath="target\classes\models\products\ExpressSaleLine$1.class" SelfReg="false" NextFile="ExpressSaleLine.class"/>
+    <ROW File="GeneralCenter.class" Component_="BankController1.class" FileName="GENER~43.CLA|GeneralCenter.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter.class" SelfReg="false" NextFile="MainStage.class"/>
+    <ROW File="GeneralCenter1.class" Component_="BankController1.class" FileName="GENERA~1.CLA|GeneralCenter$1.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$1.class" SelfReg="false" NextFile="GeneralCenter10.class"/>
+    <ROW File="GeneralCenter10.class" Component_="BankController1.class" FileName="GENERA~2.CLA|GeneralCenter$10.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$10.class" SelfReg="false" NextFile="GeneralCenter11.class"/>
+    <ROW File="GeneralCenter11.class" Component_="BankController1.class" FileName="GENERA~3.CLA|GeneralCenter$11.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$11.class" SelfReg="false" NextFile="GeneralCenter12.class"/>
+    <ROW File="GeneralCenter12.class" Component_="BankController1.class" FileName="GENERA~4.CLA|GeneralCenter$12.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$12.class" SelfReg="false" NextFile="GeneralCenter13.class"/>
+    <ROW File="GeneralCenter13.class" Component_="BankController1.class" FileName="GENERA~5.CLA|GeneralCenter$13.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$13.class" SelfReg="false" NextFile="GeneralCenter14.class"/>
+    <ROW File="GeneralCenter14.class" Component_="BankController1.class" FileName="GENERA~6.CLA|GeneralCenter$14.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$14.class" SelfReg="false" NextFile="GeneralCenter15.class"/>
+    <ROW File="GeneralCenter15.class" Component_="BankController1.class" FileName="GENERA~7.CLA|GeneralCenter$15.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$15.class" SelfReg="false" NextFile="GeneralCenter16.class"/>
+    <ROW File="GeneralCenter16.class" Component_="BankController1.class" FileName="GENERA~8.CLA|GeneralCenter$16.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$16.class" SelfReg="false" NextFile="GeneralCenter17.class"/>
+    <ROW File="GeneralCenter17.class" Component_="BankController1.class" FileName="GENERA~9.CLA|GeneralCenter$17.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$17.class" SelfReg="false" NextFile="GeneralCenter18.class"/>
+    <ROW File="GeneralCenter18.class" Component_="BankController1.class" FileName="GENER~10.CLA|GeneralCenter$18.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$18.class" SelfReg="false" NextFile="GeneralCenter19.class"/>
+    <ROW File="GeneralCenter19.class" Component_="BankController1.class" FileName="GENER~11.CLA|GeneralCenter$19.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$19.class" SelfReg="false" NextFile="GeneralCenter2.class"/>
+    <ROW File="GeneralCenter2.class" Component_="BankController1.class" FileName="GENER~12.CLA|GeneralCenter$2.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$2.class" SelfReg="false" NextFile="GeneralCenter20.class"/>
+    <ROW File="GeneralCenter20.class" Component_="BankController1.class" FileName="GENER~13.CLA|GeneralCenter$20.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$20.class" SelfReg="false" NextFile="GeneralCenter21.class"/>
+    <ROW File="GeneralCenter21.class" Component_="BankController1.class" FileName="GENER~14.CLA|GeneralCenter$21.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$21.class" SelfReg="false" NextFile="GeneralCenter22.class"/>
+    <ROW File="GeneralCenter22.class" Component_="BankController1.class" FileName="GENER~15.CLA|GeneralCenter$22.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$22.class" SelfReg="false" NextFile="GeneralCenter23.class"/>
+    <ROW File="GeneralCenter23.class" Component_="BankController1.class" FileName="GENER~16.CLA|GeneralCenter$23.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$23.class" SelfReg="false" NextFile="GeneralCenter24.class"/>
+    <ROW File="GeneralCenter24.class" Component_="BankController1.class" FileName="GENER~17.CLA|GeneralCenter$24.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$24.class" SelfReg="false" NextFile="GeneralCenter25.class"/>
+    <ROW File="GeneralCenter25.class" Component_="BankController1.class" FileName="GENER~18.CLA|GeneralCenter$25.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$25.class" SelfReg="false" NextFile="GeneralCenter26.class"/>
+    <ROW File="GeneralCenter26.class" Component_="BankController1.class" FileName="GENER~19.CLA|GeneralCenter$26.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$26.class" SelfReg="false" NextFile="GeneralCenter27.class"/>
+    <ROW File="GeneralCenter27.class" Component_="BankController1.class" FileName="GENER~20.CLA|GeneralCenter$27.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$27.class" SelfReg="false" NextFile="GeneralCenter28.class"/>
+    <ROW File="GeneralCenter28.class" Component_="BankController1.class" FileName="GENER~21.CLA|GeneralCenter$28.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$28.class" SelfReg="false" NextFile="GeneralCenter29.class"/>
+    <ROW File="GeneralCenter29.class" Component_="BankController1.class" FileName="GENER~22.CLA|GeneralCenter$29.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$29.class" SelfReg="false" NextFile="GeneralCenter3.class"/>
+    <ROW File="GeneralCenter3.class" Component_="BankController1.class" FileName="GENER~23.CLA|GeneralCenter$3.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$3.class" SelfReg="false" NextFile="GeneralCenter30.class"/>
+    <ROW File="GeneralCenter30.class" Component_="BankController1.class" FileName="GENER~24.CLA|GeneralCenter$30.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$30.class" SelfReg="false" NextFile="GeneralCenter31.class"/>
+    <ROW File="GeneralCenter31.class" Component_="BankController1.class" FileName="GENER~25.CLA|GeneralCenter$31.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$31.class" SelfReg="false" NextFile="GeneralCenter32.class"/>
+    <ROW File="GeneralCenter32.class" Component_="BankController1.class" FileName="GENER~26.CLA|GeneralCenter$32.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$32.class" SelfReg="false" NextFile="GeneralCenter33.class"/>
+    <ROW File="GeneralCenter33.class" Component_="BankController1.class" FileName="GENER~27.CLA|GeneralCenter$33.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$33.class" SelfReg="false" NextFile="GeneralCenter34.class"/>
+    <ROW File="GeneralCenter34.class" Component_="BankController1.class" FileName="GENER~28.CLA|GeneralCenter$34.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$34.class" SelfReg="false" NextFile="GeneralCenter35.class"/>
+    <ROW File="GeneralCenter35.class" Component_="BankController1.class" FileName="GENER~29.CLA|GeneralCenter$35.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$35.class" SelfReg="false" NextFile="GeneralCenter36.class"/>
+    <ROW File="GeneralCenter36.class" Component_="BankController1.class" FileName="GENER~30.CLA|GeneralCenter$36.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$36.class" SelfReg="false" NextFile="GeneralCenter37.class"/>
+    <ROW File="GeneralCenter37.class" Component_="BankController1.class" FileName="GENER~31.CLA|GeneralCenter$37.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$37.class" SelfReg="false" NextFile="GeneralCenter38.class"/>
+    <ROW File="GeneralCenter38.class" Component_="BankController1.class" FileName="GENER~32.CLA|GeneralCenter$38.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$38.class" SelfReg="false" NextFile="GeneralCenter39.class"/>
+    <ROW File="GeneralCenter39.class" Component_="BankController1.class" FileName="GENER~33.CLA|GeneralCenter$39.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$39.class" SelfReg="false" NextFile="GeneralCenter4.class"/>
+    <ROW File="GeneralCenter4.class" Component_="BankController1.class" FileName="GENER~34.CLA|GeneralCenter$4.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$4.class" SelfReg="false" NextFile="GeneralCenter40.class"/>
+    <ROW File="GeneralCenter40.class" Component_="BankController1.class" FileName="GENER~35.CLA|GeneralCenter$40.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$40.class" SelfReg="false" NextFile="GeneralCenter41.class"/>
+    <ROW File="GeneralCenter41.class" Component_="BankController1.class" FileName="GENER~36.CLA|GeneralCenter$41.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$41.class" SelfReg="false" NextFile="GeneralCenter5.class"/>
+    <ROW File="GeneralCenter5.class" Component_="BankController1.class" FileName="GENER~37.CLA|GeneralCenter$5.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$5.class" SelfReg="false" NextFile="GeneralCenter6.class"/>
+    <ROW File="GeneralCenter6.class" Component_="BankController1.class" FileName="GENER~38.CLA|GeneralCenter$6.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$6.class" SelfReg="false" NextFile="GeneralCenter7.class"/>
+    <ROW File="GeneralCenter7.class" Component_="BankController1.class" FileName="GENER~39.CLA|GeneralCenter$7.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$7.class" SelfReg="false" NextFile="GeneralCenter8.class"/>
+    <ROW File="GeneralCenter8.class" Component_="BankController1.class" FileName="GENER~40.CLA|GeneralCenter$8.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$8.class" SelfReg="false" NextFile="GeneralCenter9.class"/>
+    <ROW File="GeneralCenter9.class" Component_="BankController1.class" FileName="GENER~41.CLA|GeneralCenter$9.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$9.class" SelfReg="false" NextFile="GeneralCenterCustomButton.class"/>
+    <ROW File="GeneralCenterCustomButton.class" Component_="BankController1.class" FileName="GENER~42.CLA|GeneralCenter$CustomButton.class" Attributes="0" SourcePath="target\classes\controllers\GeneralCenter$CustomButton.class" SelfReg="false" NextFile="GeneralCenter.class"/>
+    <ROW File="HomeDataInterface.class" Component_="HomeDataInterface.class" FileName="HOMEDA~1.CLA|HomeDataInterface.class" Attributes="0" SourcePath="target\classes\interfaces\HomeDataInterface.class" SelfReg="false" NextFile="LinesInterface.class"/>
+    <ROW File="InventoryManager.class" Component_="InventoryManager1.class" FileName="INVENT~2.CLA|InventoryManager.class" Attributes="0" SourcePath="target\classes\InventoryManager.class" SelfReg="false" NextFile="Main.class"/>
+    <ROW File="InventoryManager1.class" Component_="InventoryManager1.class" FileName="INVENT~1.CLA|InventoryManager$1.class" Attributes="0" SourcePath="target\classes\InventoryManager$1.class" SelfReg="false" NextFile="InventoryManager.class"/>
+    <ROW File="Invoice.class" Component_="Customer.class" FileName="INVOIC~1.CLA|Invoice.class" Attributes="0" SourcePath="target\classes\models\customers\Invoice.class" SelfReg="false" NextFile="InvoiceLine1.class"/>
+    <ROW File="Invoice.class_1" Component_="Invoice.class" FileName="INVOIC~1.CLA|Invoice.class" Attributes="0" SourcePath="target\classes\models\vendors\Invoice.class" SelfReg="false" NextFile="InvoiceLine1.class_1"/>
+    <ROW File="InvoiceLine.class" Component_="Customer.class" FileName="INVOIC~3.CLA|InvoiceLine.class" Attributes="0" SourcePath="target\classes\models\customers\InvoiceLine.class" SelfReg="false" NextFile="Receipt.class"/>
+    <ROW File="InvoiceLine.class_1" Component_="Invoice.class" FileName="INVOIC~3.CLA|InvoiceLine.class" Attributes="0" SourcePath="target\classes\models\vendors\InvoiceLine.class" SelfReg="false" NextFile="PaymentVoucher.class"/>
+    <ROW File="InvoiceLine1.class" Component_="Customer.class" FileName="INVOIC~2.CLA|InvoiceLine$1.class" Attributes="0" SourcePath="target\classes\models\customers\InvoiceLine$1.class" SelfReg="false" NextFile="InvoiceLine.class"/>
+    <ROW File="InvoiceLine1.class_1" Component_="Invoice.class" FileName="INVOIC~2.CLA|InvoiceLine$1.class" Attributes="0" SourcePath="target\classes\models\vendors\InvoiceLine$1.class" SelfReg="false" NextFile="InvoiceLine.class_1"/>
+    <ROW File="LinesInterface.class" Component_="HomeDataInterface.class" FileName="LINESI~1.CLA|LinesInterface.class" Attributes="0" SourcePath="target\classes\interfaces\LinesInterface.class" SelfReg="false" NextFile="Shared.class"/>
+    <ROW File="Main.class" Component_="InventoryManager1.class" FileName="MAIN~1.CLA|Main.class" Attributes="0" SourcePath="target\classes\Main.class" SelfReg="false" NextFile="ApiResponse.class"/>
+    <ROW File="Main.css" Component_="dashboard.css" FileName="Main.css" Attributes="0" SourcePath="target\classes\css\Main.css" SelfReg="false" NextFile="create_bank.fxml"/>
+    <ROW File="MainStage.class" Component_="BankController1.class" FileName="MAINST~1.CLA|MainStage.class" Attributes="0" SourcePath="target\classes\controllers\MainStage.class" SelfReg="false" NextFile="PaymentVoucherController1.class"/>
+    <ROW File="MyTableColumn.class" Component_="ApiResponse.class" FileName="MYTABL~1.CLA|MyTableColumn.class" Attributes="0" SourcePath="target\classes\models\MyTableColumn.class" SelfReg="false" NextFile="Brand.class"/>
+    <ROW File="PaymentVoucher.class" Component_="Invoice.class" FileName="PAYMEN~1.CLA|PaymentVoucher.class" Attributes="0" SourcePath="target\classes\models\vendors\PaymentVoucher.class" SelfReg="false" NextFile="Vendor.class"/>
+    <ROW File="PaymentVoucherController.class" Component_="BankController1.class" FileName="PAYMEN~6.CLA|PaymentVoucherController.class" Attributes="0" SourcePath="target\classes\controllers\PaymentVoucherController.class" SelfReg="false" NextFile="ProductGroupController1.class"/>
+    <ROW File="PaymentVoucherController1.class" Component_="BankController1.class" FileName="PAYMEN~1.CLA|PaymentVoucherController$1.class" Attributes="0" SourcePath="target\classes\controllers\PaymentVoucherController$1.class" SelfReg="false" NextFile="PaymentVoucherController2.class"/>
+    <ROW File="PaymentVoucherController2.class" Component_="BankController1.class" FileName="PAYMEN~2.CLA|PaymentVoucherController$2.class" Attributes="0" SourcePath="target\classes\controllers\PaymentVoucherController$2.class" SelfReg="false" NextFile="PaymentVoucherController3.class"/>
+    <ROW File="PaymentVoucherController3.class" Component_="BankController1.class" FileName="PAYMEN~3.CLA|PaymentVoucherController$3.class" Attributes="0" SourcePath="target\classes\controllers\PaymentVoucherController$3.class" SelfReg="false" NextFile="PaymentVoucherController4.class"/>
+    <ROW File="PaymentVoucherController4.class" Component_="BankController1.class" FileName="PAYMEN~4.CLA|PaymentVoucherController$4.class" Attributes="0" SourcePath="target\classes\controllers\PaymentVoucherController$4.class" SelfReg="false" NextFile="PaymentVoucherController5.class"/>
+    <ROW File="PaymentVoucherController5.class" Component_="BankController1.class" FileName="PAYMEN~5.CLA|PaymentVoucherController$5.class" Attributes="0" SourcePath="target\classes\controllers\PaymentVoucherController$5.class" SelfReg="false" NextFile="PaymentVoucherController.class"/>
+    <ROW File="Product.class" Component_="Brand.class" FileName="PRODUC~1.CLA|Product.class" Attributes="0" SourcePath="target\classes\models\products\Product.class" SelfReg="false" NextFile="ProductGroup.class"/>
+    <ROW File="ProductGroup.class" Component_="Brand.class" FileName="PRODUC~2.CLA|ProductGroup.class" Attributes="0" SourcePath="target\classes\models\products\ProductGroup.class" SelfReg="false" NextFile="ProductsPack.class"/>
+    <ROW File="ProductGroupController.class" Component_="BankController1.class" FileName="PRODUC~3.CLA|ProductGroupController.class" Attributes="0" SourcePath="target\classes\controllers\ProductGroupController.class" SelfReg="false" NextFile="ReportController.class"/>
+    <ROW File="ProductGroupController1.class" Component_="BankController1.class" FileName="PRODUC~1.CLA|ProductGroupController$1.class" Attributes="0" SourcePath="target\classes\controllers\ProductGroupController$1.class" SelfReg="false" NextFile="ProductGroupController2.class"/>
+    <ROW File="ProductGroupController2.class" Component_="BankController1.class" FileName="PRODUC~2.CLA|ProductGroupController$2.class" Attributes="0" SourcePath="target\classes\controllers\ProductGroupController$2.class" SelfReg="false" NextFile="ProductGroupController.class"/>
+    <ROW File="ProductsPack.class" Component_="Brand.class" FileName="PRODUC~3.CLA|ProductsPack.class" Attributes="0" SourcePath="target\classes\models\products\ProductsPack.class" SelfReg="false" NextFile="Service.class"/>
+    <ROW File="Receipt.class" Component_="Customer.class" FileName="RECEIP~1.CLA|Receipt.class" Attributes="0" SourcePath="target\classes\models\customers\Receipt.class" SelfReg="false" NextFile="DashboardDataChartData.class"/>
+    <ROW File="ReportController.class" Component_="BankController1.class" FileName="REPORT~1.CLA|ReportController.class" Attributes="0" SourcePath="target\classes\controllers\ReportController.class" SelfReg="false" NextFile="UnpackingController1.class"/>
+    <ROW File="RetrofitBuilder.class" Component_="ApiError.class" FileName="RETROF~1.CLA|RetrofitBuilder.class" Attributes="0" SourcePath="target\classes\network\RetrofitBuilder.class" SelfReg="false" NextFile="Blank_A4.jasper"/>
+    <ROW File="Service.class" Component_="Brand.class" FileName="SERVIC~1.CLA|Service.class" Attributes="0" SourcePath="target\classes\models\products\Service.class" SelfReg="false" NextFile="UnitOfMeasure.class"/>
+    <ROW File="SessionManager.class" Component_="SessionManager.class" FileName="SESSIO~1.CLA|SessionManager.class" Attributes="0" SourcePath="target\classes\utils\SessionManager.class" SelfReg="false" NextFile="Utility.class"/>
+    <ROW File="Shared.class" Component_="HomeDataInterface.class" FileName="SHARED~1.CLA|Shared.class" Attributes="0" SourcePath="target\classes\interfaces\Shared.class" SelfReg="false" NextFile="InventoryManager1.class"/>
+    <ROW File="Simple_Blue.jasper" Component_="Blank_A4.jasper" FileName="SIMPLE~1.JAS|Simple_Blue.jasper" Attributes="0" SourcePath="target\classes\reports\Simple_Blue.jasper" SelfReg="false" NextFile="Simple_Blue.jrxml"/>
+    <ROW File="Simple_Blue.jrxml" Component_="Blank_A4.jasper" FileName="SIMPLE~1.JRX|Simple_Blue.jrxml" Attributes="0" SourcePath="target\classes\reports\Simple_Blue.jrxml" SelfReg="false" NextFile="Controller.class"/>
+    <ROW File="SuperModel.class" Component_="ApiResponse.class" FileName="SUPERM~1.CLA|SuperModel.class" Attributes="0" SourcePath="target\classes\models\SuperModel.class" SelfReg="false" NextFile="Invoice.class_1"/>
+    <ROW File="UnitOfMeasure.class" Component_="Brand.class" FileName="UNITOF~1.CLA|UnitOfMeasure.class" Attributes="0" SourcePath="target\classes\models\products\UnitOfMeasure.class" SelfReg="false" NextFile="Unpacking.class"/>
+    <ROW File="Unpacking.class" Component_="Brand.class" FileName="UNPACK~1.CLA|Unpacking.class" Attributes="0" SourcePath="target\classes\models\products\Unpacking.class" SelfReg="false" NextFile="Warehouse.class"/>
+    <ROW File="UnpackingController.class" Component_="BankController1.class" FileName="UNPACK~6.CLA|UnpackingController.class" Attributes="0" SourcePath="target\classes\controllers\UnpackingController.class" SelfReg="false" NextFile="VendorInvoice1.class"/>
+    <ROW File="UnpackingController1.class" Component_="BankController1.class" FileName="UNPACK~1.CLA|UnpackingController$1.class" Attributes="0" SourcePath="target\classes\controllers\UnpackingController$1.class" SelfReg="false" NextFile="UnpackingController2.class"/>
+    <ROW File="UnpackingController2.class" Component_="BankController1.class" FileName="UNPACK~2.CLA|UnpackingController$2.class" Attributes="0" SourcePath="target\classes\controllers\UnpackingController$2.class" SelfReg="false" NextFile="UnpackingController3.class"/>
+    <ROW File="UnpackingController3.class" Component_="BankController1.class" FileName="UNPACK~3.CLA|UnpackingController$3.class" Attributes="0" SourcePath="target\classes\controllers\UnpackingController$3.class" SelfReg="false" NextFile="UnpackingController4.class"/>
+    <ROW File="UnpackingController4.class" Component_="BankController1.class" FileName="UNPACK~4.CLA|UnpackingController$4.class" Attributes="0" SourcePath="target\classes\controllers\UnpackingController$4.class" SelfReg="false" NextFile="UnpackingController5.class"/>
+    <ROW File="UnpackingController5.class" Component_="BankController1.class" FileName="UNPACK~5.CLA|UnpackingController$5.class" Attributes="0" SourcePath="target\classes\controllers\UnpackingController$5.class" SelfReg="false" NextFile="UnpackingController.class"/>
+    <ROW File="User.class" Component_="User.class" FileName="USER~1.CLA|User.class" Attributes="0" SourcePath="target\classes\models\auth\User.class" SelfReg="false" NextFile="Customer.class"/>
+    <ROW File="Utility.class" Component_="SessionManager.class" FileName="UTILIT~1.CLA|Utility.class" Attributes="0" SourcePath="target\classes\utils\Utility.class" SelfReg="false"/>
+    <ROW File="Vendor.class" Component_="Invoice.class" FileName="VENDOR~1.CLA|Vendor.class" Attributes="0" SourcePath="target\classes\models\vendors\Vendor.class" SelfReg="false" NextFile="ApiError.class"/>
+    <ROW File="VendorInvoice.class" Component_="BankController1.class" FileName="VENDO~10.CLA|VendorInvoice.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice.class" SelfReg="false" NextFile="dashboard.css"/>
+    <ROW File="VendorInvoice1.class" Component_="BankController1.class" FileName="VENDOR~1.CLA|VendorInvoice$1.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$1.class" SelfReg="false" NextFile="VendorInvoice2.class"/>
+    <ROW File="VendorInvoice2.class" Component_="BankController1.class" FileName="VENDOR~2.CLA|VendorInvoice$2.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$2.class" SelfReg="false" NextFile="VendorInvoice3.class"/>
+    <ROW File="VendorInvoice3.class" Component_="BankController1.class" FileName="VENDOR~3.CLA|VendorInvoice$3.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$3.class" SelfReg="false" NextFile="VendorInvoice4.class"/>
+    <ROW File="VendorInvoice4.class" Component_="BankController1.class" FileName="VENDOR~4.CLA|VendorInvoice$4.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$4.class" SelfReg="false" NextFile="VendorInvoice5.class"/>
+    <ROW File="VendorInvoice5.class" Component_="BankController1.class" FileName="VENDOR~5.CLA|VendorInvoice$5.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$5.class" SelfReg="false" NextFile="VendorInvoice6.class"/>
+    <ROW File="VendorInvoice6.class" Component_="BankController1.class" FileName="VENDOR~6.CLA|VendorInvoice$6.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$6.class" SelfReg="false" NextFile="VendorInvoice7.class"/>
+    <ROW File="VendorInvoice7.class" Component_="BankController1.class" FileName="VENDOR~7.CLA|VendorInvoice$7.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$7.class" SelfReg="false" NextFile="VendorInvoice8.class"/>
+    <ROW File="VendorInvoice8.class" Component_="BankController1.class" FileName="VENDOR~8.CLA|VendorInvoice$8.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$8.class" SelfReg="false" NextFile="VendorInvoice9.class"/>
+    <ROW File="VendorInvoice9.class" Component_="BankController1.class" FileName="VENDOR~9.CLA|VendorInvoice$9.class" Attributes="0" SourcePath="target\classes\controllers\VendorInvoice$9.class" SelfReg="false" NextFile="VendorInvoice.class"/>
+    <ROW File="Warehouse.class" Component_="Brand.class" FileName="WAREHO~1.CLA|Warehouse.class" Attributes="0" SourcePath="target\classes\models\products\Warehouse.class" SelfReg="false" NextFile="SuperModel.class"/>
+    <ROW File="create_bank.fxml" Component_="create_bank.fxml" FileName="CREATE~1.FXM|create_bank.fxml" Attributes="0" SourcePath="target\classes\fxml\create_bank.fxml" SelfReg="false" NextFile="create_brand.fxml"/>
+    <ROW File="create_brand.fxml" Component_="create_bank.fxml" FileName="CREATE~2.FXM|create_brand.fxml" Attributes="0" SourcePath="target\classes\fxml\create_brand.fxml" SelfReg="false" NextFile="create_category.fxml"/>
+    <ROW File="create_category.fxml" Component_="create_bank.fxml" FileName="CREATE~3.FXM|create_category.fxml" Attributes="0" SourcePath="target\classes\fxml\create_category.fxml" SelfReg="false" NextFile="create_customer.fxml"/>
+    <ROW File="create_customer.fxml" Component_="create_bank.fxml" FileName="CREATE~4.FXM|create_customer.fxml" Attributes="0" SourcePath="target\classes\fxml\create_customer.fxml" SelfReg="false" NextFile="create_product.fxml"/>
+    <ROW File="create_product.fxml" Component_="create_bank.fxml" FileName="CREATE~5.FXM|create_product.fxml" Attributes="0" SourcePath="target\classes\fxml\create_product.fxml" SelfReg="false" NextFile="create_product_group.fxml"/>
+    <ROW File="create_product_group.fxml" Component_="create_bank.fxml" FileName="CREATE~6.FXM|create_product_group.fxml" Attributes="0" SourcePath="target\classes\fxml\create_product_group.fxml" SelfReg="false" NextFile="create_service.fxml"/>
+    <ROW File="create_service.fxml" Component_="create_bank.fxml" FileName="CREATE~7.FXM|create_service.fxml" Attributes="0" SourcePath="target\classes\fxml\create_service.fxml" SelfReg="false" NextFile="create_unpacking.fxml"/>
+    <ROW File="create_unpacking.fxml" Component_="create_bank.fxml" FileName="CREATE~8.FXM|create_unpacking.fxml" Attributes="0" SourcePath="target\classes\fxml\create_unpacking.fxml" SelfReg="false" NextFile="create_uom.fxml"/>
+    <ROW File="create_uom.fxml" Component_="create_bank.fxml" FileName="CREATE~9.FXM|create_uom.fxml" Attributes="0" SourcePath="target\classes\fxml\create_uom.fxml" SelfReg="false" NextFile="create_vendor.fxml"/>
+    <ROW File="create_vendor.fxml" Component_="create_bank.fxml" FileName="CREAT~10.FXM|create_vendor.fxml" Attributes="0" SourcePath="target\classes\fxml\create_vendor.fxml" SelfReg="false" NextFile="create_warehouse.fxml"/>
+    <ROW File="create_warehouse.fxml" Component_="create_bank.fxml" FileName="CREAT~11.FXM|create_warehouse.fxml" Attributes="0" SourcePath="target\classes\fxml\create_warehouse.fxml" SelfReg="false" NextFile="customer_receipt.fxml"/>
+    <ROW File="customer_receipt.fxml" Component_="create_bank.fxml" FileName="CUSTOM~1.FXM|customer_receipt.fxml" Attributes="0" SourcePath="target\classes\fxml\customer_receipt.fxml" SelfReg="false" NextFile="dashboard.fxml"/>
+    <ROW File="dashboard.css" Component_="dashboard.css" FileName="DASHBO~1.CSS|dashboard.css" Attributes="0" SourcePath="target\classes\css\dashboard.css" SelfReg="false" NextFile="Main.css"/>
+    <ROW File="dashboard.fxml" Component_="create_bank.fxml" FileName="DASHBO~1.FXM|dashboard.fxml" Attributes="0" SourcePath="target\classes\fxml\dashboard.fxml" SelfReg="false" NextFile="express_sale.fxml"/>
+    <ROW File="express_sale.fxml" Component_="create_bank.fxml" FileName="EXPRES~1.FXM|express_sale.fxml" Attributes="0" SourcePath="target\classes\fxml\express_sale.fxml" SelfReg="false" NextFile="general_center.fxml"/>
+    <ROW File="general_center.fxml" Component_="create_bank.fxml" FileName="GENERA~1.FXM|general_center.fxml" Attributes="0" SourcePath="target\classes\fxml\general_center.fxml" SelfReg="false" NextFile="invoices_creator.fxml"/>
+    <ROW File="invoices_creator.fxml" Component_="create_bank.fxml" FileName="INVOIC~1.FXM|invoices_creator.fxml" Attributes="0" SourcePath="target\classes\fxml\invoices_creator.fxml" SelfReg="false" NextFile="loading.fxml"/>
+    <ROW File="loading.fxml" Component_="create_bank.fxml" FileName="LOADIN~1.FXM|loading.fxml" Attributes="0" SourcePath="target\classes\fxml\loading.fxml" SelfReg="false" NextFile="login.fxml"/>
+    <ROW File="login.fxml" Component_="create_bank.fxml" FileName="LOGIN~1.FXM|login.fxml" Attributes="0" SourcePath="target\classes\fxml\login.fxml" SelfReg="false" NextFile="main_stage.fxml"/>
+    <ROW File="main_stage.fxml" Component_="create_bank.fxml" FileName="MAIN_S~1.FXM|main_stage.fxml" Attributes="0" SourcePath="target\classes\fxml\main_stage.fxml" SelfReg="false" NextFile="payment_voucher.fxml"/>
+    <ROW File="payment_voucher.fxml" Component_="create_bank.fxml" FileName="PAYMEN~1.FXM|payment_voucher.fxml" Attributes="0" SourcePath="target\classes\fxml\payment_voucher.fxml" SelfReg="false" NextFile="HomeDataInterface.class"/>
+    <ROW File="sale_report.jasper" Component_="Blank_A4.jasper" FileName="SALE_R~1.JAS|sale_report.jasper" Attributes="0" SourcePath="target\classes\reports\sale_report.jasper" SelfReg="false" NextFile="sale_report.jrxml"/>
+    <ROW File="sale_report.jrxml" Component_="Blank_A4.jasper" FileName="SALE_R~1.JRX|sale_report.jrxml" Attributes="0" SourcePath="target\classes\reports\sale_report.jrxml" SelfReg="false" NextFile="Simple_Blue.jasper"/>
+    <ROW File="sales_report.jasper" Component_="Blank_A4.jasper" FileName="SALES_~1.JAS|sales_report.jasper" Attributes="0" SourcePath="target\classes\reports\sales_report.jasper" SelfReg="false" NextFile="sales_report.jrprint"/>
+    <ROW File="sales_report.jrprint" Component_="Blank_A4.jasper" FileName="SALES_~1.JRP|sales_report.jrprint" Attributes="0" SourcePath="target\classes\reports\sales_report.jrprint" SelfReg="false" NextFile="sales_report.jrxml"/>
+    <ROW File="sales_report.jrxml" Component_="Blank_A4.jasper" FileName="SALES_~1.JRX|sales_report.jrxml" Attributes="0" SourcePath="target\classes\reports\sales_report.jrxml" SelfReg="false" NextFile="sale_report.jasper"/>
+    <ROW File="user.png" Component_="InventoryManager1.class" FileName="user.png" Attributes="0" SourcePath="target\classes\user.png" SelfReg="false" NextFile="SessionManager.class"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
+    <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" UseLargeSchema="true"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="InstallDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\InstallDlg.aip"/>
+    <ROW Fragment="LicenseAgreementDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\LicenseAgreementDlg.aip"/>
+    <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\MaintenanceTypeDlg.aip"/>
+    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;surface\fragments\SequenceDialogs.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;surface\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+    <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\VerifyRemoveDlg.aip"/>
+    <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\VerifyRepairDlg.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_DeleteLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_DeleteRLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractFiles" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="DefaultBuild"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="ExternalUICleaner.dll" SourcePath="&lt;AI_CUSTACTS&gt;ExternalUICleaner.dll"/>
+    <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ROW Dialog_="CustomizeDlg" Control="CustomizeDlgDialogInitializer" Type="DialogInitializer" X="0" Y="0" Width="0" Height="0" Attributes="0" Order="-1" TextLocId="-" HelpLocId="-" ExtDataLocId="-"/>
+    <ROW Dialog_="MsiRMFilesInUse" Control="Cancel" Type="ImageButton" X="163" Y="359" Width="78" Height="28" Attributes="2" Text="[NextCancelButtons]" TextStyle="[MetroButtonText]" Order="100" MsiKey="MsiRMFilesInUse#Cancel" Options="1" ExtType="ImageButton" ExtData="[ButtonText_Cancel]" ExtDataLocId="-"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control="PatchWelcomeDlgDialogInitializer" Type="DialogInitializer" X="0" Y="0" Width="0" Height="0" Attributes="0" Order="-1" TextLocId="-" HelpLocId="-" ExtDataLocId="-"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control="ProductNameTitle" Type="Text" X="83" Y="21" Width="245" Height="50" Attributes="196611" Text="[ProductName]" TextStyle="[ProductNameForSplash]" Order="600" TextLocId="Metro.Control.Text.ProductName" MsiKey="PatchWelcomeDlg#ProductNameTitle"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control="CompanyText" Type="Text" X="83" Y="16" Width="191" Height="12" Attributes="196611" Text="[Manufacturer]" TextStyle="[ManufacturerFont]" Order="700" TextLocId="Metro.Control.Text.Manufacturer" MsiKey="PatchWelcomeDlg#CompanyText"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control="ProductLogo" Type="Bitmap" X="17" Y="5" Width="59" Height="63" Attributes="1" Text="[AppLogoIcon]" Order="800" MsiKey="PatchWelcomeDlg#ProductLogo"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="Cancel" Type="ImageButton" X="163" Y="359" Width="78" Height="28" Attributes="2" Text="[NextCancelButtons]" TextStyle="[MetroButtonText]" Order="100" MsiKey="VerifyReadyDlg#Cancel" Options="1" ExtType="ImageButton" ExtData="[ButtonText_Cancel]" ExtDataLocId="-"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="Back" Type="PushButton" X="5" Y="381" Width="11" Height="11" Attributes="2" Text="Control.Text.VerifyReadyDlg#Back" Help="Back|" Order="200" TextLocId="Control.Text.VerifyReadyDlg#Back" HelpLocId="Air.Control.Help#Back" MsiKey="VerifyReadyDlg#Back" Options="1" ExtType="PushButton" ExtData="[ButtonText_Back]" ExtDataLocId="-"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="ReadyToInstall" Type="Text" X="17" Y="105" Width="312" Height="19" Attributes="196611" Text="Ready to Install" TextStyle="[SubTitleStyle]" Order="400" TextLocId="Control.Text.VerifyReadyDlg#Title" MsiKey="VerifyReadyDlg#ReadyToInstall"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="Text_2" Type="Text" X="17" Y="139" Width="312" Height="100" Attributes="65539" Text="The [Wizard] is ready to begin the [ProductName] installation" Order="500" TextLocId="Control.Text.VerifyReadyDlg#Description" MsiKey="VerifyReadyDlg#Text_2"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="InstallButton" Type="ImageButton" X="251" Y="359" Width="78" Height="28" Attributes="3" Text="[metrobuttonimage]" TextStyle="[MetroButtonText]" Order="600" MsiKey="VerifyReadyDlg#InstallButton" ExtType="ImageButton" ExtData="INSTALL" ExtDataLocId="Metro.Control.ExtData.VerifyReadyDlg#InstallButton"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="ProductNameTitle" Type="Text" X="83" Y="21" Width="245" Height="50" Attributes="196611" Text="[ProductName]" TextStyle="[ProductNameForSplash]" Order="700" TextLocId="Metro.Control.Text.ProductName" MsiKey="VerifyReadyDlg#ProductNameTitle"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="CompanyText" Type="Text" X="83" Y="16" Width="191" Height="12" Attributes="196611" Text="[Manufacturer]" TextStyle="[ManufacturerFont]" Order="800" TextLocId="Metro.Control.Text.Manufacturer" MsiKey="VerifyReadyDlg#CompanyText"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="ProductLogo" Type="Bitmap" X="17" Y="5" Width="59" Height="63" Attributes="1" Text="[AppLogoIcon]" Order="900" MsiKey="VerifyReadyDlg#ProductLogo"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="AdvInst" Type="Text" X="5" Y="388" Width="74" Height="11" Attributes="196611" Text="Advanced Installer" TextStyle="[BrandingStyle]" Order="1000" MsiKey="VerifyReadyDlg#AdvInst"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control="Cancel" Type="ImageButton" X="163" Y="359" Width="78" Height="28" Attributes="2" Text="[NextCancelButtons]" TextStyle="[MetroButtonText]" Order="100" MsiKey="VerifyRemoveDlg#Cancel" Options="1" ExtType="ImageButton" ExtData="[ButtonText_Cancel]" ExtDataLocId="-"/>
+    <ROW Dialog_="VerifyRepairDlg" Control="Bitmap" Type="Bitmap" X="0" Y="0" Width="345" Height="400" Attributes="1" Text="[Background]" Order="100" MsiKey="VerifyRepairDlg#Bitmap"/>
+    <ROW Dialog_="VerifyRepairDlg" Control="Repair" Type="ImageButton" X="251" Y="359" Width="78" Height="28" Attributes="3" Text="[metrobuttonimage]" TextStyle="[MetroButtonText]" Order="200" MsiKey="VerifyRepairDlg#Repair" Options="1" ExtType="ImageButton" ExtData="&amp;Repair" ExtDataLocId="Metro.Control.ExtData.VerifyRepairDlg#Repair"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="InstallDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="301"/>
+    <ROW Dialog_="InstallDlg" Control_="YouMustAgreeCtrl" Event="NewDialog" Argument="LicenseAgreementDlg" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="301"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="NewDialog" Argument="InstallDlg" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="1"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="101"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="501"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="699"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="1"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="199" Options="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="699"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="1"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="299" Options="1"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Modify" Event="EndDialog" Argument="Return" Condition="AI_MAINT" Ordering="101"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="201"/>
+    <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="99"/>
+    <ROW Dialog_="InstallDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_INSTALL AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="302" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="Next" Event="EnableRollback" Argument="False" Condition="AI_INSTALL AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="303" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_INSTALL AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="304" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_INSTALL" Ordering="101" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_INSTALL" Ordering="102" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_INSTALL" Ordering="103" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_INSTALL" Ordering="104" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="YouMustAgreeCtrl" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_INSTALL" Ordering="302" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="YouMustAgreeCtrl" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_INSTALL" Ordering="303" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_INSTALL" Ordering="0" Options="2"/>
+    <ROW Dialog_="InstallDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_INSTALL" Ordering="1" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_INSTALL AND AiLicenseAgreement AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="102" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="EnableRollback" Argument="False" Condition="AI_INSTALL AND AiLicenseAgreement AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="103" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_INSTALL AND AiLicenseAgreement AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="104" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="101" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="102" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="103" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="104" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="2" Options="2"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="3" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Modify" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_MAINT AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="102" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Modify" Event="EnableRollback" Argument="False" Condition="AI_MAINT AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="103" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Modify" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_MAINT AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="104" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="CustomizeDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_MAINT" Ordering="0" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="CustomizeDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_MAINT" Ordering="1" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="CustomizeDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_MAINT" Ordering="2" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="CustomizeDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_MAINT" Ordering="3" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_MAINT" Ordering="2" Options="2"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_MAINT" Ordering="3" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_PATCH AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="202" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="EnableRollback" Argument="False" Condition="AI_PATCH AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="203" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_PATCH AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="204" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="PatchWelcomeDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_PATCH" Ordering="0" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="PatchWelcomeDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_PATCH" Ordering="1" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="PatchWelcomeDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_PATCH" Ordering="2" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="PatchWelcomeDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_PATCH" Ordering="3" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_PATCH" Ordering="0" Options="2"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_PATCH" Ordering="1" Options="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ChooseTextStyles" Type="1" Source="aicustact.dll" Target="ChooseTextStyles"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="AI_ExtractFiles" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DeleteRCadLzma" Type="51" Source="AI_DeleteRLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteRLzma" Type="1281" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DoRemoveExternalUIStub" Type="3585" Source="ExternalUICleaner.dll" Target="DoRemoveExternalUIStub" WithoutSeq="true"/>
+    <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
+    <ROW Action="AI_EnableDebugLog" Type="321" Source="aicustact.dll" Target="EnableDebugLog"/>
+    <ROW Action="AI_EstimateExtractFiles" Type="1" Source="Prereq.dll" Target="EstimateExtractFiles"/>
+    <ROW Action="AI_ExtractCadLzma" Type="51" Source="AI_ExtractLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ExtractFiles" Type="1025" Source="Prereq.dll" Target="ExtractSourceFiles" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
+    <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
+    <ROW Action="AI_GetArpIconPath" Type="1" Source="aicustact.dll" Target="GetArpIconPath"/>
+    <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH" Target="[AI_SETUPEXEPATH_ORIGINAL]"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_RemoveExternalUIStub" Type="1" Source="ExternalUICleaner.dll" Target="RemoveExternalUIStub"/>
+    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_RunFinishActions" Type="1" Source="aicustact.dll" Target="RunFinishActions" WithoutSeq="true"/>
+    <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1502"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99" Builds="DefaultBuild"/>
+    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="101" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="198" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="197" Builds="DefaultBuild"/>
+    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6599" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractFiles" Sequence="3998" Builds="DefaultBuild"/>
+    <ROW Action="AI_DATA_SETTER" Sequence="3997"/>
+    <ROW Action="AI_EstimateExtractFiles" Sequence="3999" Builds="DefaultBuild"/>
+    <ROW Action="AI_GetArpIconPath" Sequence="1401"/>
+    <ROW Action="AI_RemoveExternalUIStub" Condition="(REMOVE=&quot;ALL&quot;) AND ((VersionNT &gt; 500) OR((VersionNT = 500) AND (ServicePackLevel &gt;= 4)))" Sequence="1501"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="InstallDlg" Condition="AI_INSTALL" Sequence="1230" SeqType="3" MsiKey="WelcomeDlg"/>
+    <ROW Action="MaintenanceTypeDlg" Condition="AI_MAINT" Sequence="1250" SeqType="3" MsiKey="MaintenanceTypeDlg"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="53"/>
+    <ROW Action="AI_DpiContentScale" Sequence="52"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+    <ROW Action="AI_ChooseTextStyles" Sequence="74"/>
+    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99"/>
+    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="101"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT64 OR ((VersionNT &lt;&gt; 501) OR (ServicePackLevel = 3))) AND ((VersionNT &lt;&gt; 502) OR (ServicePackLevel = 2))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="SETUPEXEDIR OR (REMOVE=&quot;ALL&quot;)" Description="This package can only be run from a bootstrapper." DescriptionLocId="AI.LaunchCondition.RequireBootstrapper" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
+    <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Comments" Value="[ARPCOMMENTS]" Component_="AI_CustomARPName"/>
+    <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Contact" Value="[ARPCONTACT]" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayName" Value="[AI_PRODUCTNAME_ARP]" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayVersion" Value="[ProductVersion]" Component_="AI_CustomARPName"/>
+    <ROW Registry="EstimatedSize" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="EstimatedSize" Value="#[AI_ARP_SIZE]" Component_="AI_CustomARPName"/>
+    <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpLink" Value="[ARPHELPLINK]" Component_="AI_CustomARPName"/>
+    <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpTelephone" Value="[ARPHELPTELEPHONE]" Component_="AI_CustomARPName"/>
+    <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
+    <ROW Registry="ModifyPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="ModifyPath" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
+    <ROW Registry="NoRepair" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="NoRepair" Value="#1" Component_="AI_CustomARPName"/>
+    <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Publisher" Value="[Manufacturer]" Component_="AI_CustomARPName"/>
+    <ROW Registry="Readme" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Readme" Value="[ARPREADME]" Component_="AI_CustomARPName"/>
+    <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLInfoAbout" Value="[ARPURLINFOABOUT]" Component_="AI_CustomARPName"/>
+    <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLUpdateInfo" Value="[ARPURLUPDATEINFO]" Component_="AI_CustomARPName"/>
+    <ROW Registry="UninstallPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallPath" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
+    <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallString" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
+    <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
+    <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#1" Component_="AI_CustomARPName"/>
+    <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ATTRIBUTE name="UsedTheme" value="surface"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
+    <ROW Directory_="InventoryManagerP_Dir" SourcePath="target\classes"/>
+  </COMPONENT>
+</DOCUMENT>

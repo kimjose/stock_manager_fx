@@ -1,9 +1,10 @@
 package models.products;
 
+import models.SuperModel;
 import models.finance.Bank;
 import utils.Utility;
 
-public class ExpressSale {
+public class ExpressSale implements SuperModel {
     /*'saleNo', 'description', 'saleDate', 'bankId', 'warehouseId', 'refNo', 'createdBy','deleted',
         'posted', 'postedBy',
         'postedOn', 'reversed', 'reversedOn', 'reversedBy'*/
@@ -114,5 +115,10 @@ public class ExpressSale {
 
     public void setReversed(boolean reversed) {
         this.reversed = reversed;
+    }
+
+    @Override
+    public String getSearchString() {
+        return saleNo;
     }
 }

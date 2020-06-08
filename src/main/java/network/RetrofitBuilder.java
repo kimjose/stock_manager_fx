@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 
 public class RetrofitBuilder {
-    private static final String BASE_URL = "http://localhost/StockManager/public/api/";
+    private static final String BASE_URL = "http://localhost/StockManagerP/public/api/";
 
     public static final OkHttpClient httpClient = buildClient();
     public static final Retrofit retrofit = buildRetrofit();

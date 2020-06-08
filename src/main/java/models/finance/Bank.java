@@ -1,8 +1,9 @@
 package models.finance;
 
 import javafx.scene.control.CheckBox;
+import models.SuperModel;
 
-public class Bank {
+public class Bank implements SuperModel {
     //'name', 'branch', 'accountNo','enabled','addedBy','requireRefNo',
     private String name, branch, accountNo;
     private boolean enabled, requireRefNo;
@@ -71,5 +72,10 @@ public class Bank {
     @Override
     public String toString() {
         return name+"-"+accountNo;
+    }
+
+    @Override
+    public String getSearchString() {
+        return name +" "+ branch +" "+ accountNo;
     }
 }

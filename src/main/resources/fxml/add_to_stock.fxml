@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.NotificationPane?>
+
+
+<VBox fx:id="vbParent" prefHeight="135.0" prefWidth="356.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddToStock">
+   <children>
+      <NotificationPane fx:id="notificationPane" />
+      <VBox fx:id="vbHolder" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox>
+               <children>
+                  <Label prefHeight="28.0" prefWidth="145.0" text="Product" />
+                  <ComboBox fx:id="cbProduct" prefHeight="25.0" prefWidth="172.0" promptText="Select product" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="28.0" prefWidth="145.0" text="In Stock" />
+                  <Label fx:id="labelAvailable" prefHeight="28.0" prefWidth="145.0" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="28.0" prefWidth="145.0" text="Quantity" />
+                  <TextField fx:id="tfQuantity" prefHeight="25.0" prefWidth="172.0" promptText="Enter quantity to +/-" />
+               </children>
+            </HBox>
+            <ButtonBar>
+               <buttons>
+                  <Button fx:id="btnAdd" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" styleClass="btn_save" text="Add">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="PLUS" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnMinus" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" styleClass="btn_cancel" text="Minus">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="MINUS" />
+                     </graphic>
+                  </Button>
+               </buttons>
+               <VBox.margin>
+                  <Insets top="4.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </ButtonBar>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="4.0" />
+   </padding>
+</VBox>

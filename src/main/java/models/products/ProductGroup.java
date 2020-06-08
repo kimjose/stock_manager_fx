@@ -1,6 +1,8 @@
 package models.products;
 
-public class ProductGroup {
+import models.SuperModel;
+
+public class ProductGroup implements SuperModel {
     //['name', 'description', 'productId', 'quantity', 'price', 'deleted',];
     private String name, description;
     private Product product;
@@ -54,6 +56,11 @@ public class ProductGroup {
 
     @Override
     public String toString() {
+        return name;
+    }
+
+    @Override
+    public String getSearchString() {
         return name;
     }
 }

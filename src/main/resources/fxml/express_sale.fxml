@@ -1,44 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import org.controlsfx.control.NotificationPane?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
 
-<VBox fx:id="vbParent" prefHeight="456.0" prefWidth="727.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ExpressSaleController">
+<VBox fx:id="vbParent" prefHeight="456.0" prefWidth="727.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ExpressSaleController">
     <children>
         <NotificationPane fx:id="notificationPane" />
         <VBox fx:id="vbHolder" prefHeight="453.0" prefWidth="719.0" spacing="2.0">
             <children>
-                <HBox prefHeight="99.0" prefWidth="700.0">
+                <HBox prefHeight="66.0" prefWidth="719.0">
                     <children>
                         <VBox prefHeight="252.0" prefWidth="363.0" spacing="3.0">
                             <children>
                                 <HBox>
                                     <children>
                                         <Label prefHeight="25.0" prefWidth="108.0" text="Sale No" />
-                                        <TextField fx:id="tfNo" promptText="sale number" editable="false"/>
+                                        <TextField fx:id="tfNo" editable="false" promptText="sale number" />
                                     </children>
                                 </HBox>
                                 <HBox>
                                     <children>
-                                        <Label prefHeight="24.0" prefWidth="108.0" text="Warehouse" />
-                                        <ComboBox fx:id="cbWarehouse" prefHeight="25.0" prefWidth="210.0" promptText="Select Warehouse" />
+                                        <Label prefHeight="27.0" prefWidth="108.0" text="Invoice Date" />
+                                        <DatePicker fx:id="dpDate" prefHeight="25.0" prefWidth="197.0" promptText="Select Date" />
                                     </children>
                                 </HBox>
-                        <HBox>
+                        <HBox layoutX="10.0" layoutY="38.0">
                            <children>
-                              <Label prefHeight="25.0" prefWidth="108.0" text="Bank" />
-                              <ComboBox fx:id="cbBank" prefHeight="25.0" prefWidth="210.0" promptText="Select Bank" />
+                              <Label prefHeight="27.0" prefWidth="108.0" text="Payment Method" />
+                              <ComboBox fx:id="cbBank" prefHeight="25.0" prefWidth="196.0" promptText="Select Method" />
                            </children>
                         </HBox>
                             </children>
@@ -51,12 +43,7 @@
                               <TextField fx:id="tfRefNo" prefHeight="23.0" prefWidth="197.0" promptText="Reference No" />
                            </children>
                         </HBox>
-                                <HBox>
-                                    <children>
-                                        <Label prefHeight="27.0" prefWidth="118.0" text="Invoice Date" />
-                                        <DatePicker fx:id="dpDate" prefHeight="25.0" prefWidth="197.0" promptText="Select Date" />
-                                    </children>
-                                </HBox>
+
                                 <HBox>
                                     <children>
                                         <Label prefHeight="27.0" prefWidth="118.0" text="Invoice Total" />
@@ -70,8 +57,7 @@
                 <Separator prefWidth="200.0" />
                 <HBox prefHeight="21.0" prefWidth="719.0" spacing="4.0">
                     <children>
-                        <Label prefHeight="21.0" prefWidth="158.0" text="Line Type" />
-                        <Label layoutX="20.0" layoutY="10.0" prefHeight="21.0" prefWidth="195.0" text="Product/Service" />
+                        <Label layoutX="20.0" layoutY="10.0" prefHeight="21.0" prefWidth="195.0" text="Product" />
                         <Label layoutX="171.0" layoutY="10.0" prefHeight="21.0" prefWidth="123.0" text="Unit Price" />
                         <Label layoutX="355.0" layoutY="10.0" prefHeight="30.0" prefWidth="120.0" text="Quantity" />
                     </children>
@@ -81,8 +67,7 @@
                 </HBox>
                 <HBox prefHeight="33.0" prefWidth="719.0" spacing="4.0">
                     <children>
-                        <ComboBox fx:id="cbType" prefHeight="25.0" prefWidth="151.0" promptText="Select type" />
-                        <ComboBox fx:id="cbPS" layoutX="20.0" layoutY="10.0" prefHeight="25.0" prefWidth="192.0" promptText="Select product/service" />
+                        <ComboBox fx:id="cbProduct" layoutX="20.0" layoutY="10.0" prefHeight="25.0" prefWidth="192.0" promptText="Select product" />
                         <TextField fx:id="tfUnitPrice" layoutX="244.0" layoutY="10.0" prefHeight="26.0" prefWidth="127.0" />
                         <TextField fx:id="tfQuantity" layoutX="344.0" layoutY="10.0" prefHeight="26.0" prefWidth="120.0" />
                         <Button fx:id="btnAddLine" mnemonicParsing="false" prefHeight="25.0" prefWidth="101.0" styleClass="btn_neutral" text="Add">

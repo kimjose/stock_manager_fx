@@ -1,6 +1,8 @@
 package models.vendors;
 
-public class Vendor {
+import models.SuperModel;
+
+public class Vendor implements SuperModel {
     //'name', 'is_active','email','phone','addedBy','isActive'
 
     private int id;
@@ -45,6 +47,11 @@ public class Vendor {
 
     @Override
     public String toString() {
+        return name;
+    }
+
+    @Override
+    public String getSearchString() {
         return name;
     }
 }

@@ -4,6 +4,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
 
 <VBox fx:id="vbParent" prefHeight="564.0" prefWidth="424.0" snapToPixel="false" spacing="2.0" stylesheets="../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GeneralCenter">
    <children>
@@ -79,14 +80,19 @@
             <Insets left="3.0" right="3.0" />
          </VBox.margin>
       </Separator>
-      <TableView fx:id="tvGeneral" tableMenuButtonVisible="true">
+      <AnchorPane>
          <VBox.margin>
             <Insets bottom="4.0" left="3.0" right="3.0" />
          </VBox.margin>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-      </TableView>
+         <children>
+            <TableView fx:id="tvGeneral" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <MaskerPane fx:id="maskerPane" prefHeight="200.0" prefWidth="200.0" text="Loading data. Please wait..." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
    </children>
    <padding>
       <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

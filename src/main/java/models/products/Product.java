@@ -1,9 +1,15 @@
 package models.products;
 
 import com.google.gson.annotations.SerializedName;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import interfaces.HomeDataInterface;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.paint.Paint;
 import models.SuperModel;
 
-public class Product {
+public class Product implements SuperModel{
 
     /**
      * 'name', 'is_active', 'description', 'sku_code', 'upc_code', 'quantity',
@@ -16,11 +22,12 @@ public class Product {
     @SerializedName("upc_code")
     private String upcCode;
     private int quantity;
-    private double price;
     private double buyingPrice;
+    private double sellingPrice;
     private Brand brand;
     private Category category;
     private UnitOfMeasure uom;
+    private HomeDataInterface dataInterface;
 
     /*public int getId() {
         return id;
@@ -66,14 +73,6 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public double getBuyingPrice() {
         return buyingPrice;
     }
@@ -114,6 +113,14 @@ public class Product {
         this.image = image;
     }
 
+    public double getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public void setSellingPrice(double sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
     @Override
     public String toString() {
         return name;
@@ -121,5 +128,27 @@ public class Product {
 
     public int getId() {
         return id;
+    }
+
+    public Button getSellButton(){
+        Button sellBtn = new Button("sell");
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.USD);
+        icon.setFill(Paint.valueOf("#19D019"));
+        icon.setSize("12.0");
+        sellBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: 19D019;");
+        sellBtn.setGraphic(icon);
+        sellBtn.setOnAction(event -> {
+            if (dataInterface != null) dataInterface.sellProduct(this);
+        });
+        return sellBtn;
+    }
+
+    public void setDataInterface(HomeDataInterface dataInterface) {
+        this.dataInterface = dataInterface;
+    }
+
+    @Override
+    public String getSearchString() {
+        return name;
     }
 }

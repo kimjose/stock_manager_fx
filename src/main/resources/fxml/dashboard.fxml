@@ -34,14 +34,14 @@
                         <Label fx:id="labelTotalSale" text="0" />
                      </children>
                   </VBox>
-                  <VBox alignment="TOP_CENTER" layoutX="151.0" layoutY="10.0" prefHeight="75.0" prefWidth="141.0">
+                  <VBox alignment="TOP_CENTER" layoutX="151.0" layoutY="10.0" prefHeight="75.0" prefWidth="141.0" visible="false">
                      <children>
                         <FontAwesomeIconView glyphName="BANK" size="30" />
                         <Label styleClass="label-header" text="Customer Balances" />
                         <Label fx:id="labelCustomerBalance" text="0" />
                      </children>
                   </VBox>
-                  <VBox alignment="TOP_CENTER" layoutX="292.0" layoutY="10.0" prefHeight="75.0" prefWidth="141.0">
+                  <VBox alignment="TOP_CENTER" layoutX="292.0" layoutY="10.0" prefHeight="75.0" prefWidth="141.0" visible="false">
                      <children>
                         <FontAwesomeIconView glyphName="BANK" size="30" />
                         <Label styleClass="label-header" text="Vendor Balances" />

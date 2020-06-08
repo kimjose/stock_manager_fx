@@ -4,6 +4,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.LinesInterface;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Paint;
 import models.customers.InvoiceLine;
 import network.ApiService;
 import network.RetrofitBuilder;
@@ -64,9 +65,9 @@ public class ExpressSaleLine {
     }
 
     public Button getRemoveLine(){
-        Button deleteBtn = new Button("Remove");
+        Button deleteBtn = new Button();
         FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.TRASH);
-        icon.setStyle("-fx-fill: #d32f2f;");
+        icon.setFill(Paint.valueOf("#d32f2f"));
         icon.setSize("16.0");
         deleteBtn.setGraphic(icon);
         deleteBtn.setOnAction(event -> {

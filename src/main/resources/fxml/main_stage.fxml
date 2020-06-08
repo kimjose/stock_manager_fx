@@ -31,7 +31,7 @@
                   <Insets left="2.0" top="4.0" />
                </HBox.margin>
                <image>
-                  <Image url="@../../../../tops.PNG" />
+                  <Image url="@../user.png" />
                </image>
             </ImageView>
             <VBox alignment="CENTER">

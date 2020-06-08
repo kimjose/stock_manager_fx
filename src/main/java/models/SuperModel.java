@@ -1,5 +1,5 @@
 package models;
 
-public class SuperModel {
-    private int id;
+public interface SuperModel {
+    String getSearchString();
 }
