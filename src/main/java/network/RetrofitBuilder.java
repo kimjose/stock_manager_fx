@@ -4,11 +4,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import utils.Utility;
 
 import java.io.IOException;
 
 public class RetrofitBuilder {
-    private static final String BASE_URL = "http://localhost/StockManager/public/api/";
+    private static final String BASE_URL = Utility.BASE_URL;
 
     public static final OkHttpClient httpClient = buildClient();
     public static final Retrofit retrofit = buildRetrofit();

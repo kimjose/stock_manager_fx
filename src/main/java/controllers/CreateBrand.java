@@ -2,7 +2,6 @@ package controllers;
 
 import interfaces.HomeDataInterface;
 import javafx.application.Platform;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -17,12 +16,14 @@ import models.products.Brand;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.Notifications;
+import org.controlsfx.validation.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import utils.Utility;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class CreateBrand implements Initializable {
@@ -45,14 +46,20 @@ public class CreateBrand implements Initializable {
     private Brand brand;
     private ApiService apiService;
     private HomeDataInterface dataInterface;
+    ValidationSupport vs = new ValidationSupport();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         apiService = RetrofitBuilder.createService(ApiService.class);
         Platform.runLater(()->{
+            Utility.setLogo(vbParent);
             btnSave.setOnAction(event -> save());
             btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
         });
+
+        vs.registerValidator(tfName, true, Validator.createEmptyValidator("Name is required."));
     }
 
     public void setBrand(Brand brand) {
@@ -66,10 +73,17 @@ public class CreateBrand implements Initializable {
     }
 
     private void save(){
-        Call<Brand[]> call = null;
-        String name = tfName.getText();
-        if (name.trim().equals("")) createNotification(-1, "Brand name is required");
+        ValidationResult vr = vs.getValidationResult();
+        Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
+        StringBuilder message = new StringBuilder();
+        while (iterator.hasNext()){
+            message.append(iterator.next().getText());
+            message.append("\n");
+        }
+        if (!message.toString().isEmpty()) createNotification(-1, message.toString());
         else {
+            Call<Brand[]> call;
+            String name = tfName.getText().trim();
             if (brand == null) {
                 call = apiService.addBrand(name);
             }else{

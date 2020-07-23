@@ -25,6 +25,7 @@ import retrofit2.Response;
 import utils.SessionManager;
 import utils.Utility;
 
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -86,6 +87,7 @@ public class PaymentVoucherController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Utility.setupNotificationPane(notificationPane, vbHolder);
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.restrictInputDec(tfAmount);
@@ -101,7 +103,7 @@ public class PaymentVoucherController implements Initializable {
         btnPost.setOnAction(event -> post());
         btnReverse.setOnAction(event -> reverse());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
-        
+        Platform.runLater(()->Utility.setLogo(vbParent));
         loadData();
     }
 
@@ -191,11 +193,12 @@ public class PaymentVoucherController implements Initializable {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
                         Utility.closeWindow(vbHolder);
+                        PaymentVoucher[] paymentVouchers = {};
                         List<PaymentVoucher> filtered = new ArrayList<>();
                         for (PaymentVoucher p: response.body()) {
                             if (!p.isPosted()) filtered.add(p);
                         }
-                        dataInterface.updateData("The voucher has been saved", filtered.toArray());
+                        dataInterface.updateData("The voucher has been saved", filtered.toArray(paymentVouchers));
                     });
                 }else {
                     Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
@@ -220,10 +223,11 @@ public class PaymentVoucherController implements Initializable {
                     Platform.runLater(() -> {
                         Utility.closeWindow(vbHolder);
                         List<PaymentVoucher> filtered = new ArrayList<>();
+                        PaymentVoucher[] paymentVouchers = {};
                         for (PaymentVoucher p: response.body()) {
                             if (!p.isPosted()) filtered.add(p);
                         }
-                        dataInterface.updateData("The voucher has been posted", filtered.toArray());
+                        dataInterface.updateData("The voucher has been posted", filtered.toArray(paymentVouchers));
                     });
                 } else
                     Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
@@ -245,11 +249,12 @@ public class PaymentVoucherController implements Initializable {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
                         Utility.closeWindow(vbHolder);
+                        PaymentVoucher[] paymentVouchers = {};
                         List<PaymentVoucher> filtered = new ArrayList<>();
                         for (PaymentVoucher v: response.body()) {
                             if (v.isPosted()) filtered.add(v);
                         }
-                        dataInterface.updateData("The voucher has been reversed", filtered.toArray());
+                        dataInterface.updateData("The voucher has been reversed", filtered.toArray(paymentVouchers));
                     });
                 }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                         new String[]{"message"})));

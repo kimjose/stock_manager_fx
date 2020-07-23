@@ -5,6 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.controlsfx.control.MaskerPane?>
 <VBox fx:id="vbParent" prefHeight="564.0" prefWidth="424.0" snapToPixel="false" spacing="2.0" stylesheets="../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GeneralCenter">
    <children>
       <TabPane prefHeight="115.0" prefWidth="254.0" tabClosingPolicy="UNAVAILABLE">
@@ -79,14 +80,20 @@
             <Insets left="3.0" right="3.0" />
          </VBox.margin>
       </Separator>
-      <TableView fx:id="tvGeneral" tableMenuButtonVisible="true">
+      <AnchorPane fx:id="apTable">
+         <TableView fx:id="tvGeneral" tableMenuButtonVisible="true"  AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0"
+                    AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <columnResizePolicy>
+               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+         </TableView>
+         <MaskerPane fx:id="maskerPane" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0"
+                     AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" visible="true"/>
          <VBox.margin>
-            <Insets bottom="4.0" left="3.0" right="3.0" />
+            <Insets bottom="4.0" left="3.0" right="2.0" />
          </VBox.margin>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-      </TableView>
+      </AnchorPane>
+
    </children>
    <padding>
       <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

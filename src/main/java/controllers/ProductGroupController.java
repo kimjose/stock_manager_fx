@@ -63,6 +63,7 @@ public class ProductGroupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Utility.setupNotificationPane(notificationPane, vbHolder);
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.restrictInputNum(tfQuantity);
@@ -70,6 +71,7 @@ public class ProductGroupController implements Initializable {
 
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbHolder));
+        Platform.runLater(()->Utility.setLogo(vbParent));
         loadData();
     }
 
@@ -164,5 +166,6 @@ public class ProductGroupController implements Initializable {
         tfName.setText(group.getName());
         tfDescription.setText(group.getDescription());
         tfPrice.setText(String.valueOf(group.getPrice()));
+        tfQuantity.setText(String.valueOf(group.getQuantity()));
     }
 }

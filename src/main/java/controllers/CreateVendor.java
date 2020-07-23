@@ -15,12 +15,15 @@ import models.vendors.Vendor;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
+import org.controlsfx.validation.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import utils.SessionManager;
 import utils.Utility;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class CreateVendor implements Initializable {
@@ -54,30 +57,47 @@ public class CreateVendor implements Initializable {
     private Vendor vendor;
     private HomeDataInterface dataInterface;
     private ApiService apiService;
+    private ValidationSupport vs = new ValidationSupport();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.setupNotificationPane(notificationPane, vbHolder);
         Utility.restrictInputNum(tfPhone);
 
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
+        Platform.runLater(()->Utility.setLogo(vbParent));
+        vs.registerValidator(tfName, true, Validator.createEmptyValidator("Name is required."));
+        vs.registerValidator(tfEmail, false, Validator.createRegexValidator("Enter a valid email.", Utility.EMAIL_PATTERN, Severity.ERROR));
+        vs.registerValidator(tfPhone, false, Validator.createRegexValidator("Enter a valid number", Utility.MOBILENUM_PATTERN, Severity.ERROR));
     }
 
-    private void save(){
+    private void save() {
+        ValidationResult vr = vs.getValidationResult();
+        Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
+        StringBuilder message = new StringBuilder();
+        while (iterator.hasNext()){
+            message.append(iterator.next().getText());
+            message.append("\n");
+        }
+        if (!message.toString().isEmpty()) {
+            notificationPane.show(message.toString()); return;
+        }
         String name = tfName.getText().trim();
-        String email = tfEmail.getText().trim();
-        String phone = tfPhone.getText().trim();
-        if (name.equals("")){
-            notificationPane.show("vendor name is required.");return;
+        String email = tfEmail.getText() == null ? "" : tfEmail.getText().trim();
+        String phone = tfPhone.getText() == null ? "" : tfPhone.getText().trim();
+        if (name.equals("")) {
+            notificationPane.show("vendor name is required.");
+            return;
         }
         Call<Vendor[]> call;
-        if (vendor == null) call = apiService.addVendor(name, email, phone, 1);
+        if (vendor == null) call = apiService.addVendor(name, email, phone, SessionManager.INSTANCE.getUser().getId());
         else {
-            name = vendor.getName().equals(name)?null:name;
-            email = vendor.getEmail().equals(email)?null:email;
-            phone = vendor.getPhone().equals(phone)?null:phone;
+            name = vendor.getName().equals(name) ? null : name;
+            email = vendor.getEmail().equals(email) ? null : email;
+            phone = vendor.getPhone().equals(phone) ? null : phone;
             call = apiService.updateVendor(vendor.getId(), name, email, phone);
         }
         call.enqueue(new Callback<>() {
@@ -93,7 +113,7 @@ public class CreateVendor implements Initializable {
                 } else {
                     Platform.runLater(() -> {
                         assert response.errorBody() != null;
-                        notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"name","email","phone"}));
+                        notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"name", "email", "phone"}));
                     });
                 }
             }
@@ -115,6 +135,6 @@ public class CreateVendor implements Initializable {
         labelId.setText(String.valueOf(vendor.getId()));
         tfName.setText(vendor.getName());
         tfEmail.setText(vendor.getEmail());
-        tfPhone.setText(vendor.getPhone()==null?"":vendor.getPhone());
+        tfPhone.setText(vendor.getPhone() == null ? "" : vendor.getPhone());
     }
 }

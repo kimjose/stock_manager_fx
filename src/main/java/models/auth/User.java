@@ -1,6 +1,8 @@
 package models.auth;
 
-public class User {
+import models.SuperModel;
+
+public class User implements SuperModel {
     /*
     *
     * {
@@ -21,7 +23,7 @@ public class User {
 }
     * */
 
-    private int id;
+    private int id, nationalId;
     private String userName, firstName, lastName, email, dob, gender, photo, phoneNo;
     private boolean admin;
 
@@ -99,5 +101,18 @@ public class User {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public int getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(int nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    @Override
+    public String getSearchString() {
+        return userName+" "+email+" "+firstName+" "+lastName+" "+nationalId;
     }
 }

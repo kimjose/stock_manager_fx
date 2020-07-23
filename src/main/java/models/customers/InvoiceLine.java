@@ -3,7 +3,12 @@ package models.customers;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.LinesInterface;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Paint;
 import models.products.Product;
 import models.products.Service;
@@ -12,6 +17,7 @@ import network.RetrofitBuilder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import utils.Utility;
 
 public class InvoiceLine {
     //'invId', 'type','typeId','description','unitPrice','quantity'
@@ -24,6 +30,7 @@ public class InvoiceLine {
     private Service service;
     private String description;
     private double unitPrice;
+    private double buyingPrice;
     private int quantity;
     private LinesInterface linesInterface;
     private String name;
@@ -136,6 +143,37 @@ public class InvoiceLine {
 
     public void setService(Service service) {
         this.service = service;
+    }
+
+    public double getBuyingPrice() {
+        return buyingPrice;
+    }
+
+    public void setBuyingPrice(double buyingPrice) {
+        this.buyingPrice = buyingPrice;
+    }
+
+    public TextField getQuantityTf(){
+        TextField textField = new TextField(String.valueOf(quantity));
+        textField.setAlignment(Pos.BASELINE_CENTER);
+        Utility.restrictInputNum(textField);
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue){
+                try{
+                    String q = textField.getText().trim();
+                    int newQ = Integer.parseInt(q);
+                    int diff = newQ - quantity;
+                    InvoiceLine newLine = this;
+                    newLine.setQuantity(diff);
+                    if (linesInterface != null) linesInterface.updateQuantity(newLine);
+                }catch(Exception e){ e.printStackTrace();}
+            }
+        });
+        textField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER){
+            }
+        });
+        return textField;
     }
 
     public LinesInterface getLinesInterface() {

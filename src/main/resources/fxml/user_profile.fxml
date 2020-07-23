@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.controlsfx.control.NotificationPane?>
+<VBox fx:id="vpParent" prefHeight="283.0" prefWidth="1014.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UserProfile">
+   <children>
+      <NotificationPane fx:id="notificationPane"/>
+      <HBox fx:id="hbHolder" prefHeight="227.0" prefWidth="824.0" style="-fx-background-color: #FFFFFF;">
+         <children>
+            <ImageView fx:id="ivPhoto" fitHeight="150.0" fitWidth="169.0" pickOnBounds="true">
+               <HBox.margin>
+                  <Insets right="2.0" top="2.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../user.png" />
+               </image>
+            </ImageView>
+            <VBox prefHeight="324.0" prefWidth="260.0">
+               <children>
+                  <HBox>
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="75.0" text="User Name" />
+                        <Label fx:id="labelUserName" prefHeight="36.0" prefWidth="174.0" />
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="73.0" text="User Email" />
+                        <Label fx:id="labelEmail" prefHeight="36.0" prefWidth="176.0" />
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="76.0" text="First Name" />
+                        <Label fx:id="labelFirst" prefHeight="36.0" prefWidth="172.0" />
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="75.0" text="Last Name" />
+                        <Label fx:id="labelLast" prefHeight="36.0" prefWidth="175.0" />
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="75.0" text="Phone No" />
+                        <Label fx:id="labelPhone" prefHeight="36.0" prefWidth="175.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox prefHeight="390.0" prefWidth="282.0">
+               <children>
+                  <HBox layoutX="10.0" layoutY="118.0">
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="103.0" text="Gender" />
+                        <Label fx:id="labelGender" prefHeight="36.0" prefWidth="150.0" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="154.0">
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="98.0" text="Date of Birth" />
+                        <Label fx:id="labelDOB" prefHeight="36.0" prefWidth="150.0" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="46.0">
+                     <children>
+                        <Label prefHeight="36.0" prefWidth="99.0" text="National ID" />
+                        <Label fx:id="labelId" prefHeight="36.0" prefWidth="160.0" />
+                     </children>
+                  </HBox>
+                  <CheckBox fx:id="cbAdmin" disable="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="123.0" text="Admin" />
+               </children>
+            </VBox>
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <VBox prefHeight="227.0" prefWidth="285.0" spacing="2.0">
+               <children>
+                  <Label alignment="TOP_CENTER" prefHeight="20.0" prefWidth="318.0" text="Change Password" />
+                  <Label prefHeight="22.0" prefWidth="122.0" text="Old Password" />
+                  <PasswordField fx:id="pfOld" prefHeight="23.0" prefWidth="235.0" promptText="Enter Old Password" />
+                  <Label prefHeight="22.0" prefWidth="123.0" text="New Password" />
+                  <PasswordField fx:id="pfNew" prefHeight="23.0" prefWidth="234.0" promptText="Enter Old Password" />
+                  <Label prefHeight="22.0" prefWidth="122.0" text="Confirm Password" />
+                  <PasswordField fx:id="pfConfirm" prefHeight="23.0" prefWidth="234.0" promptText="Enter Old Password" />
+                  <Button fx:id="btnSave" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="23.0" prefWidth="174.0" styleClass="btn_neutral" text="Save">
+                     <VBox.margin>
+                        <Insets left="45.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+      <ButtonBar style="-fx-background-color: #FFFFFF;">
+         <buttons>
+            <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="37.0" prefWidth="134.0" styleClass="btn_cancel" text="Close">
+               <graphic>
+                  <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="15" />
+               </graphic>
+            </Button>
+         </buttons>
+         <VBox.margin>
+            <Insets right="10.0" />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="2.0" top="2.0" />
+         </padding>
+      </ButtonBar>
+   </children>
+   <padding>
+      <Insets left="4.0" right="4.0" top="4.0" />
+   </padding>
+</VBox>

@@ -6,9 +6,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="bpParent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainStage">
+<BorderPane fx:id="bpParent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="1020.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainStage">
    <center>
-      <AnchorPane fx:id="apCenter" prefHeight="500.0" prefWidth="500.0">
+      <AnchorPane fx:id="apCenter" prefHeight="530.0" prefWidth="500.0">
          <children>
             <Button layoutX="72.0" layoutY="27.0" mnemonicParsing="false" onAction="#showDims" text="Button" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" />
          </children>
@@ -24,19 +24,18 @@
       <TreeView fx:id="tvMain" prefHeight="500.0" prefWidth="220.0" BorderPane.alignment="CENTER" />
    </left>
    <top>
-      <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="200.0" styleClass="top-parent" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0" styleClass="top-parent" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" styleClass="circle-image-view" HBox.hgrow="NEVER">
+            <ImageView fx:id="ivUserPhoto" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" styleClass="circle-image-view" HBox.hgrow="NEVER">
                <HBox.margin>
                   <Insets left="2.0" top="4.0" />
                </HBox.margin>
                <image>
-                  <Image url="@../../../../tops.PNG" />
+                  <Image url="@../user.png" />
                </image>
             </ImageView>
             <VBox alignment="CENTER">
                <children>
-                  <Label text="User Name" />
                   <Label fx:id="labelUserName" text="User Name" />
                </children>
             </VBox>
@@ -49,6 +48,6 @@
       </HBox>
    </top>
    <padding>
-      <Insets bottom="3.0" left="3.0" right="2.0" top="2.0" />
+      <Insets />
    </padding>
 </BorderPane>

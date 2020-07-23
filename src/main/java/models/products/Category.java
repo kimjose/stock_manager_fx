@@ -1,6 +1,8 @@
 package models.products;
 
-public class Category {
+import models.SuperModel;
+
+public class Category implements SuperModel {
     private int id;
     private String name;
 
@@ -19,6 +21,11 @@ public class Category {
 
     @Override
     public String toString() {
+        return name;
+    }
+
+    @Override
+    public String getSearchString() {
         return name;
     }
 }

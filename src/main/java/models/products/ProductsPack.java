@@ -1,10 +1,11 @@
 package models.products;
 
+import models.SuperModel;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 
-public class ProductsPack {
+public class ProductsPack implements SuperModel {
     /**
      * This class helps when a product package is opened for retail selling
      *
@@ -114,5 +115,10 @@ public class ProductsPack {
 
     public void setReversedOn(Date reversedOn) {
         this.reversedOn = reversedOn;
+    }
+
+    @Override
+    public String getSearchString() {
+        return name;
     }
 }

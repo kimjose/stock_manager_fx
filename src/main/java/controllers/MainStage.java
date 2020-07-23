@@ -2,37 +2,43 @@ package controllers;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import models.auth.User;
 import utils.SessionManager;
+import utils.Utility;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
 /**
  * @author kim jose
  * @see javafx.beans.value.ChangeListener
  * @see javafx.fxml.Initializable
- *
- * ****/
+ ****/
 
 public class MainStage implements Initializable, ChangeListener {
 
@@ -49,6 +55,10 @@ public class MainStage implements Initializable, ChangeListener {
     private FontAwesomeIconView faivExit;
 
     @FXML
+    private ImageView ivUserPhoto;
+
+
+    @FXML
     private AnchorPane apCenter;
 
     private final User user = SessionManager.INSTANCE.getUser();
@@ -57,10 +67,38 @@ public class MainStage implements Initializable, ChangeListener {
     public void initialize(URL location, ResourceBundle resources) {
         createTreeItems();
         tvMain.getSelectionModel().selectedItemProperty().addListener(this);
-        if (user != null) labelUserName.setText(user.getUserName());
+        tvMain.getSelectionModel().select(1);
+        if (user != null) {
+            labelUserName.setText(user.getUserName());
+            if (user.getPhoto() != null && !user.getPhoto().equals("")) {
+                Utility.decodeImage(user.getPhoto(), ivUserPhoto, "user.png");
+            }
+        }
+        faivExit.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
+        ivUserPhoto.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/user_profile.fxml"));
+                VBox box = loader.load();
+                Scene scene = new Scene(box);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("My Profile");
+                stage.setResizable(false);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.initStyle(StageStyle.UNIFIED);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        });
+        Platform.runLater(() -> {
+            LocalDate expiresOn = Utility.checkExpiresOn();
+            if (expiresOn.isBefore(LocalDate.now()) || expiresOn.isEqual(LocalDate.now())) Utility.subscribe();
+        });
     }
-    //private void
-    private void createTreeItems(){
+
+    private void createTreeItems() {
         List<TreeItem<String>> treeItemList = new ArrayList<>();
         TreeItem<String> homeTree = new TreeItem<>("Dashboard");
         FontAwesomeIconView iconView = new FontAwesomeIconView();
@@ -70,11 +108,19 @@ public class MainStage implements Initializable, ChangeListener {
         TreeItem<String> shopTree = new TreeItem<>("Shop");
         iconView = new FontAwesomeIconView();
         iconView.setIcon(FontAwesomeIcon.SHOPPING_CART);
+        iconView.setFill(Paint.valueOf("#FFFFFF"));
         shopTree.setGraphic(iconView);
         TreeItem<String> financeTree = new TreeItem<>("Finance");
         iconView = new FontAwesomeIconView();
         iconView.setIcon(FontAwesomeIcon.MONEY);
+        iconView.setFill(Paint.valueOf("#FFFFFF"));
         financeTree.setGraphic(iconView);
+        iconView = new FontAwesomeIconView();
+        iconView.setIcon(FontAwesomeIcon.USERS);
+        iconView.setFill(Paint.valueOf("#FFFFFF"));
+        TreeItem<String> usersTree = new TreeItem<>("Users");
+        usersTree.setGraphic(iconView);
+
         TreeItem<String> vendorsTree = new TreeItem<>("Vendors");
         TreeItem<String> customerTree = new TreeItem<>("Customers");
 
@@ -95,7 +141,7 @@ public class MainStage implements Initializable, ChangeListener {
         TreeItem<String> eSaleTI = new TreeItem<>("Express Sales");
         TreeItem<String> peSaleTI = new TreeItem<>("Posted Express Sales");
         TreeItem<String> reSaleTI = new TreeItem<>("Reversed Express Sales");
-        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI,productGroupsTI, unpackingTI,
+        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI, productGroupsTI, unpackingTI,
                 postedUnpackingTI, reversedUnpackingTI, serviceTI, eSaleTI, peSaleTI, reSaleTI);
 
         TreeItem<String> allVendors = new TreeItem<>("All Vendors");
@@ -124,6 +170,7 @@ public class MainStage implements Initializable, ChangeListener {
         treeItemList.add(financeTree);
         treeItemList.add(vendorsTree);
         treeItemList.add(customerTree);
+        treeItemList.add(usersTree);
         TreeItem<String> rootItem = new TreeItem<>("Inventory Manager");
         rootItem.getChildren().addAll(treeItemList);
         rootItem.setExpanded(true);
@@ -135,24 +182,25 @@ public class MainStage implements Initializable, ChangeListener {
     public void changed(ObservableValue observable, Object oldValue, Object newValue) {
         TreeItem<String> selected = (TreeItem) newValue;
         System.out.println(selected.getValue());
-        switch (selected.getValue()){
+        switch (selected.getValue()) {
 
-            case "Dashboard":{
+            case "Dashboard": {
                 try {
                     FXMLLoader loader = new FXMLLoader();
                     AnchorPane anchorPane = loader.load(getClass().getResource("/fxml/dashboard.fxml").openStream());
-                    anchorPane.prefWidthProperty().bind(bpParent.widthProperty().subtract(225));
-                    anchorPane.prefHeightProperty().bind(bpParent.heightProperty().subtract(80));
-                    System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
+                    anchorPane.prefWidthProperty().bind(bpParent.widthProperty().subtract(220));
+                    anchorPane.prefHeightProperty().bind(bpParent.heightProperty().subtract(50));
+                    System.out.println("params: width " + apCenter.widthProperty() + " height: " + apCenter.heightProperty());
                     List<Node> nodeList = new ArrayList<>();
                     nodeList.add(anchorPane);
                     apCenter.getChildren().setAll(nodeList);
-                }catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
             }
 
+            case "Users":
             case "Banks":
             case "Profits and Losses":
             case "Products":
@@ -181,17 +229,17 @@ public class MainStage implements Initializable, ChangeListener {
             case "Reversed Payment Vouchers":
             case "Vendor Invoices":
             case "Posted Vendor Invoices":
-            case "Reversed Vendor Invoices":{
+            case "Reversed Vendor Invoices": {
                 try {
                     FXMLLoader loader = new FXMLLoader();
                     VBox vBox = loader.load(getClass().getResource("/fxml/general_center.fxml").openStream());
-                    System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
+                    System.out.println("params: width " + apCenter.widthProperty() + " height: " + apCenter.heightProperty());
                     GeneralCenter generalCenter = loader.getController();
                     generalCenter.setType(selected.getValue());
                     apCenter.getChildren().setAll(vBox);
-                    vBox.prefWidthProperty().bind(bpParent.widthProperty().subtract(225));
-                    vBox.prefHeightProperty().bind(bpParent.heightProperty().subtract(80));
-                }catch (IOException e){
+                    vBox.prefWidthProperty().bind(bpParent.widthProperty().subtract(220));
+                    vBox.prefHeightProperty().bind(bpParent.heightProperty().subtract(50));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
@@ -200,9 +248,10 @@ public class MainStage implements Initializable, ChangeListener {
 
         }
     }
+
     @FXML
     void showDims(ActionEvent event) {
-        System.out.println("params: width "+apCenter.widthProperty()+" height: "+apCenter.heightProperty());
+        System.out.println("params: width " + apCenter.widthProperty() + " height: " + apCenter.heightProperty());
         SessionManager sessionManager = SessionManager.INSTANCE;
         System.out.println(sessionManager.getUser().getUserName());
     }

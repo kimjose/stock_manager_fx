@@ -1,11 +1,12 @@
 package models.customers;
 
+import models.SuperModel;
 import models.products.Warehouse;
 
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class Invoice {
+public class Invoice implements SuperModel {
     /**
      * 'customerId', 'invoiceNo', 'invoiceDate','createdBy',
      *             'warehouseId', 'posted','postedOn', 'reversed', 'reversedOn', 'deleted',**/
@@ -102,5 +103,10 @@ public class Invoice {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    @Override
+    public String getSearchString() {
+        return invoiceNo + customer.toString();
     }
 }

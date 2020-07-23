@@ -17,6 +17,20 @@ public interface ApiService {
     @FormUrlEncoded
     Call<User> login(@Field("userName") String username, @Field("password")String password, @Field("password_confirmation")String passwordConfirm);
 
+    @POST("user/create")
+    @FormUrlEncoded
+    Call<Void> createUser(@Field("userName") String userName, @Field("email") String email, @Field("firstName") String firstName, @Field("lastName") String lastName,
+                          @Field("nationalId") String nationalId, @Field("dob") String dob, @Field("gender") String gender, @Field("photo") String photo,
+                          @Field("isAdmin") int admin, @Field("password") String password, @Field("phoneNo") String phoneNo);
+
+    @POST("user/update/{id}")
+    @FormUrlEncoded
+    Call<Void> updateUser(@Path("id") int id, @Field("userName") String userName, @Field("email") String email, @Field("firstName") String firstName, @Field("lastName") String lastName,
+                          @Field("nationalId") String nationalId, @Field("dob") String dob, @Field("gender") String gender, @Field("photo") String photo,
+                          @Field("isAdmin") int admin, @Field("password") String password, @Field("phoneNo") String phoneNo);
+
+    @GET("user/all")
+    Call<User[]> getUsers();
 
 
 
@@ -78,11 +92,41 @@ public interface ApiService {
     @GET("unpacking")
     Call<Unpacking[]> unpackings();
 
+    // Reports....
+    @GET("sales_report/{startDate}/{endDate}")
+    Call<Object[]> salesReport(@Path("startDate") String startDate, @Path("endDate") String endDate);
+
+    @GET("sale_report/{id}")
+    Call<Object[]> saleReport(@Path("id") int id);
+
+    @GET("product_report/{id}/{startDate}/{endDate}")
+    Call<Object[]> productReport(@Path("id") int id,@Path("startDate") String startDate, @Path("endDate") String endDate);
+
+    @GET("customer_report/{id}/{startDate}/{endDate}")
+    Call<Object[]> customerReport(@Path("id") int id, @Path("startDate") String startDate, @Path("endDate") String endDate);
+
 
 
     /**
      * POST requests
      * ***/
+
+
+    @POST("product")
+    @FormUrlEncoded
+    Call<Product[]> addProduct(@Field("name")String name, @Field("description")String description,
+                               @Field("buyingPrice")double price, @Field("sellingPrice")double sellingPrice, @Field("brandId")int brandId, @Field("uomId")int uomId,
+                               @Field("categoryId")int categoryId, @Field("sku_code")String skuCode, @Field("upc_code")String upcCode,
+                               @Field("image")String image);
+
+    @POST("update_product/{id}")
+    @FormUrlEncoded
+    Call<Product[]> updateProduct(@Path("id") int id, @Field("name")String name, @Field("description")String description,
+                                  @Field("buyingPrice")double price, @Field("sellingPrice")double sellingPrice, @Field("brandId")int brandId, @Field("uomId")int uomId,
+                                  @Field("categoryId")int categoryId,
+                                  @Field("sku_code")String skuCode, @Field("upc_code")String upcCode,
+                                  @Field("image")String image);
+
     @POST("brand")
     @FormUrlEncoded
     Call<Brand[]> addBrand(@Field("name") String name);
@@ -145,13 +189,26 @@ public interface ApiService {
     @POST("customer_invoice_line")
     @FormUrlEncoded
     Call<InvoiceLine[]> addCustomerInvoiceLine(@Field("invId")int invId, @Field("type")String type, @Field("typeId")int typeId,
-                                               @Field("unitPrice")double unitPrice,@Field("quantity")int quantity,@Field("description")String description);
+                                               @Field("unitPrice")double unitPrice,@Field("buyingPrice")double buyingPrice,@Field("quantity")int quantity,@Field("description")String description);
+
+    @POST("customer_invoice_and_line")
+    @FormUrlEncoded
+    Call<Invoice> addCustomerInvoiceLine(@Field("invoice")String invoice, @Field("type")String type, @Field("typeId")int typeId,
+                                               @Field("unitPrice")double unitPrice,@Field("buyingPrice")double buyingPrice,@Field("quantity")int quantity,@Field("description")String description,
+                                         @Field("createdBy") int user);
+
+
     //'invId', 'type','typeId','description','unitPrice','quantity'
     @POST("vendor_invoice_line")
     @FormUrlEncoded
     Call<models.vendors.InvoiceLine[]> addVendorInvoiceLine(@Field("invId")int invId, @Field("type")String type, @Field("typeId")int typeId,
                                                             @Field("unitPrice")double unitPrice,@Field("quantity")int quantity,@Field("description")String description);
 
+    @POST("vendor_invoice_and_line")
+    @FormUrlEncoded
+    Call<models.vendors.Invoice> addVendorInvoiceLine(@Field("invoice")String invoice, @Field("type")String type, @Field("typeId")int typeId,
+                                         @Field("unitPrice")double unitPrice,@Field("quantity")int quantity,@Field("description")String description,
+                                         @Field("createdBy") int user);
 
     @POST("vendor_invoice")
     @FormUrlEncoded
@@ -197,7 +254,23 @@ public interface ApiService {
     @POST("add_sale_line/{id}")
     @FormUrlEncoded
     Call<ExpressSaleLine[]> addSaleLine(@Path("id") int id, @Field("type") String type, @Field("typeId") int typeId,
-                                        @Field("unitPrice") double unitPrice, @Field("quantity") int quantity);
+                                        @Field("unitPrice") double unitPrice, @Field("buyingPrice") double buyingPrice, @Field("quantity") int quantity);
+
+    @POST("add_sale_and_line")
+    @FormUrlEncoded
+    Call<ExpressSale> addSaleLine(@Field("sale") String sale, @Field("type") String type, @Field("typeId") int typeId,
+                                        @Field("unitPrice") double unitPrice, @Field("buyingPrice") double buyingPrice, @Field("quantity") int quantity,
+                                  @Field("createdBy") int user);
+
+
+    @POST("sell_product/{user}")
+    @FormUrlEncoded
+    Call<ExpressSale[]> sellProduct(@Path("user") int user, @Field("productId") int productId, @Field("sellingPrice") double sellingPrice,
+                                    @Field("quantity") int quantity, @Field("bankId") int bankId, @Field("refNo") String refNo);
+
+    @POST("add_stock/{user}")
+    @FormUrlEncoded
+    Call<Product[]> addStock(@Path("user") int user, @Field("productId") int productId, @Field("warehouseId") int warehouseId, @Field("quantity") int quantity);
 
     @POST("product_group")
     @FormUrlEncoded

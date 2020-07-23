@@ -1,6 +1,8 @@
 package models.products;
 
-public class Unpacking {
+import models.SuperModel;
+
+public class Unpacking implements SuperModel {
     /**'groupId', 'quantity', 'productQuantity', 'warehouseId', 'createdBy', 'posted', 'postedOn', 'postedBy',
      'reversed', 'reversedOn', 'reversedBy'*/
     private ProductGroup group;
@@ -76,5 +78,10 @@ public class Unpacking {
 
     public void setReversedOn(String reversedOn) {
         this.reversedOn = reversedOn;
+    }
+
+    @Override
+    public String getSearchString() {
+        return group.toString();
     }
 }

@@ -1,9 +1,10 @@
 package models.customers;
 
+import models.SuperModel;
 import models.finance.Bank;
 import utils.Utility;
 
-public class Receipt {
+public class Receipt implements SuperModel {
 
     /**
      * 'customerId', 'description', 'receiptDate','posted','postedBy',
@@ -110,5 +111,10 @@ public class Receipt {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public String getSearchString() {
+        return customer.toString() + no;
     }
 }

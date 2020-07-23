@@ -3,13 +3,16 @@ package models.vendors;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.LinesInterface;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Paint;
 import network.ApiService;
 import network.RetrofitBuilder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import utils.Utility;
 
 public class InvoiceLine {
     //'invId', 'type','typeId','description','unitPrice','quantity'
@@ -82,6 +85,25 @@ public class InvoiceLine {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public TextField getQuantityTf(){
+        TextField textField = new TextField(String.valueOf(quantity));
+        textField.setAlignment(Pos.BASELINE_CENTER);
+        Utility.restrictInputNum(textField);
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue){
+                try{
+                    String q = textField.getText().trim();
+                    int newQ = Integer.parseInt(q);
+                    int diff = newQ - quantity;
+                    InvoiceLine newLine = this;
+                    newLine.setQuantity(diff);
+                    if (linesInterface != null) linesInterface.updateQuantity(newLine);
+                }catch(Exception e){ e.printStackTrace();}
+            }
+        });
+        return textField;
     }
 
     public void setLinesInterface(LinesInterface linesInterface) {

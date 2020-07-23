@@ -1,8 +1,9 @@
 package models.customers;
 
+import models.SuperModel;
 import utils.Utility;
 
-public class Customer {
+public class Customer implements SuperModel {
     //'name', 'is_active','email','phone','addedBy','isActive'
 
     private int id;
@@ -53,5 +54,10 @@ public class Customer {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public String getSearchString() {
+        return name + email;
     }
 }

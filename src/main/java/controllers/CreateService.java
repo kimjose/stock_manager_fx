@@ -57,9 +57,10 @@ public class CreateService implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.setupNotificationPane(notificationPane, vbHolder);
-
+        Platform.runLater(()->Utility.setLogo(vbParent));
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
     }

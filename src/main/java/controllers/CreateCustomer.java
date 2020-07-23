@@ -8,18 +8,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import models.customers.Customer;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
+import org.controlsfx.validation.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import utils.SessionManager;
 import utils.Utility;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class CreateCustomer implements Initializable {
@@ -54,9 +55,11 @@ public class CreateCustomer implements Initializable {
     private Customer customer;
     private HomeDataInterface dataInterface;
     private ApiService apiService;
+    private ValidationSupport vs = new ValidationSupport();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Platform.runLater(()->Utility.setLogo(vbParent));
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.setupNotificationPane(notificationPane, vbHolder);
         Utility.restrictInputNum(tfPhone);
@@ -64,16 +67,26 @@ public class CreateCustomer implements Initializable {
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
 
+        vs.registerValidator(tfName, true, Validator.createEmptyValidator("Name is required."));
+        vs.registerValidator(tfEmail, false, Validator.createRegexValidator("Enter a valid email.", Utility.EMAIL_PATTERN, Severity.ERROR));
+        vs.registerValidator(tfPhone, false, Validator.createRegexValidator("Enter a valid number", Utility.MOBILENUM_PATTERN, Severity.ERROR));
     }
     private void save(){
-        String name = tfName.getText().trim();
-        String email = tfEmail.getText().trim();
-        String phone = tfPhone.getText().trim();
-        if (name.equals("")){
-            notificationPane.show("Customer name is required.");return;
+        ValidationResult vr = vs.getValidationResult();
+        Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
+        StringBuilder message = new StringBuilder();
+        while (iterator.hasNext()){
+            message.append(iterator.next().getText());
+            message.append("\n");
         }
+        if (!message.toString().isEmpty()) {
+            notificationPane.show(message.toString()); return;
+        }
+        String name = tfName.getText().trim();
+        String email = tfEmail.getText() == null ? "" : tfEmail.getText().trim();
+        String phone = tfPhone.getText() == null ? "" : tfPhone.getText().trim();
         Call<Customer[]> call;
-        if (customer==null) call = apiService.addCustomer(name, email, phone, 1);
+        if (customer==null) call = apiService.addCustomer(name, email, phone, SessionManager.INSTANCE.getUser().getId());
         else{
             name = customer.getName().equals(name)?null:name;
             email = customer.getEmail().equals(email)?null:email;

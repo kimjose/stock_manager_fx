@@ -84,11 +84,12 @@ public class CustomerReceipt implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Utility.setupNotificationPane(notificationPane, vbHolder);
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.restrictInputDec(tfAmount);
 
-
+        Platform.runLater(()->Utility.setLogo(vbParent));
         cbCustomer.setOnAction(event -> {
             Customer c = cbCustomer.getValue();
             labelBalance.setText(String.valueOf(c.getBalance()));
@@ -264,6 +265,7 @@ public class CustomerReceipt implements Initializable {
         tfAmount.setText(String.valueOf(receipt.getAmount()));
         tfExtDocNo.setText(receipt.getExtDocNo());
         btnPost.setDisable(receipt.isPosted());
+        btnSave.setDisable(receipt.isPosted());
         dbDate.setValue(LocalDate.parse(receipt.getReceiptDate()));
         if (!receipt.isPosted()) {
             btnPost.setDisable(false);

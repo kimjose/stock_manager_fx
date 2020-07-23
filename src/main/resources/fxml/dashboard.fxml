@@ -24,7 +24,7 @@
                      <children>
                         <FontAwesomeIconView glyphName="BANK" size="30" />
                         <Label styleClass="label-header" text="Today's Sale" />
-                        <Label fx:id="labelTodaySale" text="Label" />
+                        <Label fx:id="labelTodaySale" text="0" />
                      </children>
                   </VBox>
                   <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="75.0" prefWidth="141.0">

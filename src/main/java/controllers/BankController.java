@@ -68,6 +68,7 @@ public class BankController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Utility.setupNotificationPane(notificationPane, vbHolder);
         Utility.restrictInputNum(tfAccNo);
 
@@ -75,6 +76,7 @@ public class BankController implements Initializable {
         btnSave.setOnAction(event -> save());
         btnBlock.setOnAction(event -> block(true));
         btnUnblock.setOnAction(event -> block(false));
+        Platform.runLater(()->Utility.setLogo(vbParent));
     }
 
     private void save(){

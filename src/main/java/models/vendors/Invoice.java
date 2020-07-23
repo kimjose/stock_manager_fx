@@ -1,9 +1,10 @@
 package models.vendors;
 
+import models.SuperModel;
 import models.products.Warehouse;
 
 
-public class Invoice {
+public class Invoice implements SuperModel {
     /**
      * 'customerId', 'invoiceNo', 'invoiceDate','createdBy',
      *             'warehouseId', 'posted','postedOn', 'reversed', 'reversedOn', 'deleted',**/
@@ -100,5 +101,10 @@ public class Invoice {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    @Override
+    public String getSearchString() {
+        return invoiceNo;
     }
 }

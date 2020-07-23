@@ -14,12 +14,17 @@ import models.products.Category;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
+import org.controlsfx.validation.ValidationMessage;
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import utils.Utility;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class CreateCategory implements Initializable {
@@ -49,23 +54,33 @@ public class CreateCategory implements Initializable {
     private Category category;
     private HomeDataInterface dataInterface;
     private ApiService apiService;
+    ValidationSupport vs = new ValidationSupport();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.setupNotificationPane(notificationPane, vbHolder);
-
+        Platform.runLater(()->Utility.setLogo(vbParent));
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
 
+        vs.registerValidator(tfName, true, Validator.createEmptyValidator("Name is required."));
     }
 
     private void save(){
-        String name = tfName.getText().trim();
-        if (name.equals("")){
-            notificationPane.show("Category name is required.");
+        ValidationResult vr = vs.getValidationResult();
+        Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
+        StringBuilder message = new StringBuilder();
+        while (iterator.hasNext()){
+            message.append(iterator.next().getText());
+            message.append("\n");
+        }
+        if (!vr.getErrors().isEmpty()){
+            notificationPane.show(message.toString());
             return;
         }
+        String name = tfName.getText().trim();
         Call<Category[]> call;
         if (category == null){
             call = apiService.addCategory(name);

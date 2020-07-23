@@ -72,6 +72,7 @@ public class UnpackingController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Utility.setupNotificationPane(notificationPane, vbHolder);
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.restrictInputNum(tfQuantity);
@@ -92,6 +93,7 @@ public class UnpackingController implements Initializable {
         btnPost.setOnAction(event -> post());
         btnReverse.setOnAction(event -> reverse());
 
+        Platform.runLater(()->Utility.setLogo(vbParent));
         loadData();
     }
 
@@ -240,6 +242,7 @@ public class UnpackingController implements Initializable {
         tfQuantity.setText(String.valueOf(unpacking.getQuantity()));
         tfPQuantity.setText(String.valueOf(unpacking.getProductQuantity()));
         if (unpacking.isPosted()){
+            tfQuantity.setDisable(true);
             btnSave.setDisable(true);
             btnPost.setDisable(true);
             btnReverse.setDisable(unpacking.isReversed());
