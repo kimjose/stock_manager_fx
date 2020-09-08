@@ -10,6 +10,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import models.auth.User;
 import models.customers.Customer;
@@ -18,6 +20,7 @@ import models.finance.Bank;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
+import org.controlsfx.validation.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,7 +29,7 @@ import utils.Utility;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CustomerReceipt implements Initializable {
 
@@ -43,7 +46,7 @@ public class CustomerReceipt implements Initializable {
     private TextField tfNo;
 
     @FXML
-    private DatePicker dbDate;
+    private DatePicker dpDate;
 
     @FXML
     private ComboBox<Customer> cbCustomer;
@@ -80,7 +83,10 @@ public class CustomerReceipt implements Initializable {
     private Receipt receipt;
     private Bank[] banks;
     private Customer[] customers;
+    private Map<String, Object> payData;
+    private ValidationSupport validationSupport = new ValidationSupport();
     final User user = SessionManager.INSTANCE.getUser();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -89,17 +95,42 @@ public class CustomerReceipt implements Initializable {
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.restrictInputDec(tfAmount);
 
-        Platform.runLater(()->Utility.setLogo(vbParent));
+        Platform.runLater(()->{
+            dpDate.setValue(LocalDate.now());
+            Utility.setLogo(vbParent);
+            validationSupport.registerValidator(tfAmount, true, Validator.createEmptyValidator("Receipt amount is required"));
+            validationSupport.registerValidator(cbCustomer, true, Validator.createEmptyValidator("Select a valid customer"));
+            validationSupport.registerValidator(cbBank, true, Validator.createEmptyValidator("Select a valid method of payment."));
+            validationSupport.registerValidator(tfExtDocNo, false, Validator.createEmptyValidator("Enter ref No", Severity.WARNING));
+        });
         cbCustomer.setOnAction(event -> {
             Customer c = cbCustomer.getValue();
             labelBalance.setText(String.valueOf(c.getBalance()));
         });
 
         loadData();
-        btnSave.setOnAction(event -> save());
+        btnSave.setOnAction(event -> save(0));
         btnPost.setOnAction(event -> post());
         btnReverse.setOnAction(event -> reverse());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
+
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, e ->{
+            KeyCode keyCode = e.getCode();
+            if (keyCode.equals(KeyCode.F11)) save(0);
+            else if (keyCode.equals(KeyCode.F10)) {
+                if (receipt == null ) return;
+                if (receipt.isPosted()) return;
+                post();
+            }
+            else if (keyCode.equals(KeyCode.F8)) {
+                if (receipt == null ) return;
+                if (!receipt.isPosted()) return;
+                if (receipt.isReversed()) return;
+                reverse();
+            }
+            else if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
+            else if (keyCode.equals(KeyCode.F5)) loadData();
+        });
 
     }
 
@@ -138,6 +169,13 @@ public class CustomerReceipt implements Initializable {
                                     cbCustomer.getSelectionModel().select(b);
                                 }
                             }
+                        } else if(payData != null){
+                            int customer = (int) payData.get("customerId");
+                            for (Customer b : response.body()) {
+                                if (b.getId() == customer) {
+                                    cbCustomer.getSelectionModel().select(b);
+                                }
+                            }
                         }
                     });
                 } else notificationPane.show(response.message());
@@ -150,8 +188,21 @@ public class CustomerReceipt implements Initializable {
         });
     }
 
-    private void save(){
-        String no = tfNo.getText().trim();
+    /**
+     * @param post (1 the receipt will be posted )
+     * **/
+    private void save(int post){
+        ValidationResult vr = validationSupport.getValidationResult();
+        Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
+        StringBuilder message = new StringBuilder();
+        while (iterator.hasNext()){
+            message.append(iterator.next().getText());
+            message.append("\n");
+        }
+        if (!vr.getErrors().isEmpty()){
+            notificationPane.show(message.toString());
+            return;
+        }
         String amountString = tfAmount.getText().trim();
         Customer customer = cbCustomer.getValue();
         Bank bank = cbBank.getValue();
@@ -159,7 +210,7 @@ public class CustomerReceipt implements Initializable {
         String date = null;
         String errorMessage = "";
         try{
-            date = dbDate.getValue().toString();
+            date = dpDate.getValue().toString();
         }catch (Exception e){
             errorMessage = errorMessage.concat("Select a valid date.");
         }
@@ -182,19 +233,18 @@ public class CustomerReceipt implements Initializable {
             notificationPane.show(errorMessage);
             return;
         }
-        Call<Receipt[]> call;
-        if (receipt == null) call = apiService.addReceipt(customer.getId(), date, user.getId(), bank.getId(), amount, extDocNo);
+        Call<Receipt> call;
+        if (receipt == null) call = apiService.addReceipt(customer.getId(), date, user.getId(), bank.getId(), amount, extDocNo, post);
         else {
-            no = receipt.getNo().equals(no)?null:no;
             call = apiService.updateReceipt(receipt.getId(), customer.getId(), date, bank.getId(), amount, extDocNo);
         }
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Receipt[]> call, Response<Receipt[]> response) {
+            public void onResponse(Call<Receipt> call, Response<Receipt> response) {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
-                        Utility.closeWindow(vbHolder);
-                        dataInterface.updateData("The receipt has been saved", response.body());
+                        notificationPane.show("The receipt has been saved.");
+                        setReceipt(response.body());
                     });
                 }else {
                     Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
@@ -203,7 +253,7 @@ public class CustomerReceipt implements Initializable {
             }
 
             @Override
-            public void onFailure(Call<Receipt[]> call, Throwable throwable) {
+            public void onFailure(Call<Receipt> call, Throwable throwable) {
                 System.out.println(throwable.toString());
                 Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
@@ -211,43 +261,46 @@ public class CustomerReceipt implements Initializable {
 
     }
     private void post(){
-        if (receipt == null) throw new AssertionError();
-        Call<Receipt[]> call = apiService.postCustomerReceipt(receipt.getId(), user.getId());
+        if (receipt == null) {
+            save(1);
+            return;
+        }
+        Call<Receipt> call = apiService.postCustomerReceipt(receipt.getId(), user.getId());
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Receipt[]> call, Response<Receipt[]> response) {
+            public void onResponse(Call<Receipt> call, Response<Receipt> response) {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
-                        Utility.closeWindow(vbHolder);
-                        dataInterface.updateData("The receipt has been posted", response.body());
+                        setReceipt(response.body());
+                        notificationPane.show("The receipt has been posted");
                     });
                 }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                         new String[]{"message"})));
             }
 
             @Override
-            public void onFailure(Call<Receipt[]> call, Throwable throwable) {
+            public void onFailure(Call<Receipt> call, Throwable throwable) {
                 Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
         });
     }
     private void reverse(){
         if (receipt == null) throw new AssertionError();
-        Call<Receipt[]> call = apiService.reverseCustomerReceipt(receipt.getId(), user.getId());
+        Call<Receipt> call = apiService.reverseCustomerReceipt(receipt.getId(), user.getId());
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Receipt[]> call, Response<Receipt[]> response) {
+            public void onResponse(Call<Receipt> call, Response<Receipt> response) {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
-                        Utility.closeWindow(vbHolder);
-                        dataInterface.updateData("The receipt has been reversed", response.body());
+                        setReceipt(response.body());
+                        notificationPane.show("The receipt has been reversed.");
                     });
                 }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                         new String[]{"message"})));
             }
 
             @Override
-            public void onFailure(Call<Receipt[]> call, Throwable throwable) {
+            public void onFailure(Call<Receipt> call, Throwable throwable) {
                 Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
         });
@@ -258,6 +311,11 @@ public class CustomerReceipt implements Initializable {
         this.dataInterface = dataInterface;
     }
 
+    public void setPayData(Map<String, Object> payData) {
+        this.payData = payData;
+        tfAmount.setText(String.valueOf(payData.get("amount")));
+    }
+
     public void setReceipt(Receipt receipt) {
         this.receipt = receipt;
         labelId.setText(String.valueOf(receipt.getId()));
@@ -266,10 +324,9 @@ public class CustomerReceipt implements Initializable {
         tfExtDocNo.setText(receipt.getExtDocNo());
         btnPost.setDisable(receipt.isPosted());
         btnSave.setDisable(receipt.isPosted());
-        dbDate.setValue(LocalDate.parse(receipt.getReceiptDate()));
+        dpDate.setValue(LocalDate.parse(receipt.getReceiptDate()));
         if (!receipt.isPosted()) {
             btnPost.setDisable(false);
-            btnSave.setDisable(true);
         }
         if (receipt.isPosted() && !receipt.isReversed()) btnReverse.setDisable(false);
     }

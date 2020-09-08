@@ -60,35 +60,38 @@ public class CreateUOM implements Initializable {
 
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.setupNotificationPane(notificationPane, vbHolder);
-        Platform.runLater(()->Utility.setLogo(vbParent));
+        Platform.runLater(() -> Utility.setLogo(vbParent));
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbHolder));
     }
 
-    private void save(){
+    private void save() {
         String name = tfName.getText().trim();
         String description = tfDescription.getText().trim();
-        if (name.equals("")){
-            notificationPane.show("Unit name is required.");return;
+        if (name.equals("")) {
+            notificationPane.show("Unit name is required.");
+            return;
         }
         Call<UnitOfMeasure[]> call;
-        if (uom == null){
+        if (uom == null) {
             call = apiService.addUOM(name, description);
-        }else{
-            name = uom.getName().equals(name)?null:name;
+        } else {
+            name = uom.getName().equals(name) ? null : name;
             call = apiService.updateUOM(uom.getId(), name, description);
         }
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<UnitOfMeasure[]> call, Response<UnitOfMeasure[]> response) {
-                if (response.isSuccessful()){
-                    Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
                         Utility.closeWindow(vbParent);
-                        if (dataInterface!=null){
+                        if (dataInterface != null) {
                             dataInterface.updateData("The Unit of measure has been saved", response.body());
+                        } else {
+                            notificationPane.show("The Unit of measure has been saved.");
                         }
                     });
-                }else{
+                } else {
                     Platform.runLater(() -> {
                         assert response.errorBody() != null;
                         notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"name"}));

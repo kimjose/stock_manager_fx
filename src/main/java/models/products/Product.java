@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.HomeDataInterface;
+import interfaces.LinesInterface;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Paint;
 import models.SuperModel;
@@ -27,6 +28,7 @@ public class Product implements SuperModel{
     private Category category;
     private UnitOfMeasure uom;
     private HomeDataInterface dataInterface;
+    private LinesInterface linesInterface;
 
     /*public int getId() {
         return id;
@@ -120,6 +122,10 @@ public class Product implements SuperModel{
         this.sellingPrice = sellingPrice;
     }
 
+    public void setLinesInterface(LinesInterface linesInterface) {
+        this.linesInterface = linesInterface;
+    }
+
     @Override
     public String toString() {
         return name;
@@ -143,6 +149,21 @@ public class Product implements SuperModel{
         return sellBtn;
     }
 
+    public Button getAddBtn(){
+        Button addBtn = new Button();
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.PLUS_CIRCLE);
+        icon.setFill(Paint.valueOf("#19D019"));
+        icon.setSize("16.0");
+        addBtn.setGraphic(icon);
+        addBtn.setStyle("-fx-background-color: transparent;");
+        addBtn.setOnAction(event -> {
+            if(linesInterface != null){
+                linesInterface.addItem(this, "Product");
+            }
+        });
+        return addBtn;
+    }
+
     public void setDataInterface(HomeDataInterface dataInterface) {
         this.dataInterface = dataInterface;
     }
@@ -150,6 +171,6 @@ public class Product implements SuperModel{
 
     @Override
     public String getSearchString() {
-        return name;
+        return name +" " + brand.getName() +" "+category.getName()+" "+ upcCode+" "+skuCode;
     }
 }

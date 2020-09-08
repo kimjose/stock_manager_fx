@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import models.products.*;
 import network.ApiService;
@@ -73,6 +75,14 @@ public class ProductGroupController implements Initializable {
         btnCancel.setOnAction(event -> Utility.closeWindow(vbHolder));
         Platform.runLater(()->Utility.setLogo(vbParent));
         loadData();
+
+        //function keys
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
+            else if (keyCode.equals(KeyCode.F5)) loadData();
+            event.consume();
+        });
     }
 
     private void save() {

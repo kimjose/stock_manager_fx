@@ -86,7 +86,7 @@ public class ExpressSaleLine {
                     int diff = newQ - quantity;
                     ExpressSaleLine newLine = this;
                     newLine.setQuantity(diff);
-                    if (linesInterface != null) linesInterface.updateQuantity(newLine);
+                    if (linesInterface != null) linesInterface.updateLine(newLine);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -95,8 +95,30 @@ public class ExpressSaleLine {
         return textField;
     }
 
+    public TextField getUnitPriceTf() {
+        TextField textField = new TextField(String.valueOf(unitPrice));
+        textField.setAlignment(Pos.BASELINE_CENTER);
+        Utility.restrictInputDec(textField);
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue){
+                try{
+                    String q = textField.getText().trim();
+                    double nPrice = Double.parseDouble(q);
+                    if (nPrice <= 0) {
+                        textField.setText(String.valueOf(unitPrice));
+                        return;
+                    }
+                    ExpressSaleLine newLine = this;
+                    newLine.setUnitPrice(nPrice);
+                    if (linesInterface != null) linesInterface.updateLine(newLine);
+                }catch(Exception e){ e.printStackTrace();}
+            }
+        });
+        return textField;
+    }
+
     public Button getRemoveLine() {
-        Button deleteBtn = new Button("Remove");
+        Button deleteBtn = new Button();
         FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.TRASH);
         icon.setStyle("-fx-fill: #d32f2f;");
         icon.setSize("16.0");

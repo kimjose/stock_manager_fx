@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -41,6 +42,8 @@ import java.util.ResourceBundle;
  ****/
 
 public class MainStage implements Initializable, ChangeListener {
+    @FXML
+    private FontAwesomeIconView faivSetting;
 
     @FXML
     private BorderPane bpParent;
@@ -57,6 +60,8 @@ public class MainStage implements Initializable, ChangeListener {
     @FXML
     private ImageView ivUserPhoto;
 
+    @FXML
+    private Label labelLicense;
 
     @FXML
     private AnchorPane apCenter;
@@ -94,8 +99,28 @@ public class MainStage implements Initializable, ChangeListener {
         });
         Platform.runLater(() -> {
             LocalDate expiresOn = Utility.checkExpiresOn();
-            if (expiresOn.isBefore(LocalDate.now()) || expiresOn.isEqual(LocalDate.now())) Utility.subscribe();
+            labelLicense.setText("License issued to " + Utility.CLIENT_NAME + " till "+expiresOn);
+            if (expiresOn.isBefore(LocalDate.now()) || expiresOn.isEqual(LocalDate.now())) Utility.subscribe(apCenter.getScene().getWindow());
         });
+        faivSetting.addEventFilter(MouseEvent.MOUSE_CLICKED, event->{
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/settings.fxml"));
+                VBox box = loader.load();
+                Scene scene = new Scene(box);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.initOwner(apCenter.getScene().getWindow());
+                stage.setResizable(false);
+                stage.setTitle("Settings");
+                stage.show();
+                Utility.setLogo(box);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        faivSetting.addEventFilter(MouseEvent.MOUSE_ENTERED_TARGET, event -> faivSetting.setFill(Paint.valueOf("#19D019")));
+        faivSetting.addEventFilter(MouseEvent.MOUSE_EXITED_TARGET, event -> faivSetting.setFill(Paint.valueOf("#006600")));
+
     }
 
     private void createTreeItems() {
@@ -189,8 +214,7 @@ public class MainStage implements Initializable, ChangeListener {
                     FXMLLoader loader = new FXMLLoader();
                     AnchorPane anchorPane = loader.load(getClass().getResource("/fxml/dashboard.fxml").openStream());
                     anchorPane.prefWidthProperty().bind(bpParent.widthProperty().subtract(220));
-                    anchorPane.prefHeightProperty().bind(bpParent.heightProperty().subtract(50));
-                    System.out.println("params: width " + apCenter.widthProperty() + " height: " + apCenter.heightProperty());
+                    anchorPane.prefHeightProperty().bind(bpParent.heightProperty().subtract(40));
                     List<Node> nodeList = new ArrayList<>();
                     nodeList.add(anchorPane);
                     apCenter.getChildren().setAll(nodeList);
@@ -233,12 +257,11 @@ public class MainStage implements Initializable, ChangeListener {
                 try {
                     FXMLLoader loader = new FXMLLoader();
                     VBox vBox = loader.load(getClass().getResource("/fxml/general_center.fxml").openStream());
-                    System.out.println("params: width " + apCenter.widthProperty() + " height: " + apCenter.heightProperty());
                     GeneralCenter generalCenter = loader.getController();
                     generalCenter.setType(selected.getValue());
                     apCenter.getChildren().setAll(vBox);
                     vBox.prefWidthProperty().bind(bpParent.widthProperty().subtract(220));
-                    vBox.prefHeightProperty().bind(bpParent.heightProperty().subtract(50));
+                    vBox.prefHeightProperty().bind(bpParent.heightProperty().subtract(40));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -254,5 +277,13 @@ public class MainStage implements Initializable, ChangeListener {
         System.out.println("params: width " + apCenter.widthProperty() + " height: " + apCenter.heightProperty());
         SessionManager sessionManager = SessionManager.INSTANCE;
         System.out.println(sessionManager.getUser().getUserName());
+    }
+
+    @FXML
+    void subscribe(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            Utility.subscribe(apCenter.getScene().getWindow());
+        }
+        event.consume();
     }
 }

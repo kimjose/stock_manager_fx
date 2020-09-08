@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="bpParent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="1020.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainStage">
+<BorderPane fx:id="bpParent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="636.0" prefWidth="1020.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainStage">
    <center>
       <AnchorPane fx:id="apCenter" prefHeight="530.0" prefWidth="500.0">
          <children>
@@ -16,7 +16,7 @@
             <Insets />
          </BorderPane.margin>
          <padding>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+            <Insets bottom="2.0" left="2.0" right="2.0" />
          </padding>
       </AnchorPane>
    </center>
@@ -24,28 +24,50 @@
       <TreeView fx:id="tvMain" prefHeight="500.0" prefWidth="220.0" BorderPane.alignment="CENTER" />
    </left>
    <top>
-      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0" styleClass="top-parent" BorderPane.alignment="CENTER">
+      <AnchorPane>
          <children>
-            <ImageView fx:id="ivUserPhoto" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" styleClass="circle-image-view" HBox.hgrow="NEVER">
-               <HBox.margin>
-                  <Insets left="2.0" top="4.0" />
-               </HBox.margin>
-               <image>
-                  <Image url="@../user.png" />
-               </image>
-            </ImageView>
-            <VBox alignment="CENTER">
+            <HBox alignment="TOP_CENTER" prefHeight="27.0" prefWidth="895.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="125.0" AnchorPane.topAnchor="4.0">
                <children>
-                  <Label fx:id="labelUserName" text="User Name" />
+                  <Label fx:id="labelLicense" alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="437.0" text="Software licensed to LolO till $date" textAlignment="RIGHT" />
+                  <Label onMouseClicked="#subscribe" prefHeight="15.0" prefWidth="65.0" styleClass="label-link" text="Subscribe">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Label>
                </children>
-            </VBox>
-            <FontAwesomeIconView fx:id="faivExit" fill="#f62817" glyphName="POWER_OFF" size="25">
-            </FontAwesomeIconView>
+               <padding>
+                  <Insets top="4.0" />
+               </padding>
+            </HBox>
+            <HBox layoutX="663.0" AnchorPane.rightAnchor="4.0">
+               <children>
+                  <FontAwesomeIconView fx:id="faivSetting" fill="#006600" glyphName="GEAR" size="25">
+                     <HBox.margin>
+                        <Insets top="8.0" right="5.0" />
+                     </HBox.margin>
+                  </FontAwesomeIconView>
+                  <ImageView fx:id="ivUserPhoto" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" styleClass="circle-image-view">
+                     <image>
+                        <Image url="@../user.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <Label fx:id="labelUserName" text="User Name" prefHeight="40.0" prefWidth="69.0"/>
+                  <FontAwesomeIconView fx:id="faivExit" fill="#f62817" glyphName="POWER_OFF" size="25">
+                     <HBox.margin>
+                        <Insets top="8.0" />
+                     </HBox.margin>
+                  </FontAwesomeIconView>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="38.0" />
          </children>
          <padding>
-            <Insets right="10.0" />
+            <Insets top="2.0" />
          </padding>
-      </HBox>
+      </AnchorPane>
    </top>
    <padding>
       <Insets />

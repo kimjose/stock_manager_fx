@@ -11,16 +11,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.NotificationPane?>
 
-
-<VBox fx:id="vbParent" prefHeight="135.0" prefWidth="356.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddToStock">
+<VBox fx:id="vbParent" prefHeight="188.0" prefWidth="339.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddToStock">
    <children>
       <NotificationPane fx:id="notificationPane" />
-      <VBox fx:id="vbHolder" prefHeight="200.0" prefWidth="100.0">
+      <VBox fx:id="vbHolder" prefHeight="182.0" prefWidth="336.0">
          <children>
             <HBox>
                <children>
                   <Label prefHeight="28.0" prefWidth="145.0" text="Product" />
-                  <Label prefHeight="28.0" prefWidth="145.0" text="Product" fx:id="labelProduct" />
+                  <Label fx:id="labelProduct" prefHeight="28.0" prefWidth="145.0" text="Product" />
                </children>
             </HBox>
             <HBox>
@@ -41,6 +40,12 @@
                   <TextField fx:id="tfQuantity" prefHeight="25.0" prefWidth="172.0" promptText="Enter quantity to +/-" />
                </children>
             </HBox>
+            <HBox layoutX="10.0" layoutY="94.0">
+               <children>
+                  <Label prefHeight="28.0" prefWidth="145.0" text="Description" />
+                  <TextField fx:id="tfDesc" prefHeight="25.0" prefWidth="172.0" promptText="Enter a description" />
+               </children>
+            </HBox>
             <ButtonBar>
                <buttons>
                   <Button fx:id="btnAdd" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" styleClass="btn_save" text="Add">
@@ -58,7 +63,7 @@
                   <Insets top="4.0" />
                </VBox.margin>
                <padding>
-                  <Insets right="5.0" />
+                  <Insets right="10.0" />
                </padding>
             </ButtonBar>
          </children>

@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -16,7 +17,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import models.SuperModel;
 import models.auth.User;
 import models.customers.InvoiceLine;
 import models.finance.Bank;
@@ -36,10 +40,7 @@ import utils.Utility;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ExpressSaleController implements Initializable, LinesInterface {
 
@@ -74,16 +75,19 @@ public class ExpressSaleController implements Initializable, LinesInterface {
     private ComboBox<String> cbType;
 
     @FXML
-    private ComboBox<Object> cbPS;
+    private TableView<SuperModel> tvItems;
 
     @FXML
-    private TextField tfUnitPrice;
+    private TableColumn<?, ?> tcItemName;
 
     @FXML
-    private TextField tfQuantity;
+    private TableColumn<?, ?> tcItemPrice;
 
     @FXML
-    private Button btnAddLine;
+    private TableColumn<?, ?> tcItemAdd;
+
+    @FXML
+    private TextField tfSearch;
 
     @FXML
     private TableView<ExpressSaleLine> tvLines;
@@ -121,6 +125,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
     private final User user = SessionManager.INSTANCE.getUser();
     private Service[] services;
     private Product[] products;
+    private Gson gson = new Gson();
 
     ValidationSupport vsSale = new ValidationSupport();
     ValidationSupport vsLine = new ValidationSupport();
@@ -129,12 +134,10 @@ public class ExpressSaleController implements Initializable, LinesInterface {
     public void initialize(URL location, ResourceBundle resources) {
 
         Utility.setupNotificationPane(notificationPane, vbHolder);
-        Utility.restrictInputDec(tfUnitPrice);
-        Utility.restrictInputNum(tfQuantity);
 
         apiService = RetrofitBuilder.createService(ApiService.class);
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             Utility.setLogo(vbParent);
             if (expressSale == null) dpDate.setValue(LocalDate.now());
             String[] types = {"Product", "Service"};
@@ -144,7 +147,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                     @Override
                     protected Object call() {
                         System.out.println(cbType.getValue());
-                        if (products==null||services==null) {
+                        if (products == null || services == null) {
                             loadData();
                             try {
                                 Thread.currentThread().wait();
@@ -154,10 +157,18 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                             }
                         }
                         String type = cbType.getValue();
-                        Platform.runLater(()->{
-                            if (type.equals("Product")) cbPS.setItems(FXCollections.observableArrayList(products));
-                            else if(type.equals("Service")) cbPS.setItems(FXCollections.observableArrayList(services));
-                            cbPS.getSelectionModel().select(0);
+                        Platform.runLater(() -> {
+                            if (type.equals("Product")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(products));
+                            } else if (type.equals("Service")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(services));
+                            }
                         });
                         return null;
                     }
@@ -167,27 +178,17 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                 thread.start();
             });
 
-            cbPS.setOnAction(event -> {
-                if (cbType.getValue().equals("Product")) {
-                    Product product = (Product) cbPS.getValue();
-                    tfUnitPrice.setText(String.valueOf(product.getSellingPrice()));
-                    tfQuantity.setText("1");
-                }
-            });
 
             vsSale.registerValidator(cbWarehouse, true, Validator.createEmptyValidator("Warehouse is required."));
             vsSale.registerValidator(cbBank, true, Validator.createEmptyValidator("Bank account is required."));
             vsSale.registerValidator(dpDate, true, Validator.createEmptyValidator("Enter a valid date."));
 
             vsLine.registerValidator(cbType, true, Validator.createEmptyValidator("Select a valid type"));
-            vsLine.registerValidator(cbPS, true, Validator.createEmptyValidator("Select a valid product/service"));
-            vsLine.registerValidator(tfUnitPrice, true, Validator.createEmptyValidator("Enter a valid unit price."));
-            vsLine.registerValidator(tfQuantity, true, Validator.createEmptyValidator("Enter a valid quantity"));
-        });
+         });
 
 
         tcPS.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tcPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        tcPrice.setCellValueFactory(new PropertyValueFactory<>("unitPriceTf"));
         tcQuantity.setCellValueFactory(new PropertyValueFactory<>("quantityTf"));
         tcTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         tcRemove.setCellValueFactory(new PropertyValueFactory<>("removeLine"));
@@ -196,12 +197,68 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         btnPost.setOnAction(event -> post());
         btnReverse.setOnAction(event -> reverse());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
-        btnAddLine.setOnAction(event -> addLine());
+
+        tfSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.trim().equals("")) {
+                tvItems.setItems(FXCollections.observableArrayList(cbType.getValue().equals("Product") ? products : services));
+                return;
+            }
+            List<SuperModel> filtered = new ArrayList<>();
+            for (SuperModel model : cbType.getValue().equals("Product") ? products : services) {
+                if (model.getSearchString().contains(newValue)) filtered.add(model);
+            }
+            tvItems.setItems(FXCollections.observableArrayList(filtered));
+        });
+
+        //function keys
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F11)) save();
+            else if (keyCode.equals(KeyCode.F10)) {
+                if (expressSale == null ) return;
+                if (expressSale.isPosted()) return;
+                post();
+            }
+            else if (keyCode.equals(KeyCode.F8)) {
+                if (expressSale == null ) return;
+                if (!expressSale.isPosted()) return;
+                if (expressSale.isReversed()) return;
+                reverse();
+            }
+            else if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
+            else if (keyCode.equals(KeyCode.P) && event.isControlDown()) {
+                if (expressSale == null ) return;
+                if (!expressSale.isPosted()) return;
+                if (expressSale.isReversed()) return;
+                HashMap<String, Object> params = new LinkedHashMap<>();
+                params.put("saleNo", expressSale.getSaleNo());
+                params.put("saleDate", expressSale.getSaleDate());
+                params.put("saleTotal", "Kshs " + expressSale.getTotalString());
+                Node n = Utility.showProgressBar("Generating report...", vbHolder.getScene().getWindow());
+                Call<Object[]> call = apiService.saleReport(expressSale.getId());
+                call.enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<Object[]> call, Response<Object[]> response) {
+                        Utility.closeWindow(n);
+                        if (response.isSuccessful())
+                            Utility.showReport("sale_report.jasper", params, gson.toJson(response.body()));
+                        else Platform.runLater(() -> notificationPane.show(response.message()));
+                    }
+
+                    @Override
+                    public void onFailure(Call<Object[]> call, Throwable throwable) {
+                        Utility.closeWindow(n);
+                        Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+                    }
+                });
+            }
+            else if (keyCode.equals(KeyCode.F5)) loadData();
+        });
 
         loadData();
     }
 
-    private void loadData(){
+    private void loadData() {
         Call<Bank[]> getBanks = apiService.banks();
         Call<Warehouse[]> getWarehouses = apiService.warehouses();
         Call<Product[]> getProducts = apiService.products();
@@ -209,10 +266,10 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         getBanks.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Bank[]> call, Response<Bank[]> response) {
-                if (response.isSuccessful()){
-                    Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
                         cbBank.setItems(FXCollections.observableArrayList(response.body()));
-                        if(expressSale!=null) {
+                        if (expressSale != null) {
                             cbBank.getSelectionModel().select(expressSale.getBank());
                         }
                     });
@@ -227,12 +284,12 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         getWarehouses.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Warehouse[]> call, Response<Warehouse[]> response) {
-                if (response.isSuccessful()){
-                    Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
                         cbWarehouse.setItems(FXCollections.observableArrayList(response.body()));
-                        if (expressSale!=null) cbWarehouse.getSelectionModel().select(expressSale.getWarehouse());
+                        if (expressSale != null) cbWarehouse.getSelectionModel().select(expressSale.getWarehouse());
                     });
-                }else notificationPane.show(response.message());
+                } else notificationPane.show(response.message());
             }
 
             @Override
@@ -243,7 +300,10 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         getProducts.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Product[]> call, Response<Product[]> response) {
-                if (response.isSuccessful()) products = response.body();
+                if (response.isSuccessful()) {
+                    setProducts(response.body());
+                    Platform.runLater(()->cbType.getSelectionModel().select("Product"));
+                }
                 else notificationPane.show(response.message());
             }
 
@@ -255,7 +315,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         getServices.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Service[]> call, Response<Service[]> response) {
-                if (response.isSuccessful()) services = response.body();
+                if (response.isSuccessful()) setServices(response.body());
                 else notificationPane.show(response.message());
             }
 
@@ -264,21 +324,22 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                 notificationPane.show(throwable.getMessage());
             }
         });
-        try{
+        try {
             notify();
-        } catch (IllegalMonitorStateException ignore){}
+        } catch (IllegalMonitorStateException ignore) {
+        }
     }
 
-    private void save(){
+    private void save() {
         // "saleNo", "description", "saleDate", "bankId", "warehouseId", "refNo", "createdBy"
         ValidationResult vr = vsSale.getValidationResult();
         Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
         StringBuilder message = new StringBuilder();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             message.append(iterator.next().getText());
             message.append("\n");
         }
-        if (!vr.getErrors().isEmpty()){
+        if (!vr.getErrors().isEmpty()) {
             notificationPane.show(message.toString());
             return;
         }
@@ -289,55 +350,51 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         String refNo = tfRefNo.getText().trim();
         String errorMessage = "";
         //if (saleNo.equals("")) errorMessage += "Sale number is required.";
-        try{
+        try {
             date = dpDate.getValue().toString();
-        }catch (Exception e){
-            errorMessage += errorMessage.equals("")?"Select a valid date":"\nSelect a valid date";
+        } catch (Exception e) {
+            errorMessage += errorMessage.equals("") ? "Select a valid date" : "\nSelect a valid date";
         }
-        if (bank == null) errorMessage += errorMessage.equals("")?"Select a valid bank":"\nSelect a valid bank";
-        else if(bank.isRequireRefNo()){
-            if (refNo.equals("")) errorMessage += errorMessage.equals("")?"Reference number is required for this form of payment":
-                    "\nReference number is required for this form of payment";
+        if (bank == null) errorMessage += errorMessage.equals("") ? "Select a valid bank" : "\nSelect a valid bank";
+        else if (bank.isRequireRefNo()) {
+            if (refNo.equals(""))
+                errorMessage += errorMessage.equals("") ? "Reference number is required for this form of payment" :
+                        "\nReference number is required for this form of payment";
         }
-        if (warehouse == null) errorMessage += errorMessage.equals("")?"Select a valid warehouse":"\nSelect a valid warehouse";
-         if (!errorMessage.equals("")){
+        if (warehouse == null)
+            errorMessage += errorMessage.equals("") ? "Select a valid warehouse" : "\nSelect a valid warehouse";
+        if (!errorMessage.equals("")) {
             notificationPane.show(errorMessage);
             return;
         }
-        Call<ExpressSale[]> call;
-        if (expressSale == null) call = apiService.addSale("", date, bank.getId(), warehouse.getId(), refNo, user.getId());
-        else{
-            saleNo = expressSale.getSaleNo().equals(saleNo)?null:saleNo;
+        Call<ExpressSale> call;
+        if (expressSale == null)
+            call = apiService.addSale("", date, bank.getId(), warehouse.getId(), refNo, user.getId());
+        else {
             call = apiService.updateSale(expressSale.getId(), "", date, bank.getId(), warehouse.getId(), refNo);
         }
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<ExpressSale[]> call, Response<ExpressSale[]> response) {
-                if (response.isSuccessful()){
-                    if (dataInterface!=null){
-                        ExpressSale[] eSale = {};
-                        List<ExpressSale> filtered = new ArrayList<>();
-                        for (ExpressSale sale : response.body()) {
-                            if (!sale.isPosted()) filtered.add(sale);
-                        }
-                        Platform.runLater(()->{
-                            Utility.closeWindow(vbHolder);
-                            dataInterface.updateData("The sale has been saved.", filtered.toArray(eSale));
-                        });
-                    }
-                }else{
-                    Platform.runLater(()-> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+            public void onResponse(Call<ExpressSale> call, Response<ExpressSale> response) {
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        notificationPane.show("The sale has been saved.");
+                        setExpressSale(response.body());
+                    });
+                } else {
+                    Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                             new String[]{"saleNo", "description", "saleDate", "bankId", "warehouseId", "refNo", "createdBy"})));
                 }
             }
 
             @Override
-            public void onFailure(Call<ExpressSale[]> call, Throwable throwable) {
-                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+            public void onFailure(Call<ExpressSale> call, Throwable throwable) {
+                Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
             }
         });
     }
-    private void post(){
+
+    private void post() {
         assert expressSale != null;
         Call<ExpressSale[]> call = apiService.postSale(expressSale.getId(), user.getId());
         call.enqueue(new Callback<>() {
@@ -355,7 +412,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                             dataInterface.updateData("The sale has been posted.", filtered.toArray(expressSales));
                         });
                     }
-                }else {
+                } else {
                     Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                             new String[]{"message"})));
                 }
@@ -367,7 +424,8 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             }
         });
     }
-    private void reverse(){
+
+    private void reverse() {
         Call<ExpressSale[]> call = apiService.reverseSale(expressSale.getId(), user.getId());
         call.enqueue(new Callback<>() {
             @Override
@@ -396,57 +454,25 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             }
         });
     }
-    private void addLine(){
-        ValidationResult vr = vsLine.getValidationResult();
-        Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
-        StringBuilder message = new StringBuilder();
-        while (iterator.hasNext()){
-            message.append(iterator.next().getText());
-            message.append("\n");
-        }
-        if (!vr.getErrors().isEmpty()){
-            notificationPane.show(message.toString());
+
+    private void addLine(String type, int typeId, double price, double buyingPrice, int q) {
+        String errorMessage = "";
+
+        if (!errorMessage.equals("")) {
+            notificationPane.show(errorMessage);
             return;
         }
 
-        String errorMessage = "";
-        String type = cbType.getValue();
-        Object object = cbPS.getValue();
-        int typeId = type.equals("Product")?((Product)object).getId():((Service)object).getId();
-        String unitPrice = tfUnitPrice.getText();
-        String quantity = tfQuantity.getText();
 
-
-        if (type.equals(""))errorMessage = errorMessage.concat("Select a valid type.");
-        if (object == null){
-            errorMessage = errorMessage.concat(errorMessage.equals("")?"Unit price is required":"\nUnit price is required");
-        }
-        if (unitPrice.equals("")){
-            errorMessage = errorMessage.concat(errorMessage.equals("")?"Unit price is required":"\nUnit price is required");
-        }
-        if (quantity.equals("")){
-            errorMessage = errorMessage.concat(errorMessage.equals("")?"Quantity is required":"\nQuantity is required");
-        }
-        if (!errorMessage.equals("")){
-            notificationPane.show(errorMessage);return;
-        }
-
-        double price = Double.parseDouble(unitPrice);
-        int q = Integer.parseInt(quantity);
-        double buyingPrice = 0;
-        if (type.equals("Product")){
-            buyingPrice = ((Product)object).getBuyingPrice();
-        }
-
-        if(expressSale == null){
+        if (expressSale == null) {
             ValidationResult validationResult = vsSale.getValidationResult();
             Iterator<ValidationMessage> validationMessageIterator = validationResult.getErrors().iterator();
             StringBuilder stringBuilder = new StringBuilder();
-            while (validationMessageIterator.hasNext()){
+            while (validationMessageIterator.hasNext()) {
                 stringBuilder.append(validationMessageIterator.next().getText());
                 stringBuilder.append("\n");
             }
-            if (!validationResult.getErrors().isEmpty()){
+            if (!validationResult.getErrors().isEmpty()) {
                 notificationPane.show(stringBuilder.toString());
                 return;
             }
@@ -457,44 +483,39 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             sale.setRefNo(tfRefNo.getText() == null ? "" : tfRefNo.getText());
             Gson gson = new Gson();
             String json = gson.toJson(sale, ExpressSale.class);
-            Call<ExpressSale> call = apiService.addSaleLine(json, type, typeId, price,buyingPrice, q, user.getId());
+            Call<ExpressSale> call = apiService.addSaleLine(json, type, typeId, price, buyingPrice, q, user.getId());
             call.enqueue(new Callback<>() {
                 @Override
                 public void onResponse(Call<ExpressSale> call, Response<ExpressSale> response) {
-                    Platform.runLater(()->{
-                        if (response.isSuccessful()){
+                    Platform.runLater(() -> {
+                        if (response.isSuccessful()) {
                             setExpressSale(response.body());
-                            tfUnitPrice.setText("");
-                            tfQuantity.setText("");
                         } else notificationPane.show(response.message());
                     });
                 }
 
                 @Override
                 public void onFailure(Call<ExpressSale> call, Throwable throwable) {
-                    Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+                    Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
                 }
             });
         }
 
-        Call<ExpressSaleLine[]> call = apiService.addSaleLine(expressSale.getId(), type, typeId, price,buyingPrice, q);
+        Call<ExpressSaleLine[]> call = apiService.addSaleLine(expressSale.getId(), type, typeId, price, buyingPrice, q);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ExpressSaleLine[]> call, Response<ExpressSaleLine[]> response) {
                 if (response.isSuccessful()) {
                     setLines(response.body());
-                    tfUnitPrice.setText("");
-                    tfQuantity.setText("");
-                }
-                else {
-                    Platform.runLater(()-> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                } else {
+                    Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                             new String[]{"saleId", "type", "typeId", "unitPrice", "quantity"})));
                 }
             }
 
             @Override
             public void onFailure(Call<ExpressSaleLine[]> call, Throwable throwable) {
-                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+                Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
             }
         });
     }
@@ -510,26 +531,40 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         dpDate.setValue(LocalDate.parse(expressSale.getSaleDate()));
         setLines(expressSale.getLines());
         btnPost.setDisable(false);
-        if (expressSale.isPosted()){
+        if (expressSale.isPosted()) {
             btnSave.setDisable(true);
             btnPost.setDisable(true);
             btnReverse.setDisable(expressSale.isReversed());
             tvLines.setDisable(true);
-            btnAddLine.setDisable(true);
+            tvItems.setDisable(true);
         }
     }
 
-    private void setLines(ExpressSaleLine[] lines){
+    private void setLines(ExpressSaleLine[] lines) {
         double total = 0;
-        for (ExpressSaleLine line: lines) {
+        for (ExpressSaleLine line : lines) {
             line.setLinesInterface(this);
             total += line.getTotal();
         }
         expressSale.setLines(lines);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             labelTotal.setText(expressSale.getTotalString());
             tvLines.setItems(FXCollections.observableArrayList(lines));
         });
+    }
+
+    public void setProducts(Product[] products) {
+        for (Product p : products) {
+            p.setLinesInterface(this);
+        }
+        this.products = products;
+    }
+
+    public void setServices(Service[] services) {
+        for (Service s : services) {
+            s.setLinesInterface(this);
+        }
+        this.services = services;
     }
 
     @Override
@@ -543,7 +578,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
     }
 
     @Override
-    public void updateQuantity(Object line) {
+    public void updateLine(Object line) {
         ExpressSaleLine saleLine = (ExpressSaleLine) line;
         Call<ExpressSaleLine[]> call = apiService.addSaleLine(expressSale.getId(), saleLine.getType(), saleLine.getTypeId(), saleLine.getUnitPrice(), saleLine.getBuyingPrice(), saleLine.getQuantity());
         call.enqueue(new Callback<>() {
@@ -564,5 +599,16 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                 notificationPane.show(throwable.getMessage());
             }
         });
+    }
+
+    @Override
+    public void addItem(SuperModel item, String type) {
+        if (type.equals("Service")) {
+            Service service = (Service) item;
+            addLine(type, service.getId(), 100, 100, 1);
+        } else if (type.equals("Product")) {
+            Product product = (Product) item;
+            addLine(type, product.getId(), product.getSellingPrice(), product.getBuyingPrice(), 1);
+        }
     }
 }

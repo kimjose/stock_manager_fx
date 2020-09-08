@@ -1,15 +1,22 @@
 package controllers;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.DashboardData;
 import network.ApiService;
@@ -23,9 +30,11 @@ import retrofit2.Response;
 import utils.Utility;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
+
 
     @FXML
     private AnchorPane vbParent;
@@ -40,7 +49,40 @@ public class DashboardController implements Initializable {
     private HBox hbSummary;
 
     @FXML
-    private Label labelTodaySale, labelTotalSale, labelCustomerBalance, labelVendorBalance;
+    private VBox vbSales;
+
+    @FXML
+    private Label labelTodaySale;
+
+    @FXML
+    private Label labelTotalSale;
+
+    @FXML
+    private Label labelNewSale;
+
+    @FXML
+    private VBox vbCustomers;
+
+    @FXML
+    private Label labelCustomers;
+
+    @FXML
+    private Label labelCustomerBalance;
+
+    @FXML
+    private Label labelNewCustomer;
+
+    @FXML
+    private VBox vbVendors;
+
+    @FXML
+    private Label labelVendors;
+
+    @FXML
+    private Label labelVendorBalance;
+
+    @FXML
+    private Label labelNewVendor;
 
     @FXML
     private LineChart<String, Double> lineChart;
@@ -57,8 +99,74 @@ public class DashboardController implements Initializable {
         for (int i = 0; i < 7; i++) {
             data.getData().add(new XYChart.Data<>("date", (double) i));
         }
-        Platform.runLater(()->loadData(true));
+        Platform.runLater(()->{
+            vbParent.getScene().getStylesheets().add(getClass().getClassLoader().getResource("css/dashboard.css").toExternalForm());
+            loadData(true);
+        });
+
+        vbSales.prefWidthProperty().bind(vbParent.widthProperty().subtract(15).divide(3));
+        vbCustomers.prefWidthProperty().bind(vbParent.widthProperty().subtract(15).divide(3));
+        vbVendors.prefWidthProperty().bind(vbParent.widthProperty().subtract(15).divide(3));
+
+        labelNewCustomer.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_customer.fxml")));
+                VBox vBox = loader.load();
+                Scene scene = new Scene(vBox);
+                Stage stage = new Stage();
+                stage.initOwner(vbParent.getScene().getWindow());
+                stage.setScene(scene);
+                CreateCustomer controller = loader.getController();
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
+                stage.setTitle("Create Customer");
+                stage.showAndWait();
+                loadData(false);
+            } catch (Exception e){
+                notificationPane.show("We are unable to load new window.");
+                e.printStackTrace();
+            }
+        });
+        labelNewSale.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/express_sale.fxml")));
+                VBox vBox = loader.load();
+                Scene scene = new Scene(vBox);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.initOwner(vbParent.getScene().getWindow());
+                ExpressSaleController controller = loader.getController();
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
+                stage.setTitle("Create Sale");
+                stage.showAndWait();
+                loadData(false);
+            } catch (Exception e){
+                notificationPane.show("We are unable to load new window.");
+                e.printStackTrace();
+            }
+        });
+        labelNewVendor.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_vendor.fxml")));
+                VBox vBox = loader.load();
+                Scene scene = new Scene(vBox);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.initOwner(vbParent.getScene().getWindow());
+                CreateVendor controller = loader.getController();
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
+                stage.setTitle("Create Vendor");
+                stage.showAndWait();
+                loadData(false);
+            }catch (Exception e){
+                notificationPane.show("We are unable to load new window.");
+                e.printStackTrace();
+            }
+        });
     }
+
 
     private void loadData(boolean first){
         maskerPane.setVisible(true);
@@ -85,7 +193,9 @@ public class DashboardController implements Initializable {
                         lineChart.getData().setAll(series, profits);
                         labelTodaySale.setText(dashboardData.getTodaySalesString());
                         labelTotalSale.setText(dashboardData.getTotalSalesString());
+                        labelCustomers.setText(String.valueOf(dashboardData.getCustomers()));
                         labelCustomerBalance.setText(dashboardData.getCustomerBalanceString());
+                        labelVendors.setText(String.valueOf(dashboardData.getVendors()));
                         labelVendorBalance.setText(dashboardData.getVendorBalanceString());
                         if (first) {
                             loadData(false);

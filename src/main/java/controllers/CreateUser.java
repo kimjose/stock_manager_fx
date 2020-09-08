@@ -202,7 +202,10 @@ public class CreateUser implements Initializable {
         else rbFemale.setSelected(true);
         cbAdmin.setSelected(user.isAdmin());
         tfNationalId.setText(String.valueOf(user.getNationalId()));
-
+        if (user.getPhoto() != null && !user.getPhoto().equals("")){
+            base64Image = user.getPhoto();
+            Utility.decodeImage(user.getPhoto(), ivPhoto, "mUser.png");
+        }
         btnSave.setText("Update");
     }
 }

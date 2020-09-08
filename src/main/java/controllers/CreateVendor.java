@@ -68,7 +68,7 @@ public class CreateVendor implements Initializable {
 
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
-        Platform.runLater(()->Utility.setLogo(vbParent));
+        Platform.runLater(() -> Utility.setLogo(vbParent));
         vs.registerValidator(tfName, true, Validator.createEmptyValidator("Name is required."));
         vs.registerValidator(tfEmail, false, Validator.createRegexValidator("Enter a valid email.", Utility.EMAIL_PATTERN, Severity.ERROR));
         vs.registerValidator(tfPhone, false, Validator.createRegexValidator("Enter a valid number", Utility.MOBILENUM_PATTERN, Severity.ERROR));
@@ -78,12 +78,13 @@ public class CreateVendor implements Initializable {
         ValidationResult vr = vs.getValidationResult();
         Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
         StringBuilder message = new StringBuilder();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             message.append(iterator.next().getText());
             message.append("\n");
         }
         if (!message.toString().isEmpty()) {
-            notificationPane.show(message.toString()); return;
+            notificationPane.show(message.toString());
+            return;
         }
         String name = tfName.getText().trim();
         String email = tfEmail.getText() == null ? "" : tfEmail.getText().trim();
@@ -104,12 +105,15 @@ public class CreateVendor implements Initializable {
             @Override
             public void onResponse(Call<Vendor[]> call, Response<Vendor[]> response) {
                 if (response.isSuccessful()) {
-                    if (dataInterface != null) {
-                        Platform.runLater(() -> {
+                    Platform.runLater(() -> {
+                        if (dataInterface != null) {
                             dataInterface.updateData("The Vendor has been saved", response.body());
-                            Utility.closeWindow(vbParent);
-                        });
-                    }
+                        } else {
+                            notificationPane.show("The Vendor has been saved");
+                        }
+                        Utility.closeWindow(vbParent);
+
+                    });
                 } else {
                     Platform.runLater(() -> {
                         assert response.errorBody() != null;

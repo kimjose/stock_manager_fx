@@ -3,12 +3,10 @@ package models.customers;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import interfaces.LinesInterface;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Paint;
 import models.products.Product;
 import models.products.Service;
@@ -165,12 +163,34 @@ public class InvoiceLine {
                     int diff = newQ - quantity;
                     InvoiceLine newLine = this;
                     newLine.setQuantity(diff);
-                    if (linesInterface != null) linesInterface.updateQuantity(newLine);
+                    if (linesInterface != null) linesInterface.updateLine(newLine);
                 }catch(Exception e){ e.printStackTrace();}
             }
         });
         textField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER){
+            }
+        });
+        return textField;
+    }
+
+    public TextField getUnitPriceTf() {
+        TextField textField = new TextField(String.valueOf(unitPrice));
+        textField.setAlignment(Pos.BASELINE_CENTER);
+        Utility.restrictInputDec(textField);
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue){
+                try{
+                    String q = textField.getText().trim();
+                    double nPrice = Double.parseDouble(q);
+                    if (nPrice <= 0) {
+                        textField.setText(String.valueOf(unitPrice));
+                        return;
+                    }
+                    InvoiceLine newLine = this;
+                    newLine.setUnitPrice(nPrice);
+                    if (linesInterface != null) linesInterface.updateLine(newLine);
+                }catch(Exception e){ e.printStackTrace();}
             }
         });
         return textField;

@@ -53,6 +53,7 @@ import java.util.*;
 /**
  * @author kim jose
  * @see javafx.fxml.Initializable
+ * @see interfaces.HomeDataInterface
  * <p>
  * This class controls the center scene and loads different data to it.
  ***/
@@ -107,7 +108,8 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         Platform.runLater(this::reportBtns);
         Platform.runLater(this::firstTabBtns);
         tvGeneral.prefWidthProperty().bind(vbParent.widthProperty());
-        tvGeneral.prefHeightProperty().bind(vbParent.heightProperty().subtract(140));
+        //tvGeneral.prefHeightProperty().bind(vbParent.heightProperty().subtract(140));
+        apTable.prefHeightProperty().bind(vbParent.heightProperty().subtract(140));
 
         apiService = RetrofitBuilder.createService(ApiService.class);
 
@@ -148,8 +150,8 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             sellProduct.setProduct(product);
             Stage stage = new Stage();
             stage.setScene(scene);
-            stage.showAndWait();
             stage.setResizable(false);
+            stage.showAndWait();
             loadData();
         } catch (Exception e) {
             e.printStackTrace();
@@ -527,6 +529,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    dialog.initOwner(vbParent.getScene().getWindow());
                     ButtonType nextButtonType = new ButtonType("Go", ButtonBar.ButtonData.OK_DONE);
                     ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
                     pane.getButtonTypes().addAll(nextButtonType, cancelButtonType);
@@ -631,8 +634,83 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                                 public void onResponse(Call<Object[]> call, Response<Object[]> response) {
                                     Utility.closeWindow(n);
                                     if (response.isSuccessful()){
-                                        Utility.printReport("customer_report.jasper", params, gson.toJson(response.body()));
-                                        //Utility.showReport("customer_report.jasper", params, gson.toJson(response.body()));
+                                        //Utility.printReport("customer_report.jasper", params, gson.toJson(response.body()));
+                                        Utility.showReport("customer_report.jasper", params, gson.toJson(response.body()));
+                                    } else createNotification(-1, response.message());
+                                }
+
+                                @Override
+                                public void onFailure(Call<Object[]> call, Throwable throwable) {
+                                    createNotification(-1, throwable.getMessage());
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            dialog.close();
+                            createNotification(-1, "We are unable to proceed with your request.");
+                        }
+                    });
+                    dialog.initOwner(tvGeneral.getScene().getWindow());
+                    dialog.setDialogPane(pane);
+                    dialog.show();
+                    Utility.setLogo(pane);
+                });
+                hbReports.getChildren().add(customButton);
+                break;
+            }
+            case "All Vendors": {
+                FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.FILE_PDF_ALT);
+                icon.setFill(Paint.valueOf("#800000"));
+                CustomButton customButton = new CustomButton("Vendor Report", icon);
+                customButton.setOnAction(event -> {
+                    Object o = tvGeneral.getSelectionModel().getSelectedItem();
+                    if (o == null) {
+                        createNotification(1, "You must select a vendor first.");
+                        return;
+                    }
+                    Dialog dialog = new Dialog<>();
+                    DialogPane pane = null;
+                    try {
+                        pane = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/date_filter.fxml"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Utility.setLogo(pane);
+                    dialog.initOwner(pane.getScene().getWindow());
+                    ButtonType nextButtonType = new ButtonType("Go", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    pane.getButtonTypes().addAll(nextButtonType, cancelButtonType);
+                    Node nextButton = pane.lookupButton(nextButtonType);
+                    Node cancelButton = pane.lookupButton(cancelButtonType);
+                    nextButton.setStyle("-fx-background-color:#19D019;");
+                    cancelButton.setStyle("-fx-background-color:#f80707; -fx-text-fill: white;");
+                    VBox parent = (VBox) pane.getContent();
+                    DatePicker startDatePicker = (DatePicker) ((HBox) parent.getChildren().get(1)).getChildren().get(1);
+                    startDatePicker.setValue(LocalDate.now());
+                    DatePicker endDatePicker = (DatePicker) ((HBox) parent.getChildren().get(2)).getChildren().get(1);
+                    endDatePicker.setValue(LocalDate.now());
+                    nextButton.addEventFilter(ActionEvent.ACTION, event1 -> {
+                        try {
+                            String startDate = startDatePicker.getValue().toString();
+                            String endDate = endDatePicker.getValue().toString();
+                            if (startDate.equals("") || endDate.equals("")) throw new Exception("Invalid date values");
+                            dialog.close();
+                            Vendor v = (Vendor) o;
+                            HashMap<String, Object> params = new LinkedHashMap<>();
+                            params.put("clientName", Utility.CLIENT_NAME);
+                            params.put("vendorName", v.getName());
+                            params.put("vendorBalance", v.getBalance());
+                            params.put("startDate", startDate);
+                            params.put("endDate", endDate);
+                            Node n = Utility.showProgressBar("Generating report...", tvGeneral.getScene().getWindow());
+                            Call<Object[]> call = apiService.vendorReport(v.getId(), startDate, endDate);
+                            call.enqueue(new Callback<>() {
+                                @Override
+                                public void onResponse(Call<Object[]> call, Response<Object[]> response) {
+                                    Utility.closeWindow(n);
+                                    if (response.isSuccessful()){
+                                        //Utility.printReport("customer_report.jasper", params, gson.toJson(response.body()));
+                                        Utility.showReport("vendor_report.jasper", params, gson.toJson(response.body()));
                                     } else createNotification(-1, response.message());
                                 }
 
@@ -668,6 +746,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     HashMap<String, Object> params = new LinkedHashMap<>();
                     params.put("saleNo", sale.getSaleNo());
                     params.put("saleDate", sale.getSaleDate());
+                    params.put("businessName", Utility.CLIENT_NAME);
                     params.put("saleTotal", "Kshs " + sale.getTotalString());
                     Node n = Utility.showProgressBar("Getting report...", tvGeneral.getScene().getWindow());
                     Call<Object[]> call = apiService.saleReport(sale.getId());
@@ -696,6 +775,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    dialog.initOwner(vbParent.getScene().getWindow());
                     ButtonType nextButtonType = new ButtonType("Go", ButtonBar.ButtonData.OK_DONE);
                     ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
                     pane.getButtonTypes().addAll(nextButtonType, cancelButtonType);
@@ -704,7 +784,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     nextButton.setStyle("-fx-background-color:#19D019;");
                     cancelButton.setStyle("-fx-background-color:#f80707; -fx-text-fill: white;");
                     VBox parent = (VBox) pane.getContent();
-                    DatePicker startDatePicker = (DatePicker) ((HBox) parent.getChildren().get(1)).getChildren().get(1);
+                    final DatePicker startDatePicker = (DatePicker) ((HBox) parent.getChildren().get(1)).getChildren().get(1);
                     startDatePicker.setValue(LocalDate.now());
                     DatePicker endDatePicker = (DatePicker) ((HBox) parent.getChildren().get(2)).getChildren().get(1);
                     endDatePicker.setValue(LocalDate.now());
@@ -730,7 +810,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                                             HashMap<String, Object> params = new LinkedHashMap<>();
                                             params.put("dateFrom", startDate);
                                             params.put("dateTo", endDate);
-                                            params.put("businessName", "Kimjose");
+                                            params.put("businessName", Utility.CLIENT_NAME);
                                             Utility.showReport("sales_report.jasper", params, gson.toJson(response.body()));
                                         }
                                     });
@@ -754,6 +834,9 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     cancelButton.addEventFilter(ActionEvent.ACTION, event1 -> dialog.close());
                     dialog.initOwner(tvGeneral.getScene().getWindow());
                     dialog.setDialogPane(pane);
+                    dialog.setOnShowing(e -> {
+                        Utility.setLogo(startDatePicker);
+                    });
                     dialog.show();
                 });
                 hbReports.getChildren().addAll(saleReport, separator, salesReport);
@@ -837,7 +920,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
         }
         List<SuperModel> filtered = new ArrayList<>();
         for (SuperModel model : data) {
-            if (model.getSearchString().contains(searchString)) filtered.add(model);
+            if (model.getSearchString().toLowerCase().contains(searchString.toLowerCase())) filtered.add(model);
         }
         tvGeneral.setItems(FXCollections.observableArrayList(filtered));
     }
@@ -1723,7 +1806,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
     }
 
     /**
-     * This method triggers a interface that edits/updates an object
+     * This method triggers a interface that views/updates an object
      *
      * @param object the object being edited
      **/

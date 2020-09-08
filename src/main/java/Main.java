@@ -87,7 +87,9 @@ public class Main extends Application{
         });
         dialog.initStyle(StageStyle.UNDECORATED);
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-        stage.getScene().getStylesheets().add("file:/"+Utility.USER_DIR.replace("\\", "/")+"/src/main/resources/css/Main.css");
+
+        //stage.getScene().getStylesheets().add("file:/"+Utility.USER_DIR.replace("\\", "/")+"/src/main/resources/css/Main.css");
+        stage.getScene().getStylesheets().add(getClass().getResource("css/Main.css").getFile());
         stage.getIcons().add(new Image(Utility.IM_LOGO_IMAGE));
         stage.requestFocus();
         dialog.showAndWait();

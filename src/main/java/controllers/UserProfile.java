@@ -8,6 +8,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import models.auth.User;
@@ -105,9 +107,15 @@ public class UserProfile implements Initializable {
             cbAdmin.setSelected(user.isAdmin());
         });
 
+
+        //function keys
+        vpParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vpParent);
+        });
     }
 
-    private void changePassword(){
+    private void changePassword(){//todo
         notificationPane.show("WTF hkdbfkjfnkjhduihkj");
     }
 

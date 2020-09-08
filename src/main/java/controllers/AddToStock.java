@@ -41,6 +41,9 @@ public class AddToStock {
     private TextField tfQuantity;
 
     @FXML
+    private TextField tfDesc;
+
+    @FXML
     private Button btnAdd;
 
     @FXML
@@ -102,10 +105,12 @@ public class AddToStock {
             int available = Integer.parseInt(labelAvailable.getText());
             if (i < 0 && quantity>available) error += error.equals("")?"Final amount must not be less than 0.":"\nFinal amount must not be less than 0.";
         }
+        String desc = tfDesc.getText().trim();
+        if (desc.equals(""))error += error.equals("")?"Enter a description for this transaction.":"\nEnter a description for this transaction.";
         if (!error.equals("")) {
             notificationPane.show(error); return;
         }
-        Call<Product[]> call = apiService.addStock(user.getId(), product.getId(), warehouse.getId(), quantity*i);
+        Call<Product[]> call = apiService.addStock(user.getId(), product.getId(), warehouse.getId(), quantity*i, desc);
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Product[]> call, Response<Product[]> response) {

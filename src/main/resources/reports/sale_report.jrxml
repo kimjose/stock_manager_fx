@@ -5,6 +5,7 @@
 	<parameter name="saleNo" class="java.lang.String"/>
 	<parameter name="saleDate" class="java.lang.String"/>
 	<parameter name="saleTotal" class="java.lang.String"/>
+	<parameter name="businessName" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -25,30 +26,30 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="132" splitType="Stretch">
+		<band height="150" splitType="Stretch">
 			<staticText>
-				<reportElement x="6" y="99" width="80" height="20" uuid="9cce7e30-4201-494a-be4f-3d3c83cd162b"/>
+				<reportElement x="12" y="116" width="80" height="20" uuid="9cce7e30-4201-494a-be4f-3d3c83cd162b"/>
 				<textElement>
 					<font fontName="Times New Roman" size="16"/>
 				</textElement>
 				<text><![CDATA[Sale Total:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="76" width="80" height="20" uuid="e60a1ecf-338a-4528-95eb-4b50dcb27d48"/>
+				<reportElement x="11" y="93" width="80" height="20" uuid="e60a1ecf-338a-4528-95eb-4b50dcb27d48"/>
 				<textElement>
 					<font fontName="Times New Roman" size="16"/>
 				</textElement>
 				<text><![CDATA[Sale Date:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="53" width="80" height="20" uuid="12b77dee-0fed-4ae4-96ea-3e001ca201d6"/>
+				<reportElement x="11" y="70" width="80" height="20" uuid="12b77dee-0fed-4ae4-96ea-3e001ca201d6"/>
 				<textElement>
 					<font fontName="Times New Roman" size="16"/>
 				</textElement>
 				<text><![CDATA[Sale No:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="90" y="53" width="100" height="20" uuid="8da70b75-a883-42f5-8765-457b12a28d7e"/>
+				<reportElement x="96" y="70" width="100" height="20" uuid="8da70b75-a883-42f5-8765-457b12a28d7e"/>
 				<box topPadding="3"/>
 				<textElement>
 					<font size="12"/>
@@ -56,7 +57,7 @@
 				<textFieldExpression><![CDATA[$P{saleNo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="90" y="76" width="100" height="20" uuid="d399197b-5183-4e03-bd91-e7626711fe87"/>
+				<reportElement x="96" y="93" width="100" height="20" uuid="d399197b-5183-4e03-bd91-e7626711fe87"/>
 				<box topPadding="3"/>
 				<textElement>
 					<font size="12"/>
@@ -64,18 +65,35 @@
 				<textFieldExpression><![CDATA[$P{saleDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="90" y="99" width="100" height="20" uuid="408a6948-a6ab-4efd-888f-052c2c597715"/>
+				<reportElement x="96" y="116" width="100" height="20" uuid="408a6948-a6ab-4efd-888f-052c2c597715">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box topPadding="3"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{saleTotal}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="5" y="10" width="70" height="60" uuid="692bbe3d-6cb4-410a-acb6-4efee177c588"/>
+				<imageExpression><![CDATA["im_logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="190" y="35" width="147" height="30" uuid="e5b643c8-c189-4ca3-a3db-cd18cd6bbd29"/>
+				<textElement textAlignment="Center">
+					<font size="19" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sale Report]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="10" width="400" height="30" uuid="cc2b4f07-7093-47c0-bc6b-46ea62bea0ac"/>
+				<textElement textAlignment="Center">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{businessName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
-	<pageHeader>
-		<band height="20" splitType="Stretch"/>
-	</pageHeader>
 	<columnHeader>
 		<band height="22" splitType="Stretch">
 			<staticText>

@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import models.auth.User;
 import models.products.Product;
@@ -95,6 +97,27 @@ public class UnpackingController implements Initializable {
 
         Platform.runLater(()->Utility.setLogo(vbParent));
         loadData();
+
+
+        //function keys
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F11)) save();
+            else if (keyCode.equals(KeyCode.F10)) {
+                if (unpacking == null ) return;
+                if (unpacking.isPosted()) return;
+                post();
+            }
+            else if (keyCode.equals(KeyCode.F8)) {
+                if (unpacking == null ) return;
+                if (!unpacking.isPosted()) return;
+                if (unpacking.isReversed()) return;
+                reverse();
+            }
+            else if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
+            else if (keyCode.equals(KeyCode.F5)) loadData();
+        });
+
     }
 
     private void loadData(){

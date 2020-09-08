@@ -4,13 +4,19 @@ import interfaces.HomeDataInterface;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import models.products.Brand;
 import models.products.Category;
 import models.products.Product;
@@ -25,6 +31,7 @@ import utils.Utility;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class CreateProduct implements Initializable {
@@ -77,6 +84,7 @@ public class CreateProduct implements Initializable {
     @FXML
     private Button btnCancel;
 
+
     private ApiService apiService;
     private Product product;
     private HomeDataInterface dataInterface;
@@ -120,11 +128,87 @@ public class CreateProduct implements Initializable {
         contextMenu.getItems().add(miReset);
         ivPhoto.setOnContextMenuRequested(event -> contextMenu.show(ivPhoto, event.getScreenX(), event.getScreenY()));
 
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, e ->{
+            KeyCode keyCode = e.getCode();
+            if (keyCode.equals(KeyCode.F5)) loadData();
+            e.consume();
+        });
 
         loadData();
 
         btnSave.setOnAction(event -> save());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
+
+
+        //function keys
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F11)) save();
+            else if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbParent);
+            else if (keyCode.equals(KeyCode.F5)) loadData();
+        });
+
+    }
+
+    @FXML
+    private void addBrand(){
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_brand.fxml")));
+            VBox vBox = loader.load();
+            Scene scene = new Scene(vBox);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.setTitle("Create Brand");
+            stage.showAndWait();
+            loadData();
+        } catch (Exception e){
+            e.printStackTrace();
+            notificationPane.show("Unable to load.");
+        }
+    }
+
+    @FXML
+    private void addCategory(){
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_category.fxml")));
+            VBox vBox = loader.load();
+            Scene scene = new Scene(vBox);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(vbParent.getScene().getWindow());
+            stage.initOwner(vbParent.getScene().getWindow());
+            stage.setResizable(false);
+            stage.setTitle("Create Category");
+            stage.showAndWait();
+            loadData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            notificationPane.show("Unable to load");
+        }
+    }
+
+    @FXML
+    private void addUOM(){
+        try {
+
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_uom.fxml")));
+            VBox vBox = loader.load();
+            Scene scene = new Scene(vBox);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(vbParent.getScene().getWindow());
+            stage.setResizable(false);
+            stage.setTitle("Create Unit Of Measure");
+            stage.showAndWait();
+            loadData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            notificationPane.show("Unable to load.");
+        }
     }
 
     private void loadData(){

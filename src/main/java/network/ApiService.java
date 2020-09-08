@@ -105,6 +105,8 @@ public interface ApiService {
     @GET("customer_report/{id}/{startDate}/{endDate}")
     Call<Object[]> customerReport(@Path("id") int id, @Path("startDate") String startDate, @Path("endDate") String endDate);
 
+    @GET("vendor_report/{id}/{startDate}/{endDate}")
+    Call<Object[]> vendorReport(@Path("id") int id, @Path("startDate") String startDate, @Path("endDate") String endDate);
 
 
     /**
@@ -171,7 +173,7 @@ public interface ApiService {
 
     @POST("customer_invoice")
     @FormUrlEncoded
-    Call<Invoice[]> addCustomerInvoice(@Field("customerId") int customer,
+    Call<Invoice> addCustomerInvoice(@Field("customerId") int customer,
                                        @Field("warehouseId") int warehouse,@Field("invoiceDate")String date,@Field("createdBy") int createdBy);
 
     @POST("post_customer_invoice/{id}/{postedBy}")
@@ -181,10 +183,10 @@ public interface ApiService {
     Call<Invoice[]> reverseCustomerInvoice(@Path("id") int id, @Path("postedBy") int postedBy);
 
     @POST("post_customer_receipt/{id}/{postedBy}")
-    Call<Receipt[]> postCustomerReceipt(@Path("id") int id, @Path("postedBy") int postedBy);
+    Call<Receipt> postCustomerReceipt(@Path("id") int id, @Path("postedBy") int postedBy);
 
     @POST("reverse_customer_receipt/{id}/{postedBy}")
-    Call<Receipt[]> reverseCustomerReceipt(@Path("id") int id, @Path("postedBy") int postedBy);
+    Call<Receipt> reverseCustomerReceipt(@Path("id") int id, @Path("postedBy") int postedBy);
 
     @POST("customer_invoice_line")
     @FormUrlEncoded
@@ -212,7 +214,7 @@ public interface ApiService {
 
     @POST("vendor_invoice")
     @FormUrlEncoded
-    Call<models.vendors.Invoice[]> addVendorInvoice(@Field("vendorId") int vendor,
+    Call<models.vendors.Invoice> addVendorInvoice(@Field("vendorId") int vendor,
                                        @Field("warehouseId") int warehouse,@Field("invoiceDate")String date, @Field("addedBy") int addedBy);
 
     @POST("post_vendor_invoice/{id}/{postedBy}")
@@ -234,13 +236,13 @@ public interface ApiService {
 
     @POST("receipt")
     @FormUrlEncoded
-    Call<Receipt[]> addReceipt(@Field("customerId")int customerId, @Field("receiptDate")String receiptDate,
+    Call<Receipt> addReceipt(@Field("customerId")int customerId, @Field("receiptDate")String receiptDate,
                                @Field("createdBy")int createdBy,@Field("bankId")int bankId,@Field("amount")double amount,
-                               @Field("extDocNo")String extDocNo);
+                               @Field("extDocNo")String extDocNo, @Field("post")int post);
 
     @POST("express_sale")
     @FormUrlEncoded
-    Call<ExpressSale[]> addSale(@Field("description") String description, @Field("saleDate") String saleDate,
+    Call<ExpressSale> addSale(@Field("description") String description, @Field("saleDate") String saleDate,
                                 @Field("bankId") int bankId, @Field("warehouseId") int warehouseId, @Field("refNo") String refNo,
                                 @Field("createdBy") int createdBy);
 
@@ -270,7 +272,7 @@ public interface ApiService {
 
     @POST("add_stock/{user}")
     @FormUrlEncoded
-    Call<Product[]> addStock(@Path("user") int user, @Field("productId") int productId, @Field("warehouseId") int warehouseId, @Field("quantity") int quantity);
+    Call<Product[]> addStock(@Path("user") int user, @Field("productId") int productId, @Field("warehouseId") int warehouseId, @Field("quantity") int quantity, @Field("desc") String desc);
 
     @POST("product_group")
     @FormUrlEncoded
@@ -319,11 +321,11 @@ public interface ApiService {
     Call<Service[]> updateService(@Path("id")int id, @Query("name") String name, @Query("description") String description);
 
     @PUT("customer_invoice/{id}")
-    Call<Invoice[]> updateCustomerInvoice(@Path("id")int id,@Query("customerId") int customer,
+    Call<Invoice> updateCustomerInvoice(@Path("id")int id,@Query("customerId") int customer,
                                           @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
 
     @PUT("vendor_invoice/{id}")
-    Call<models.vendors.Invoice[]> updateVendorInvoice(@Path("id")int id,@Query("vendorId") int vendor,
+    Call<models.vendors.Invoice> updateVendorInvoice(@Path("id")int id,@Query("vendorId") int vendor,
                                           @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
 
 
@@ -332,11 +334,11 @@ public interface ApiService {
                                              @Query("bankId")int bankId , @Query("amount") double amount ,@Query("extDocNo")String extDocNo);
 
     @PUT("receipt/{id}")
-    Call<Receipt[]> updateReceipt(@Path("id")int id, @Query("customerId")int customerId, @Query("receiptDate")String receiptDate,
+    Call<Receipt> updateReceipt(@Path("id")int id, @Query("customerId")int customerId, @Query("receiptDate")String receiptDate,
                                @Query("bankId")int bankId,@Query("amount")double amount, @Query("extDocNo")String extDocNo);
 
     @PUT("express_sale/{id}")
-    Call<ExpressSale[]> updateSale(@Path("id") int id, @Query("description") String description, @Query("saleDate") String saleDate,
+    Call<ExpressSale> updateSale(@Path("id") int id, @Query("description") String description, @Query("saleDate") String saleDate,
                                    @Query("bankId") int bankId, @Query("warehouseId") int warehouseId, @Query("refNo") String refNo);
 
     @POST("product_group/{id}")

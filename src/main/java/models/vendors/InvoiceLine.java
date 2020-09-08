@@ -99,7 +99,29 @@ public class InvoiceLine {
                     int diff = newQ - quantity;
                     InvoiceLine newLine = this;
                     newLine.setQuantity(diff);
-                    if (linesInterface != null) linesInterface.updateQuantity(newLine);
+                    if (linesInterface != null) linesInterface.updateLine(newLine);
+                }catch(Exception e){ e.printStackTrace();}
+            }
+        });
+        return textField;
+    }
+
+    public TextField getUnitPriceTf() {
+        TextField textField = new TextField(String.valueOf(unitPrice));
+        textField.setAlignment(Pos.BASELINE_CENTER);
+        Utility.restrictInputDec(textField);
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue){
+                try{
+                    String q = textField.getText().trim();
+                    double nPrice = Double.parseDouble(q);
+                    if (nPrice <= 0) {
+                        textField.setText(String.valueOf(unitPrice));
+                        return;
+                    }
+                    InvoiceLine newLine = this;
+                    newLine.setUnitPrice(nPrice);
+                    if (linesInterface != null) linesInterface.updateLine(newLine);
                 }catch(Exception e){ e.printStackTrace();}
             }
         });

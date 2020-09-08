@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -63,6 +65,12 @@ public class WarehouseProducts implements Initializable {
         btnRefresh.setOnAction(event -> loadData());
         loadData();
         Platform.runLater(()->Utility.setLogo(apParent));
+
+        //function keys
+        apParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F5)) loadData();
+        });
     }
 
     private void loadData() {

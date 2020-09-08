@@ -97,12 +97,15 @@ public class CreateCustomer implements Initializable {
             @Override
             public void onResponse(Call<Customer[]> call, Response<Customer[]> response) {
                 if (response.isSuccessful()){
-                    if (dataInterface!=null){
-                        Platform.runLater(()->{
-                            dataInterface.updateData("The customer has been saved", response.body());
-                            Utility.closeWindow(vbParent);
-                        });
-                    }
+                    Platform.runLater(() -> {
+                        if (dataInterface != null) {
+                            dataInterface.updateData("The Customer has been saved", response.body());
+                        } else {
+                            notificationPane.show("The Customer has been saved");
+                        }
+                        Utility.closeWindow(vbParent);
+
+                    });
                 }else{
                     Platform.runLater(()-> {
                         assert response.errorBody() != null;

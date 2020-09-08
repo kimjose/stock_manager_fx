@@ -98,6 +98,7 @@ public class CreateBrand implements Initializable {
                 @Override
                 public void onResponse(Call<Brand[]> call, Response<Brand[]> response) {
                     if (response.isSuccessful()) {
+                        Platform.runLater(()->createNotification( 0,"Brand has been saved."));
                         if (dataInterface!=null){
                             Platform.runLater(()->{
                                 Stage stage = (Stage) vbParent.getScene().getWindow();

@@ -34,7 +34,7 @@
             <HBox layoutX="10.0" layoutY="38.0">
                <children>
                   <Label prefHeight="28.0" prefWidth="145.0" text="Receipt Date:" />
-                  <DatePicker fx:id="dbDate" prefHeight="25.0" prefWidth="265.0" />
+                  <DatePicker fx:id="dpDate" prefHeight="25.0" prefWidth="265.0" />
                </children>
             </HBox>
             <HBox layoutX="10.0" layoutY="66.0">

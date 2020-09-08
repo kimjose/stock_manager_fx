@@ -5,6 +5,7 @@
 	<parameter name="name" class="java.lang.String"/>
 	<parameter name="startDate" class="java.lang.String"/>
 	<parameter name="endDate" class="java.lang.String"/>
+	<parameter name="businessName" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -18,52 +19,68 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="107" splitType="Stretch">
+		<band height="128" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="44" width="100" height="16" uuid="3771460e-58e5-4d55-b27c-00a916fd0b51"/>
+				<reportElement x="13" y="62" width="100" height="16" uuid="3771460e-58e5-4d55-b27c-00a916fd0b51"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[Product name]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="44" width="100" height="16" uuid="56325d5b-d16a-4f5f-bc76-f78d9248d5bf"/>
+				<reportElement x="113" y="62" width="100" height="16" uuid="56325d5b-d16a-4f5f-bc76-f78d9248d5bf"/>
 				<textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="65" width="100" height="16" uuid="43ef937d-e6d5-4bf5-b142-aff9a31f6eac"/>
+				<reportElement x="113" y="83" width="100" height="16" uuid="43ef937d-e6d5-4bf5-b142-aff9a31f6eac"/>
 				<textFieldExpression><![CDATA[$P{startDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="65" width="100" height="16" uuid="8f6a9a2c-a8dc-4946-a24a-2e0a292ce26e"/>
+				<reportElement x="13" y="83" width="100" height="16" uuid="8f6a9a2c-a8dc-4946-a24a-2e0a292ce26e"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[From]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="87" width="100" height="16" uuid="90d844ef-476c-45af-94c1-b35d07e9eec5"/>
+				<reportElement x="113" y="105" width="100" height="16" uuid="90d844ef-476c-45af-94c1-b35d07e9eec5"/>
 				<textFieldExpression><![CDATA[$P{endDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="87" width="100" height="16" uuid="5d562108-ac6e-4d37-85b4-aa97fd2b6d65"/>
+				<reportElement x="13" y="105" width="100" height="16" uuid="5d562108-ac6e-4d37-85b4-aa97fd2b6d65"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[To]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="217" y="7" width="130" height="26" uuid="2e259453-ad0d-4f5f-980c-af56127b2854"/>
+				<reportElement x="211" y="29" width="130" height="26" uuid="2e259453-ad0d-4f5f-980c-af56127b2854"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Product Report]]></text>
 			</staticText>
+			<image>
+				<reportElement x="10" y="9" width="50" height="50" uuid="0880a305-19c2-4788-9f33-7a77682f3089"/>
+				<imageExpression><![CDATA["im_logo.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="81" y="1" width="399" height="30" uuid="c842f8d8-19f4-411c-bbd3-7d3d27fa74d4"/>
+				<textElement textAlignment="Center">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{businessName}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="55" width="542" height="2" uuid="f369a303-d460-47a8-84cb-67bc6130450f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
 		</band>
 	</title>
-	<pageHeader>
-		<band height="18" splitType="Stretch"/>
-	</pageHeader>
 	<columnHeader>
 		<band height="25" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>

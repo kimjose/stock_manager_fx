@@ -100,6 +100,8 @@ public class CreateCategory implements Initializable {
                         Utility.closeWindow(vbParent);
                         if (dataInterface != null) {
                             dataInterface.updateData("The category has been saved.", response.body());
+                        } else {
+                            notificationPane.show("The category has been saved.");
                         }
                     });
                 } else {

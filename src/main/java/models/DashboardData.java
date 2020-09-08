@@ -4,6 +4,7 @@ import utils.Utility;
 
 public class DashboardData {
     private double todaySales, totalSales, customerBalance, vendorBalance;
+    private int customers, vendors;
     private ChartData[] chartData;
     private ChartData[] pnls;
 
@@ -27,6 +28,22 @@ public class DashboardData {
 
     public void setTotalSales(double totalSales) {
         this.totalSales = totalSales;
+    }
+
+    public int getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(int customers) {
+        this.customers = customers;
+    }
+
+    public int getVendors() {
+        return vendors;
+    }
+
+    public void setVendors(int vendors) {
+        this.vendors = vendors;
     }
 
     public ChartData[] getChartData() {

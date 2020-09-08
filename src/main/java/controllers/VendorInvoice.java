@@ -10,7 +10,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import models.SuperModel;
 import models.auth.User;
 import models.products.Product;
 import models.products.Service;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+
 import models.vendors.*;
 
 public class VendorInvoice implements Initializable, LinesInterface {
@@ -71,19 +75,16 @@ public class VendorInvoice implements Initializable, LinesInterface {
     private ComboBox<String> cbType;
 
     @FXML
-    private ComboBox<Object> cbPS;
+    private TableView<SuperModel> tvItems;
 
     @FXML
-    private TextField tfDescription;
+    private TableColumn<?, ?> tcItemName;
 
     @FXML
-    private TextField tfUnitPrice;
+    private TableColumn<?, ?> tcItemPrice;
 
     @FXML
-    private TextField tfQuantity;
-
-    @FXML
-    private Button btnAddLine;
+    private TableColumn<?, ?> tcItemAdd;
 
     @FXML
     private TableView<InvoiceLine> tvLines;
@@ -115,6 +116,9 @@ public class VendorInvoice implements Initializable, LinesInterface {
     @FXML
     private Button btnPost;
 
+    @FXML
+    private Label labelPay;
+
     private ApiService apiService;
     private HomeDataInterface dataInterface;
     private Invoice invoice;
@@ -130,24 +134,21 @@ public class VendorInvoice implements Initializable, LinesInterface {
     public void initialize(URL location, ResourceBundle resources) {
         apiService = RetrofitBuilder.createService(ApiService.class);
         Utility.setupNotificationPane(notificationPane, vbHolder);
-        String[] typeValues = {"Product","Service"};
+        String[] typeValues = {"Product", "Service"};
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             Utility.setLogo(vbParent);
             labelOwner.setText("Vendor");
             cbOwner.setPromptText("Select Vendor");
             cbType.setItems(FXCollections.observableArrayList(typeValues));
             dpDate.setValue(LocalDate.now());
 
-            Utility.restrictInputDec(tfUnitPrice);
-            Utility.restrictInputNum(tfQuantity);
-
             cbType.setOnAction(event -> {
                 Task<Object> myTask = new Task<>() {
                     @Override
                     protected Object call() {
                         System.out.println(cbType.getValue());
-                        if (products==null||services==null) {
+                        if (products == null || services == null) {
                             loadData();
                             try {
                                 Thread.currentThread().wait();
@@ -157,10 +158,18 @@ public class VendorInvoice implements Initializable, LinesInterface {
                             }
                         }
                         String type = cbType.getValue();
-                        Platform.runLater(()->{
-                            if (type.equals("Product")) cbPS.setItems(FXCollections.observableArrayList(products));
-                            else if(type.equals("Service")) cbPS.setItems(FXCollections.observableArrayList(services));
-                            cbPS.getSelectionModel().select(0);
+                        Platform.runLater(() -> {
+                            if (type.equals("Product")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(products));
+                            } else if (type.equals("Service")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(services));
+                            }
                         });
                         return null;
                     }
@@ -170,16 +179,8 @@ public class VendorInvoice implements Initializable, LinesInterface {
                 thread.start();
             });
 
-            cbPS.setOnAction(event -> {
-                if (cbType.getValue().equals("Product")) {
-                    Product product = (Product) cbPS.getValue();
-                    tfUnitPrice.setText(String.valueOf(product.getBuyingPrice()));
-                    tfQuantity.setText("1");
-                }
-            });
-
             tcPS.setCellValueFactory(new PropertyValueFactory<>("name"));
-            tcPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+            tcPrice.setCellValueFactory(new PropertyValueFactory<>("unitPriceTf"));
             tcQuantity.setCellValueFactory(new PropertyValueFactory<>("quantityTf"));
             tcTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
             tcRemove.setCellValueFactory(new PropertyValueFactory<>("removeLine"));
@@ -189,19 +190,32 @@ public class VendorInvoice implements Initializable, LinesInterface {
             vsInvoice.registerValidator(dpDate, true, Validator.createEmptyValidator("Select a valid Date."));
 
             vsLine.registerValidator(cbType, true, Validator.createEmptyValidator("Select a valid type"));
-            vsLine.registerValidator(tfUnitPrice, true, Validator.createEmptyValidator("Enter a valid unit price."));
-            vsLine.registerValidator(tfQuantity, true, Validator.createEmptyValidator("Enter a valid quantity"));
-            vsLine.registerValidator(cbPS, true, Validator.createEmptyValidator("Select a product/service"));
-
 
             loadData();
+        });
+
+
+        //function keys
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F11)) save();
+            else if (keyCode.equals(KeyCode.F10)) {
+                if (invoice == null) return;
+                if (invoice.isPosted()) return;
+                post();
+            } else if (keyCode.equals(KeyCode.F8)) {
+                if (invoice == null) return;
+                if (!invoice.isPosted()) return;
+                if (invoice.isReversed()) return;
+                reverse();
+            } else if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
+            else if (keyCode.equals(KeyCode.F5)) loadData();
         });
 
         btnSave.setOnAction(event -> save());
         btnPost.setOnAction(event -> post());
         btnReverse.setOnAction(event -> reverse());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbHolder));
-        btnAddLine.setOnAction(event -> addLine());
     }
 
 
@@ -216,7 +230,7 @@ public class VendorInvoice implements Initializable, LinesInterface {
     }
 
     @Override
-    public void updateQuantity(Object line) {
+    public void updateLine(Object line) {
         InvoiceLine invoiceLine = (InvoiceLine) line;
         Call<InvoiceLine[]> call = apiService.addVendorInvoiceLine(invoice.getId(), invoiceLine.getType(), invoiceLine.getTypeId(), invoiceLine.getUnitPrice(), invoiceLine.getQuantity(), "");
         call.enqueue(new Callback<>() {
@@ -239,7 +253,18 @@ public class VendorInvoice implements Initializable, LinesInterface {
         });
     }
 
-    private void save(){
+    @Override
+    public void addItem(SuperModel item, String type) {
+        if (type.equals("Service")) {
+            Service service = (Service) item;
+            addLine(type, service.getId(), 100, 100, 1);
+        } else if (type.equals("Product")) {
+            Product product = (Product) item;
+            addLine(type, product.getId(), product.getSellingPrice(), product.getBuyingPrice(), 1);
+        }
+    }
+
+    private void save() {
         ValidationResult invoiceValidationResult = vsInvoice.getValidationResult();
         Iterator<ValidationMessage> messageIterator = invoiceValidationResult.getErrors().iterator();
         StringBuilder stringBuilder = new StringBuilder();
@@ -257,42 +282,38 @@ public class VendorInvoice implements Initializable, LinesInterface {
         Warehouse warehouse = cbWarehouse.getValue();
         String errorMessage = "";
         //if (invNo.equals("")) errorMessage = errorMessage.concat("Invoice Number is required.");
-        try{
+        try {
             date = dpDate.getValue().toString();
-            if (date == null ) throw new Exception();
-        }catch (Exception e) {
-            errorMessage = errorMessage.concat(errorMessage.equals("")?"Select a valid date":"\nSelect a valid date");
+            if (date == null) throw new Exception();
+        } catch (Exception e) {
+            errorMessage = errorMessage.concat(errorMessage.equals("") ? "Select a valid date" : "\nSelect a valid date");
         }
-        if (vendor == null) errorMessage = errorMessage.concat(errorMessage.equals("")?"Select a valid vendor":"\nSelect a valid vendor");
-        if (warehouse == null) errorMessage = errorMessage.concat(errorMessage.equals("")?"Select a valid warehouse":"\nSelect a valid warehouse");
+        if (vendor == null)
+            errorMessage = errorMessage.concat(errorMessage.equals("") ? "Select a valid vendor" : "\nSelect a valid vendor");
+        if (warehouse == null)
+            errorMessage = errorMessage.concat(errorMessage.equals("") ? "Select a valid warehouse" : "\nSelect a valid warehouse");
         if (!errorMessage.equals("")) notificationPane.show(errorMessage);
-        else{
-            Call<Invoice[]> call;
+        else {
+            Call<Invoice> call;
             if (invoice == null) {
                 assert vendor != null;
                 assert warehouse != null;
                 call = apiService.addVendorInvoice(vendor.getId(), warehouse.getId(), date, user.getId());
-            }
-            else{
-                invNo = invNo.equals(invoice.getInvoiceNo())?null:invNo;
+            } else {
+                invNo = invNo.equals(invoice.getInvoiceNo()) ? null : invNo;
                 assert vendor != null;
                 assert warehouse != null;
                 call = apiService.updateVendorInvoice(invoice.getId(), vendor.getId(), warehouse.getId(), date);
             }
             call.enqueue(new Callback<>() {
                 @Override
-                public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
+                public void onResponse(Call<Invoice> call, Response<Invoice> response) {
                     if (response.isSuccessful()) {
-                        Platform.runLater(()->{
-                            Utility.closeWindow(vbParent);
-                            Invoice[] invoices = {};
-                            List<Invoice> filtered = new ArrayList<>();
-                            for (Invoice i:response.body()) {
-                                if (!i.isPosted())filtered.add(i);
-                            }
-                            dataInterface.updateData("The invoice has been saved successfully", filtered.toArray(invoices));
+                        Platform.runLater(() -> {
+                            notificationPane.show("The invoice has been saved.");
+                            setInvoice(response.body());
                         });
-                    } else{
+                    } else {
                         Platform.runLater(() -> {
                             assert response.errorBody() != null;
                             notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{"invoiceNo"}));
@@ -301,67 +322,72 @@ public class VendorInvoice implements Initializable, LinesInterface {
                 }
 
                 @Override
-                public void onFailure(Call<Invoice[]> call, Throwable throwable) {
+                public void onFailure(Call<Invoice> call, Throwable throwable) {
                     notificationPane.show(throwable.getMessage());
                 }
             });
         }
     }
-    private void post(){
+
+    private void post() {
         Call<Invoice[]> call = apiService.postVendorInvoice(invoice.getId(), user.getId());
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
-                if (response.isSuccessful()){
-                    if (dataInterface!=null){
-                        Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    if (dataInterface != null) {
+                        Platform.runLater(() -> {
                             Utility.closeWindow(vbParent);
                             Invoice[] invoices = {};
                             List<Invoice> filtered = new ArrayList<>();
-                            for (Invoice i:response.body()) {
-                                if (!i.isPosted())filtered.add(i);
+                            for (Invoice i : response.body()) {
+                                if (!i.isPosted()) filtered.add(i);
                             }
                             dataInterface.updateData("The invoice has been posted successfully", filtered.toArray(invoices));
                         });
                     }
-                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
-                        new String[]{"message"})));
+                } else
+                    Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                            new String[]{"message"})));
             }
 
             @Override
             public void onFailure(Call<Invoice[]> call, Throwable throwable) {
-                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+                Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
             }
         });
     }
-    private void reverse(){
+
+    private void reverse() {
         Call<Invoice[]> call = apiService.reverseVendorInvoice(invoice.getId(), user.getId());
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
-                if (response.isSuccessful()){
-                    if (dataInterface!=null){
-                        Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    if (dataInterface != null) {
+                        Platform.runLater(() -> {
                             Utility.closeWindow(vbParent);
                             Invoice[] invoices = {};
                             List<Invoice> filtered = new ArrayList<>();
-                            for (Invoice i:response.body()) {
-                                if (i.isPosted() && !i.isReversed())filtered.add(i);
+                            for (Invoice i : response.body()) {
+                                if (i.isPosted() && !i.isReversed()) filtered.add(i);
                             }
                             dataInterface.updateData("The invoice has been reversed successfully", filtered.toArray(invoices));
                         });
                     }
-                }else Platform.runLater(()->notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
-                        new String[]{"message"})));
+                } else
+                    Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                            new String[]{"message"})));
             }
 
             @Override
             public void onFailure(Call<Invoice[]> call, Throwable throwable) {
-                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+                Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
             }
         });
     }
-    private void addLine(){
+
+    private void addLine(String type, int typeId, double price, double buyingPrice, int q) {
         ValidationResult vr = vsLine.getValidationResult();
         Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
         StringBuilder message = new StringBuilder();
@@ -373,31 +399,6 @@ public class VendorInvoice implements Initializable, LinesInterface {
             notificationPane.show(message.toString());
             return;
         }
-        String errorMessage = "";
-        String type = cbType.getValue();
-        Object object = cbPS.getValue();
-        int typeId = type.equals("Product")?((Product)object).getId():((Service)object).getId();
-        String description = tfDescription.getText();
-        String unitPrice = tfUnitPrice.getText();
-        String quantity = tfQuantity.getText();
-
-
-        if (type.equals(""))errorMessage = errorMessage.concat("Select a valid type.");
-        if (object == null){
-            errorMessage = errorMessage.concat(errorMessage.equals("")?"Unit price is required":"\nUnit price is required");
-        }
-        if (unitPrice.equals("")){
-            errorMessage = errorMessage.concat(errorMessage.equals("")?"Unit price is required":"\nUnit price is required");
-        }
-        if (quantity.equals("")){
-            errorMessage = errorMessage.concat(errorMessage.equals("")?"Quantity is required":"\nQuantity is required");
-        }
-        if (!errorMessage.equals("")){
-            notificationPane.show(errorMessage);return;
-        }
-
-        double price = Double.parseDouble(unitPrice);
-        int q = Integer.parseInt(quantity);
 
         if (invoice == null) {
             ValidationResult invoiceValidationResult = vsInvoice.getValidationResult();
@@ -418,20 +419,14 @@ public class VendorInvoice implements Initializable, LinesInterface {
             Gson gson = new Gson();
             String json = gson.toJson(mInvoice, Invoice.class);
             System.out.println(json);
-            Call<Invoice> call = apiService.addVendorInvoiceLine(json, type, typeId, price, q, description, user.getId());
+            Call<Invoice> call = apiService.addVendorInvoiceLine(json, type, typeId, price, q, "description", user.getId());
             call.enqueue(new Callback<>() {
                 @Override
                 public void onResponse(Call<Invoice> call, Response<Invoice> response) {
                     Platform.runLater(() -> {
                         if (response.isSuccessful()) {
                             setInvoice(response.body());
-                            Platform.runLater(()->{
-                                tfDescription.setText("");
-                                tfUnitPrice.setText("");
-                                tfQuantity.setText("");
-                            });
-                        }
-                        else notificationPane.show(response.message());
+                        } else notificationPane.show(response.message());
                     });
                 }
 
@@ -443,23 +438,17 @@ public class VendorInvoice implements Initializable, LinesInterface {
             return;
         }
 
-        Call<InvoiceLine[]> call = apiService.addVendorInvoiceLine(invoice.getId(), type, typeId, price, q, description);
+        Call<InvoiceLine[]> call = apiService.addVendorInvoiceLine(invoice.getId(), type, typeId, price, q, "description");
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<InvoiceLine[]> call, Response<InvoiceLine[]> response) {
                 assert response.body() != null;
                 if (response.isSuccessful()) {
                     setLines(response.body());
-                    Platform.runLater(()->{
-                        tfDescription.setText("");
-                        tfUnitPrice.setText("");
-                        tfQuantity.setText("");
-                    });
-                }
-                else {
+                } else {
                     assert response.errorBody() != null;
                     notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
-                            new String[]{"invId","type","typeId","description"}));
+                            new String[]{"invId", "type", "typeId", "description"}));
                 }
             }
 
@@ -470,7 +459,7 @@ public class VendorInvoice implements Initializable, LinesInterface {
         });
     }
 
-    private void loadData(){
+    private void loadData() {
         Call<Vendor[]> getVendors = apiService.vendors();
         Call<Warehouse[]> getWarehouses = apiService.warehouses();
         Call<Product[]> getProducts = apiService.products();
@@ -478,15 +467,15 @@ public class VendorInvoice implements Initializable, LinesInterface {
         getVendors.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Vendor[]> call, Response<Vendor[]> response) {
-                if (response.isSuccessful()){
-                    Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
                         cbOwner.setItems(FXCollections.observableArrayList(response.body()));
-                        if (invoice!=null)
-                            for (Vendor v: response.body()) {
+                        if (invoice != null)
+                            for (Vendor v : response.body()) {
                                 if (v.getId() == invoice.getVendor().getId()) cbOwner.getSelectionModel().select(v);
                             }
                     });
-                }else notificationPane.show(response.message());
+                } else notificationPane.show(response.message());
             }
 
             @Override
@@ -497,12 +486,12 @@ public class VendorInvoice implements Initializable, LinesInterface {
         getWarehouses.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Warehouse[]> call, Response<Warehouse[]> response) {
-                if (response.isSuccessful()){
-                    Platform.runLater(()->{
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
                         cbWarehouse.setItems(FXCollections.observableArrayList(response.body()));
-                        if (invoice!=null) cbWarehouse.getSelectionModel().select(invoice.getWarehouse());
+                        if (invoice != null) cbWarehouse.getSelectionModel().select(invoice.getWarehouse());
                     });
-                }else notificationPane.show(response.message());
+                } else notificationPane.show(response.message());
             }
 
             @Override
@@ -513,8 +502,10 @@ public class VendorInvoice implements Initializable, LinesInterface {
         getProducts.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Product[]> call, Response<Product[]> response) {
-                if (response.isSuccessful()) products = response.body();
-                else Platform.runLater(()->notificationPane.show(response.message()));
+                if (response.isSuccessful()) {
+                    setProducts(response.body());
+                    Platform.runLater(() -> cbType.getSelectionModel().select(0));
+                } else Platform.runLater(() -> notificationPane.show(response.message()));
             }
 
             @Override
@@ -525,7 +516,7 @@ public class VendorInvoice implements Initializable, LinesInterface {
         getServices.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Service[]> call, Response<Service[]> response) {
-                if (response.isSuccessful()) services = response.body();
+                if (response.isSuccessful()) setServices(response.body());
                 else notificationPane.show(response.message());
             }
 
@@ -536,16 +527,16 @@ public class VendorInvoice implements Initializable, LinesInterface {
         });
     }
 
-    private void setLines(InvoiceLine[] lines){
+    private void setLines(InvoiceLine[] lines) {
         double invTotal = 0;
-        for (InvoiceLine line: lines) {
+        for (InvoiceLine line : lines) {
             line.setLinesInterface(this);
             invTotal += line.getTotal();
             System.out.println(line.getName());
         }
         invoice.setInvoiceLines(lines);
         invoice.setTotal(invTotal);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             labelTotal.setText(String.valueOf(invoice.getTotal()));
             tvLines.setItems(FXCollections.observableArrayList(lines));
         });
@@ -558,7 +549,6 @@ public class VendorInvoice implements Initializable, LinesInterface {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
         tfNo.setText(invoice.getInvoiceNo());
-        btnAddLine.setDisable(invoice.isPosted());
         btnSave.setDisable(invoice.isPosted());
         btnPost.setDisable(invoice.isPosted());
         btnReverse.setDisable(!invoice.isPosted() && invoice.isReversed());
@@ -566,5 +556,19 @@ public class VendorInvoice implements Initializable, LinesInterface {
         dpDate.setValue(LocalDate.parse(invoice.getInvoiceDate()));
         tvLines.setDisable(invoice.isPosted());
 
+    }
+
+    public void setProducts(Product[] products) {
+        for (Product p : products) {
+            p.setLinesInterface(this);
+        }
+        this.products = products;
+    }
+
+    public void setServices(Service[] services) {
+        for (Service s : services) {
+            s.setLinesInterface(this);
+        }
+        this.services = services;
     }
 }

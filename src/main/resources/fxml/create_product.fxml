@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.NotificationPane?>
 
-
 <VBox fx:id="vbParent" prefHeight="367.0" prefWidth="863.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateProduct">
    <children>
       <NotificationPane fx:id="notificationPane" />
@@ -38,13 +37,29 @@
                   <HBox>
                      <children>
                         <Label prefHeight="31.0" prefWidth="84.0" text="Brand" />
-                        <ComboBox fx:id="cbBrand" prefHeight="25.0" prefWidth="229.0" promptText="Select Brand" />
+                        <ComboBox fx:id="cbBrand" prefHeight="25.0" prefWidth="211.0" promptText="Select Brand" />
+                        <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#addBrand" style="-fx-background-color: transparent;" text="Button">
+                           <graphic>
+                              <FontAwesomeIconView fill="#0f9705" glyphName="PLUS" size="14" />
+                           </graphic>
+                           <HBox.margin>
+                              <Insets left="2.0" top="2.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                   <HBox>
                      <children>
                         <Label prefHeight="31.0" prefWidth="85.0" text="Category" />
-                        <ComboBox fx:id="cbCategory" prefHeight="25.0" prefWidth="229.0" promptText="Select Category" />
+                        <ComboBox fx:id="cbCategory" prefHeight="25.0" prefWidth="210.0" promptText="Select Category" />
+                        <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#addCategory" style="-fx-background-color: transparent;" text="Button">
+                           <graphic>
+                              <FontAwesomeIconView fill="#0f9705" glyphName="PLUS" size="14" />
+                           </graphic>
+                           <HBox.margin>
+                              <Insets left="3.0" top="2.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                </children>
@@ -56,7 +71,19 @@
             <VBox prefHeight="404.0" prefWidth="285.0" spacing="2.0">
                <children>
                   <Label prefHeight="31.0" prefWidth="137.0" text="Unit Of Measure" />
-                  <ComboBox fx:id="cbUOM" prefHeight="25.0" prefWidth="268.0" promptText="Select Unit of measure" />
+                  <HBox>
+                     <children>
+                        <ComboBox fx:id="cbUOM" prefHeight="25.0" prefWidth="254.0" promptText="Select Unit of measure" />
+                        <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#addUOM" style="-fx-background-color: transparent;" text="Button">
+                           <graphic>
+                              <FontAwesomeIconView fill="#0f9705" glyphName="PLUS" size="14" />
+                           </graphic>
+                           <HBox.margin>
+                              <Insets left="2.0" top="2.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                   <Separator prefWidth="200.0" />
                   <Label prefHeight="31.0" prefWidth="109.0" text="SKU Code" />
                   <TextField fx:id="tfSkuCode" promptText="SKU Code" />

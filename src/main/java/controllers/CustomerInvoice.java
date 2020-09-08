@@ -8,7 +8,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -17,7 +20,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import models.SuperModel;
 import models.auth.User;
 import models.customers.Customer;
 import models.customers.Invoice;
@@ -40,10 +49,7 @@ import utils.Utility;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CustomerInvoice implements Initializable, LinesInterface {
 
@@ -78,19 +84,16 @@ public class CustomerInvoice implements Initializable, LinesInterface {
     private ComboBox<String> cbType;
 
     @FXML
-    private ComboBox<Object> cbPS;
+    private TableView<SuperModel> tvItems;
 
     @FXML
-    private TextField tfDescription;
+    private TableColumn<?, ?> tcItemName;
 
     @FXML
-    private TextField tfUnitPrice;
+    private TableColumn<?, ?> tcItemPrice;
 
     @FXML
-    private TextField tfQuantity;
-
-    @FXML
-    private Button btnAddLine;
+    private TableColumn<?, ?> tcItemAdd;
 
     @FXML
     private TableView<InvoiceLine> tvLines;
@@ -123,6 +126,12 @@ public class CustomerInvoice implements Initializable, LinesInterface {
     @FXML
     private Button btnPost;
 
+    @FXML
+    private Label labelPay;
+
+    @FXML
+    private TextField tfSearch;
+
     private ApiService apiService;
     private Invoice invoice;
     private HomeDataInterface dataInterface;
@@ -144,8 +153,6 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             Utility.setLogo(vbParent);
             labelOwner.setText("Customer");
             cbOwner.setPromptText("Select Customer");
-            Utility.restrictInputDec(tfUnitPrice);
-            Utility.restrictInputNum(tfQuantity);
             dpDate.setValue(LocalDate.now());
 
             String[] types = {"Product", "Service"};
@@ -166,9 +173,17 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                         }
                         String type = cbType.getValue();
                         Platform.runLater(() -> {
-                            if (type.equals("Product")) cbPS.setItems(FXCollections.observableArrayList(products));
-                            else if (type.equals("Service")) cbPS.setItems(FXCollections.observableArrayList(services));
-                            cbPS.getSelectionModel().select(0);
+                            if (type.equals("Product")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(products));
+                            } else if (type.equals("Service")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(services));
+                            }
                         });
                         return null;
                     }
@@ -177,17 +192,8 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                 thread.setDaemon(true);
                 thread.start();
             });
-
-            cbPS.setOnAction(event -> {
-                if (cbType.getValue().equals("Product")) {
-                    Product product = (Product) cbPS.getValue();
-                    tfUnitPrice.setText(String.valueOf(product.getSellingPrice()));
-                    tfQuantity.setText("1");
-                }
-            });
-
             tcPS.setCellValueFactory(new PropertyValueFactory<>("name"));
-            tcPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+            tcPrice.setCellValueFactory(new PropertyValueFactory<>("unitPriceTf"));
             tcQuantity.setCellValueFactory(new PropertyValueFactory<>("quantityTf"));
             tcTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
             tcRemove.setCellValueFactory(new PropertyValueFactory<>("removeLine"));
@@ -197,30 +203,80 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             vsInvoice.registerValidator(dpDate, true, Validator.createEmptyValidator("Select a valid Date."));
 
             vsLine.registerValidator(cbType, true, Validator.createEmptyValidator("Select a valid type"));
-            vsLine.registerValidator(tfUnitPrice, true, Validator.createEmptyValidator("Enter a valid unit price."));
-            vsLine.registerValidator(tfQuantity, true, Validator.createEmptyValidator("Enter a valid quantity"));
-            vsLine.registerValidator(cbPS, true, Validator.createEmptyValidator("Select a product/service"));
+
+            tfSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue.trim().equals("")) {
+                    tvItems.setItems(FXCollections.observableArrayList(cbType.getValue().equals("Product") ? products : services));
+                    return;
+                }
+                List<SuperModel> filtered = new ArrayList<>();
+                for (SuperModel model : cbType.getValue().equals("Product") ? products : services) {
+                    if (model.getSearchString().contains(newValue)) filtered.add(model);
+                }
+                tvItems.setItems(FXCollections.observableArrayList(filtered));
+            });
 
             loadData();
         });
 
-        /*if (invoice != null) {
-            tfNo.setText(invoice.getInvoiceNo());
-            btnAddLine.setDisable(invoice.isPosted());
-            btnSave.setDisable(invoice.isPosted());
-            btnPost.setDisable(invoice.isPosted());
-            btnReverse.setDisable(invoice.isReversed());
-            setLines(invoice.getInvoiceLines());
-            dpDate.setValue(LocalDate.parse(invoice.getInvoiceDate()));
-            tvLines.setDisable(invoice.isPosted());
-        }*/
+        //function keys
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F11)) save();
+            else if (keyCode.equals(KeyCode.F10)) {
+                if (invoice == null ) return;
+                if (invoice.isPosted()) return;
+                post();
+            }
+            else if (keyCode.equals(KeyCode.F8)) {
+                if (invoice == null ) return;
+                if (!invoice.isPosted()) return;
+                if (invoice.isReversed()) return;
+                reverse();
+            }
+            else if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
+            else if (keyCode.equals(KeyCode.F5)) loadData();
+        });
 
 
+        labelPay.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (invoice == null){
+                notificationPane.show("No invoice.");
+                event.consume();
+                return;
+            }
+            if (!invoice.isPosted() || invoice.isReversed()){
+                notificationPane.show("Invoice has not been posted/ has been reversed.");
+                event.consume();
+                return;
+            }
+            Map<String, Object> data = new LinkedHashMap<>();
+            data.put("customerId", invoice.getCustomer().getId());
+            data.put("amount", invoice.getTotal());
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/customer_receipt.fxml")));
+                VBox vBox = loader.load();
+                CustomerReceipt controller = loader.getController();
+                controller.setPayData(data);
+                Scene scene = new Scene(vBox);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
+                stage.initOwner(vbParent.getScene().getWindow());
+                stage.setTitle("Create Customer Receipt");
+                stage.show();
+            } catch (Exception e) {
+                notificationPane.show("We are unable to proceed with your request.");
+                e.printStackTrace();
+            }
+            event.consume();
+        });
         btnSave.setOnAction(event -> save());
         btnPost.setOnAction(event -> post());
         btnReverse.setOnAction(event -> reverse());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbHolder));
-        btnAddLine.setOnAction(event -> addLine());
+
     }
 
     @Override
@@ -234,7 +290,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
     }
 
     @Override
-    public void updateQuantity(Object line) {
+    public void updateLine(Object line) {
         InvoiceLine invoiceLine = (InvoiceLine) line;
         Call<InvoiceLine[]> call = apiService.addCustomerInvoiceLine(invoice.getId(), invoiceLine.getType(), invoiceLine.getTypeId(), invoiceLine.getUnitPrice(), invoiceLine.getBuyingPrice(), invoiceLine.getQuantity(), "");
         call.enqueue(new Callback<>() {
@@ -255,6 +311,17 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                 notificationPane.show(throwable.getMessage());
             }
         });
+    }
+
+    @Override
+    public void addItem(SuperModel item, String type) {
+        if (type.equals("Service")) {
+            Service service = (Service) item;
+            addLine(type, service.getId(), 100, 100, 1);
+        } else if (type.equals("Product")) {
+            Product product = (Product) item;
+            addLine(type, product.getId(), product.getSellingPrice(), product.getBuyingPrice(), 1);
+        }
     }
 
     private void setLines(InvoiceLine[] lines) {
@@ -316,7 +383,10 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         getProducts.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Product[]> call, Response<Product[]> response) {
-                if (response.isSuccessful()) products = response.body();
+                if (response.isSuccessful()) {
+                    setProducts(response.body());
+                    Platform.runLater(()->cbType.getSelectionModel().select(0));
+                }
                 else notificationPane.show(response.message());
             }
 
@@ -328,7 +398,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         getServices.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Service[]> call, Response<Service[]> response) {
-                if (response.isSuccessful()) services = response.body();
+                if (response.isSuccessful()) setServices(response.body());
                 else notificationPane.show(response.message());
             }
 
@@ -369,7 +439,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             notificationPane.show(errorMessage);
             return;
         }
-        Call<Invoice[]> call;
+        Call<Invoice> call;
         if (invoice == null) {
             call = apiService.addCustomerInvoice(customer.getId(), warehouse.getId(), date, user.getId());
         } else {
@@ -377,28 +447,18 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         }
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<Invoice[]> call, Response<Invoice[]> response) {
+            public void onResponse(Call<Invoice> call, Response<Invoice> response) {
                 if (response.isSuccessful()) {
-                    if (dataInterface != null) {
-                        Platform.runLater(() -> {
-                            Utility.closeWindow(vbHolder);
-                            List<Invoice> filtered = new ArrayList<>();
-                            Invoice[] invoices = {};
-                            for (Invoice i : response.body()) {
-                                if (!i.isPosted()) filtered.add(i);
-                            }
-                            dataInterface.updateData("The Customer invoice has been saved.", filtered.toArray(invoices));
-                        });
-                    }
+                    setInvoice(response.body());
+                    notificationPane.show("The invoice has been saved.");
                 } else {
-                    System.out.println(response.errorBody().toString());
                     notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                             new String[]{"invNo", "customerId", "invoiceDate", "warehouseId"}));
                 }
             }
 
             @Override
-            public void onFailure(Call<Invoice[]> call, Throwable throwable) {
+            public void onFailure(Call<Invoice> call, Throwable throwable) {
                 notificationPane.show(throwable.getMessage());
             }
         });
@@ -452,7 +512,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         });
     }
 
-    private void addLine() {
+    private void addLine(String type, int typeId, double price, double buyingPrice, int q) {
         ValidationResult vr = vsLine.getValidationResult();
         Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
         StringBuilder message = new StringBuilder();
@@ -464,15 +524,15 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             notificationPane.show(message.toString());
             return;
         }
-        String errorMessage = "";
+        /*String errorMessage = "";
         String type = cbType.getValue();
         Object object = cbPS.getValue();
         int typeId = type.equals("Product") ? ((Product) object).getId() : ((Service) object).getId();
         String description = tfDescription.getText();
         String unitPrice = tfUnitPrice.getText();
-        String quantity = tfQuantity.getText();
+        String quantity = tfQuantity.getText();*/
 
-
+/*
         if (type.equals("")) errorMessage = errorMessage.concat("Select a valid type.");
         if (object == null) {
             errorMessage = errorMessage.concat(errorMessage.equals("") ? "Unit price is required" : "\nUnit price is required");
@@ -486,16 +546,16 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         if (!errorMessage.equals("")) {
             notificationPane.show(errorMessage);
             return;
-        }
+        }*/
 
 
-        double price = Double.parseDouble(unitPrice);
+      /*  double price = Double.parseDouble(unitPrice);
         double buyingPrice = 0;
         if (type.equals("Product")) {
             buyingPrice = ((Product) object).getBuyingPrice();
         }
         int q = Integer.parseInt(quantity);
-
+*/
         if (invoice == null) {
             ValidationResult invoiceValidationResult = vsInvoice.getValidationResult();
             Iterator<ValidationMessage> messageIterator = invoiceValidationResult.getErrors().iterator();
@@ -515,18 +575,13 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             Gson gson = new Gson();
             String json = gson.toJson(mInvoice, Invoice.class);
             System.out.println(json);
-            Call<Invoice> call = apiService.addCustomerInvoiceLine(json, type, typeId, price, buyingPrice, q, description, user.getId());
+            Call<Invoice> call = apiService.addCustomerInvoiceLine(json, type, typeId, price, buyingPrice, q, "description", user.getId());
             call.enqueue(new Callback<>() {
                 @Override
                 public void onResponse(Call<Invoice> call, Response<Invoice> response) {
                     Platform.runLater(() -> {
                         if (response.isSuccessful()) {
                             setInvoice(response.body());
-                            Platform.runLater(()->{
-                                tfDescription.setText("");
-                                tfUnitPrice.setText("");
-                                tfQuantity.setText("");
-                            });
                         }
                         else notificationPane.show(response.message());
                     });
@@ -541,18 +596,13 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             return;
         }
 
-        Call<InvoiceLine[]> call = apiService.addCustomerInvoiceLine(invoice.getId(), type, typeId, price, buyingPrice, q, description);
+        Call<InvoiceLine[]> call = apiService.addCustomerInvoiceLine(invoice.getId(), type, typeId, price, buyingPrice, q, "description");
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<InvoiceLine[]> call, Response<InvoiceLine[]> response) {
                 assert response.body() != null;
                 if (response.isSuccessful()) {
                     setLines(response.body());
-                    Platform.runLater(() -> {
-                        tfDescription.setText("");
-                        tfUnitPrice.setText("");
-                        tfQuantity.setText("");
-                    });
                 } else {
                     assert response.errorBody() != null;
                     notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
@@ -575,14 +625,26 @@ public class CustomerInvoice implements Initializable, LinesInterface {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
         tfNo.setText(invoice.getInvoiceNo());
-        btnAddLine.setDisable(invoice.isPosted());
         btnSave.setDisable(invoice.isPosted());
         btnPost.setDisable(invoice.isPosted());
         btnReverse.setDisable(invoice.isReversed() || !invoice.isPosted());
         setLines(invoice.getInvoiceLines());
         dpDate.setValue(LocalDate.parse(invoice.getInvoiceDate()));
         tvLines.setDisable(invoice.isPosted());
+        tvItems.setDisable(invoice.isPosted());
     }
 
+    public void setProducts(Product[] products) {
+        for (Product p : products ) {
+            p.setLinesInterface(this);
+        }
+        this.products = products;
+    }
 
+    public void setServices(Service[] services) {
+        for (Service s : services ) {
+            s.setLinesInterface(this);
+        }
+        this.services = services;
+    }
 }

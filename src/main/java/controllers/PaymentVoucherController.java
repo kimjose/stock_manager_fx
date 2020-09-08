@@ -5,11 +5,14 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import models.auth.User;
 import models.customers.Receipt;
@@ -28,9 +31,7 @@ import utils.Utility;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class PaymentVoucherController implements Initializable {
 
@@ -104,6 +105,27 @@ public class PaymentVoucherController implements Initializable {
         btnReverse.setOnAction(event -> reverse());
         btnCancel.setOnAction(event -> Utility.closeWindow(vbParent));
         Platform.runLater(()->Utility.setLogo(vbParent));
+
+
+        //function keys
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode keyCode = event.getCode();
+            if (keyCode.equals(KeyCode.F11)) save();
+            else if (keyCode.equals(KeyCode.F10)) {
+                if (paymentVoucher == null ) return;
+                if (paymentVoucher.isPosted()) return;
+                post();
+            }
+            else if (keyCode.equals(KeyCode.F8)) {
+                if (paymentVoucher == null ) return;
+                if (!paymentVoucher.isPosted()) return;
+                if (paymentVoucher.isReversed()) return;
+                reverse();
+            }
+            else if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
+            else if (keyCode.equals(KeyCode.F5)) loadData();
+        });
+
         loadData();
     }
 

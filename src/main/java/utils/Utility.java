@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.*;
+import javafx.stage.Window;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
@@ -26,7 +27,6 @@ import retrofit2.Converter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Window;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.text.NumberFormat;
@@ -175,6 +175,13 @@ public class Utility {
         }
     }
 
+    /**
+     * This method creates and displays a progress dialog.
+     * @param message Info to be displayed.
+     * @param owner The window to be the owner of this progress dialog
+     *
+     * @return A node in the dialog.
+     * **/
     public static Node showProgressBar(String message, javafx.stage.Window owner) {
         try {
             FXMLLoader loader = new FXMLLoader(Utility.class.getClassLoader().getResource("fxml/loading.fxml"));
@@ -215,6 +222,9 @@ public class Utility {
             e.printStackTrace();
         }
     }
+    /***
+     * @deprecated This method no longer applies.
+     * */
     public static void printReport(String reportName, Map<String, Object> variables, String json){
         try{
             ByteArrayInputStream inputStream = new ByteArrayInputStream(json.getBytes());
@@ -241,14 +251,14 @@ public class Utility {
         return null;
     }
 
-    public static void subscribe(){
+    public static void subscribe(Window owner){
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Utility.class.getClassLoader().getResource("fxml/subscription.fxml")));
             JFXTabPane pane = loader.load();
             Scene scene = new Scene(pane);
             Stage stage = new Stage();
             stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(owner);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.setResizable(false);
             stage.setOnCloseRequest(event -> {
