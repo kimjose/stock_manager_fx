@@ -18,6 +18,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -43,6 +45,7 @@ import org.controlsfx.control.Notifications;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import utils.SessionManager;
 import utils.Utility;
 
 import java.io.IOException;
@@ -97,7 +100,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
     private String type;
     private SuperModel[] data;
     private ApiService apiService;
-    private Separator separator = new Separator(Orientation.VERTICAL);
+    private final Separator separator = new Separator(Orientation.VERTICAL);
     private final Gson gson = new Gson();
 
     @Override
@@ -127,6 +130,10 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             else deleteObject(o);
         });
         btnRefresh.setOnAction(event -> loadData());
+
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.F5) loadData();
+        });
     }
 
     @Override
@@ -766,7 +773,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                         }
                     });
                 });
-                CustomButton salesReport = new CustomButton("General Report", icon);
+                CustomButton salesReport = new CustomButton("Sales General Report", icon);
                 salesReport.setOnAction(event -> {
                     Dialog dialog = new Dialog<>();
                     DialogPane pane = null;
@@ -1815,6 +1822,11 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
             switch (type) {
                 case "Users": {
+                    User u = (User) object;
+                    if (u.getId() == SessionManager.INSTANCE.getUser().getId()) {
+                        createNotification(1, "User is currently logged in. Can not edit.");
+                        return;
+                    }
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_user.fxml")));
                     VBox vBox = loader.load();
                     Scene scene = new Scene(vBox);
@@ -1822,7 +1834,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     stage.setScene(scene);
                     CreateUser controller = loader.getController();
                     controller.setDataInterface(this);
-                    controller.setUser((User) object);
+                    controller.setUser(u);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setResizable(false);
                     stage.setTitle("Edit User");
@@ -2133,6 +2145,30 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
     private void deleteObject(Object object) {
         switch (type) {
             //Products
+            case "Users": {
+                User u = (User) object;
+                if (u.getId() == SessionManager.INSTANCE.getUser().getId()) {
+                    createNotification(1, "User is currently logged in. Can not be deleted.");
+                    return;
+                }
+                apiService.updateUser(u.getId(), null, null, u.getFirstName(), u.getLastName(), null, u.getDob(),
+                        u.getGender(), u.getPhoto(), u.isAdmin()?1:0, null, null, 1)
+                        .enqueue(new Callback<>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    loadData();
+                                } else createNotification(-1, "Error encountered.");
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable throwable) {
+                                createNotification(-1, "Unable to execute.");
+                            }
+                        });
+                break;
+            }
+
             case "Brands": {
                 Brand brand = (Brand) object;
                 Call<Brand[]> call = apiService.deleteBrand(brand.getId());

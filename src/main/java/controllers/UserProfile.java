@@ -16,6 +16,9 @@ import models.auth.User;
 import network.ApiService;
 import network.RetrofitBuilder;
 import org.controlsfx.control.NotificationPane;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import utils.SessionManager;
 import utils.Utility;
 
@@ -78,9 +81,8 @@ public class UserProfile implements Initializable {
     @FXML
     private NotificationPane notificationPane;
 
-    private ApiService apiService = RetrofitBuilder.createService(ApiService.class);
-    private User user = SessionManager.INSTANCE.getUser();
-
+    private final ApiService apiService = RetrofitBuilder.createService(ApiService.class);
+    private final User user = SessionManager.INSTANCE.getUser();
 
 
     @Override
@@ -90,7 +92,7 @@ public class UserProfile implements Initializable {
         btnClose.setOnAction(event -> Utility.closeWindow(hbHolder));
         btnSave.setOnAction(event -> changePassword());
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
 
             Utility.setLogo(hbHolder);
             labelDOB.setText(user.getDob());
@@ -100,7 +102,7 @@ public class UserProfile implements Initializable {
             labelLast.setText(user.getLastName());
             labelPhone.setText(user.getPhoneNo());
             labelGender.setText(user.getGender());
-            if (user.getPhoto() != null && !user.getPhoto().equals("")){
+            if (user.getPhoto() != null && !user.getPhoto().equals("")) {
                 Utility.decodeImage(user.getPhoto(), ivPhoto, "user.png");
             }
             labelId.setText(String.valueOf(user.getNationalId()));
@@ -115,8 +117,42 @@ public class UserProfile implements Initializable {
         });
     }
 
-    private void changePassword(){//todo
-        notificationPane.show("WTF hkdbfkjfnkjhduihkj");
+    private void changePassword() {
+        String oldPass = pfOld.getText().trim();
+        String newPass = pfNew.getText().trim();
+        String confirmPass = pfConfirm.getText().trim();
+        String errors = "";
+        if (oldPass.equals("")) errors = errors.concat("Old password is required.");
+        if (newPass.equals(""))
+            errors = errors.concat(errors.equals("") ? "Password is required" : "\nPassword is required");
+        if (confirmPass.equals("") || !confirmPass.equals(newPass))
+            errors = errors.concat(errors.equals("") ? "Enter a confirmation password similar to new password" : "\nEnter a confirmation password similar to new password");
+        if (!errors.equals("")) {
+            notificationPane.show(errors);
+            return;
+        }
+        apiService.changePassword(user.getId(), oldPass, newPass)
+                .enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        Platform.runLater(() -> {
+                            if (response.isSuccessful()) {
+                                notificationPane.show("Password changed successfully");
+                                pfOld.setText("");
+                                pfConfirm.setText("");
+                                pfNew.setText("");
+                            } else {
+                                notificationPane.show("Unable to change the password");
+                                System.out.println(response.message());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable throwable) {
+                        Platform.runLater(() -> notificationPane.show("Unable to change the password"));
+                    }
+                });
     }
 
 }

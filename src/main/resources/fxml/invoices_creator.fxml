@@ -119,7 +119,7 @@
                         <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="30" />
                      </graphic>
                   </Button>
-                  <Button fx:id="btnReverse" contentDisplay="TOP" disable="true" layoutX="275.0" layoutY="18.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_cancel" text="Cancel [F8]">
+                  <Button fx:id="btnReverse" contentDisplay="TOP" disable="true" layoutX="275.0" layoutY="18.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_cancel" text="Reverse [F8]">
                      <graphic>
                         <FontAwesomeIconView fill="WHITE" glyphName="UNDO" size="30" />
                      </graphic>

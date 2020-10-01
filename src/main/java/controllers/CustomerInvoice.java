@@ -139,8 +139,8 @@ public class CustomerInvoice implements Initializable, LinesInterface {
     private Service[] services;
     private Product[] products;
 
-    private ValidationSupport vsInvoice = new ValidationSupport();
-    private ValidationSupport vsLine = new ValidationSupport();
+    private final ValidationSupport vsInvoice = new ValidationSupport();
+    private final ValidationSupport vsLine = new ValidationSupport();
 
 
     @Override
@@ -211,7 +211,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                 }
                 List<SuperModel> filtered = new ArrayList<>();
                 for (SuperModel model : cbType.getValue().equals("Product") ? products : services) {
-                    if (model.getSearchString().contains(newValue)) filtered.add(model);
+                    if (model.getSearchString().toLowerCase().contains(newValue)) filtered.add(model);
                 }
                 tvItems.setItems(FXCollections.observableArrayList(filtered));
             });
@@ -242,12 +242,10 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         labelPay.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (invoice == null){
                 notificationPane.show("No invoice.");
-                event.consume();
                 return;
             }
             if (!invoice.isPosted() || invoice.isReversed()){
                 notificationPane.show("Invoice has not been posted/ has been reversed.");
-                event.consume();
                 return;
             }
             Map<String, Object> data = new LinkedHashMap<>();
@@ -348,8 +346,8 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             @Override
             public void onResponse(Call<Customer[]> call, Response<Customer[]> response) {
                 if (response.isSuccessful()) {
-                    cbOwner.setItems(FXCollections.observableArrayList(response.body()));
                     Platform.runLater(() -> {
+                        cbOwner.setItems(FXCollections.observableArrayList(response.body()));
                         for (Customer c : response.body()) {
                             if (invoice != null) {
                                 if (c.getId() == invoice.getCustomer().getId()) cbOwner.getSelectionModel().select(c);
@@ -497,7 +495,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                     if (dataInterface != null) {
                         Platform.runLater(() -> {
                             Utility.closeWindow(vbHolder);
-                            dataInterface.updateData("The invoice has been posted successfully", response.body());
+                            dataInterface.updateData("The invoice has been reversed successfully", response.body());
                         });
                     }
                 } else

@@ -78,7 +78,7 @@ public class CreateUser implements Initializable {
     @FXML
     private Button btnCancel;
 
-    private ApiService apiService = RetrofitBuilder.createService(ApiService.class);
+    private final ApiService apiService = RetrofitBuilder.createService(ApiService.class);
     private final User current = SessionManager.INSTANCE.getUser();
     private User user;
     private HomeDataInterface dataInterface;
@@ -162,16 +162,15 @@ public class CreateUser implements Initializable {
         else {
             username = username.equals(user.getUserName())?null:username;
             email = email.equals(user.getEmail())?null:email;
-            nationalId = nationalId.equals(user.getNationalId())?null:nationalId;
-            phoneNo = nationalId.equals(user.getPhoneNo())?null:phoneNo;
-            call = apiService.updateUser(user.getId(), username, email, firstName, lastName, nationalId, date, gender, base64Image, admin?1:0, password, phoneNo);
+            nationalId = nationalId.equals(user.getNationalId()+"")?null:nationalId;
+            phoneNo = phoneNo.equals(user.getPhoneNo())?null:phoneNo;
+            call = apiService.updateUser(user.getId(), username, email, firstName, lastName, nationalId, date, gender, base64Image, admin?1:0, password, phoneNo, 0);
         }
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 Platform.runLater(()->{
                     if (response.isSuccessful()){
-                        if (dataInterface != null) dataInterface.updateData("User details has been saved.", null);
                         Utility.closeWindow(hbHolder);
                     } else notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{
                             "userName","lastName","firstName","email","nationalId", "gender", "password"

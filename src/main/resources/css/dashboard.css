@@ -10,21 +10,21 @@
 	-fx-font-weight: bold !important;
 }
 .vb-sales {
-	-fx-background-color: #00ff99;
+	-fx-background-color: #fff;
 	-fx-background-radius: 20;
 	-fx-border-radius: 20;
 	-fx-border-style: solid;
 	-fx-border-color: #009966;
 }
 .vb-customers {
-	-fx-background-color: #FFA500;
+	-fx-background-color: #fff;
 	-fx-background-radius: 20;
 	-fx-border-radius: 20;
 	-fx-border-style: solid;
 	-fx-border-color: #FF7F50;
 }
 .vb-vendors {
-	-fx-background-color: #D8BFD8;
+	-fx-background-color: #fff;
 	-fx-background-radius: 20;
 	-fx-border-radius: 20;
 	-fx-border-style: solid;

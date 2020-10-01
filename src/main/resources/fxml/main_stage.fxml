@@ -57,7 +57,7 @@
                   <Label fx:id="labelUserName" text="User Name" prefHeight="40.0" prefWidth="69.0"/>
                   <FontAwesomeIconView fx:id="faivExit" fill="#f62817" glyphName="POWER_OFF" size="25">
                      <HBox.margin>
-                        <Insets top="8.0" />
+                        <Insets top="8.0" right="8.0" />
                      </HBox.margin>
                   </FontAwesomeIconView>
                </children>

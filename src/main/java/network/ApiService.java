@@ -27,10 +27,14 @@ public interface ApiService {
     @FormUrlEncoded
     Call<Void> updateUser(@Path("id") int id, @Field("userName") String userName, @Field("email") String email, @Field("firstName") String firstName, @Field("lastName") String lastName,
                           @Field("nationalId") String nationalId, @Field("dob") String dob, @Field("gender") String gender, @Field("photo") String photo,
-                          @Field("isAdmin") int admin, @Field("password") String password, @Field("phoneNo") String phoneNo);
+                          @Field("isAdmin") int admin, @Field("password") String password, @Field("phoneNo") String phoneNo, @Field("deleted") int deleted);
 
     @GET("user/all")
     Call<User[]> getUsers();
+
+    @POST("user/change_password/{id}")
+    @FormUrlEncoded
+    Call<User> changePassword(@Path("id") int id, @Field("old_password") String oldPassword, @Field("new_password") String newPassword);
 
 
 

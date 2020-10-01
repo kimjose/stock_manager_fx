@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -18,6 +19,7 @@ import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 import utils.Utility;
 
+import javax.print.PrintService;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -43,7 +45,7 @@ public class SettingsController implements Initializable {
     private JFXComboBox<String> cbCode;
 
     @FXML
-    private JFXComboBox<String> cbPrinter;
+    private JFXComboBox<PrintService> cbPrinter;
 
     @FXML
     private Button btnSave;
@@ -55,21 +57,21 @@ public class SettingsController implements Initializable {
         Utility.setupNotificationPane(notificationPane, vbHolder);
         String[] printers = {"me", "u"};
         String[] codes = {"254", "256", "257"};
+        PrintService[] printServices = Utility.printServices;
         cbCode.setItems(FXCollections.observableArrayList(codes));
-        cbPrinter.setItems(FXCollections.observableArrayList(printers));
+        cbPrinter.setItems(FXCollections.observableArrayList(printServices));
         rotateTransition.setByAngle(360);
         rotateTransition.setDuration(Duration.millis(1500));
         rotateTransition.setCycleCount(Animation.INDEFINITE);
         rotateTransition.setNode(faivSetting);
         rotateTransition.play();
         Platform.runLater(() -> vbHolder.getScene().getWindow().setOnCloseRequest(event -> rotateTransition.stop()));
-        loadDefaults();
+        Platform.runLater(this::loadDefaults);
         btnSave.setOnAction(event -> {
             String code = cbCode.getValue();
-            String printer = cbPrinter.getValue();
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("countryCode", code);
-            jsonObject.addProperty("defaultPrinter", printer);
+            jsonObject.addProperty("defaultPrinter", new Gson().toJson(cbPrinter.getValue()));
             try {
                 FileWriter writer = new FileWriter("settings.json", false);
                 writer.write(jsonObject.toString());
@@ -96,7 +98,6 @@ public class SettingsController implements Initializable {
             String code = jsonObject.get("countryCode").toString();
             String printer = jsonObject.get("defaultPrinter").toString();
             cbCode.getSelectionModel().select(code);
-            cbPrinter.getSelectionModel().select(printer);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

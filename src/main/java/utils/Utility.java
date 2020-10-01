@@ -25,6 +25,8 @@ import org.controlsfx.control.NotificationPane;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Converter;
 
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -42,9 +44,9 @@ import java.util.regex.Pattern;
 public class Utility {
 
     public static final String USER_DIR = System.getProperty("user.dir");
-    public static final String USER_IMAGE = "file:/"+USER_DIR+ File.separator+"user.png";
-    public static final String LOGO_IMAGE = "file:/"+USER_DIR+ File.separator+"logo.png";
-    public static final String IM_LOGO_IMAGE = "file:/"+USER_DIR+ File.separator+"im_logo.png";
+    public static final String USER_IMAGE = "file:/" + USER_DIR + File.separator + "user.png";
+    public static final String LOGO_IMAGE = "file:/" + USER_DIR + File.separator + "logo.png";
+    public static final String IM_LOGO_IMAGE = "file:/" + USER_DIR + File.separator + "im_logo.png";
     public static final Pattern MOBILENUM_PATTERN = Pattern.compile("0[0-9]{9}");
     public static final Pattern MPESACODE_PATTERN = Pattern.compile("[A-Z0-9]{10,12}");
     public static final Pattern EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9.%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
@@ -55,6 +57,8 @@ public class Utility {
     public static final String RENEW_URL = readProperty("renewUrl", "https://infinitops.co.ke/subscribe/Subscribe/?request=renew");
     public static final String COUNTRY_CODE = readProperty("countryCode", "254");
     public static final String CLIENT_NAME = readProperty("clientName", "Client Name");
+
+    public static PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
 
     /**
      * adds properties to a notificationpane
@@ -70,12 +74,12 @@ public class Utility {
 
     public static void closeWindow(Node node) {
         Stage stage = (Stage) node.getScene().getWindow();
-        Platform.runLater(()->stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)));
+        Platform.runLater(() -> stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)));
     }
 
     public static void setLogo(Node node) {
         Stage stage = (Stage) node.getScene().getWindow();
-        Platform.runLater(()->stage.getIcons().add(new Image(IM_LOGO_IMAGE)));
+        Platform.runLater(() -> stage.getIcons().add(new Image(IM_LOGO_IMAGE)));
     }
 
     /**
@@ -177,11 +181,11 @@ public class Utility {
 
     /**
      * This method creates and displays a progress dialog.
-     * @param message Info to be displayed.
-     * @param owner The window to be the owner of this progress dialog
      *
+     * @param message Info to be displayed.
+     * @param owner   The window to be the owner of this progress dialog
      * @return A node in the dialog.
-     * **/
+     **/
     public static Node showProgressBar(String message, javafx.stage.Window owner) {
         try {
             FXMLLoader loader = new FXMLLoader(Utility.class.getClassLoader().getResource("fxml/loading.fxml"));
@@ -214,7 +218,7 @@ public class Utility {
             viewer.setTitle("My Report");
             viewer.setExtendedState(Frame.MAXIMIZED_BOTH);
             viewer.setAlwaysOnTop(true);
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 viewer.setVisible(true);
                 viewer.requestFocus();
             });
@@ -222,18 +226,19 @@ public class Utility {
             e.printStackTrace();
         }
     }
+
     /***
      * @deprecated This method no longer applies.
      * */
-    public static void printReport(String reportName, Map<String, Object> variables, String json){
-        try{
+    public static void printReport(String reportName, Map<String, Object> variables, String json) {
+        try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(json.getBytes());
             JsonDataSource dataSource = new JsonDataSource(inputStream);
             String path = getReportLocation() + reportName;
             JasperPrint print = JasperFillManager.fillReport(path, variables, dataSource);
             JasperPrintManager.printPage(print, 0, true);
             //JasperPrintManager.printPages(print, 0, print.getPages().size(), true);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -251,7 +256,7 @@ public class Utility {
         return null;
     }
 
-    public static void subscribe(Window owner){
+    public static void subscribe(Window owner) {
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Utility.class.getClassLoader().getResource("fxml/subscription.fxml")));
             JFXTabPane pane = loader.load();
@@ -266,14 +271,17 @@ public class Utility {
                 if (expiresOn.equals(LocalDate.now()) || expiresOn.isBefore(LocalDate.now())) System.exit(3);
             });
             stage.show();
-        } catch (Exception e){ e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static LocalDate checkExpiresOn(){
+    public static LocalDate checkExpiresOn() {
         String date = readProperty("expiresOn", LocalDate.now().toString());
         return LocalDate.parse(date);
     }
-    public static void updateExpireDate(String expiresOn){
+
+    public static void updateExpireDate(String expiresOn) {
         try {
             Properties properties = new Properties();
             properties.load(new FileInputStream("im.properties"));
@@ -285,7 +293,8 @@ public class Utility {
             e.printStackTrace();
         }
     }
-    private static String readProperty(String property, String defaultResponse){
+
+    private static String readProperty(String property, String defaultResponse) {
         try {
             Properties properties = new Properties();
             properties.load(new FileInputStream("im.properties"));
@@ -295,4 +304,5 @@ public class Utility {
         }
         return defaultResponse;
     }
+
 }

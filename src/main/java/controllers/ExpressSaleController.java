@@ -125,7 +125,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
     private final User user = SessionManager.INSTANCE.getUser();
     private Service[] services;
     private Product[] products;
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     ValidationSupport vsSale = new ValidationSupport();
     ValidationSupport vsLine = new ValidationSupport();
@@ -165,7 +165,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                                 tvItems.setItems(FXCollections.observableArrayList(products));
                             } else if (type.equals("Service")) {
                                 tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
-                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("description"));
                                 tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
                                 tvItems.setItems(FXCollections.observableArrayList(services));
                             }
@@ -205,7 +205,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             }
             List<SuperModel> filtered = new ArrayList<>();
             for (SuperModel model : cbType.getValue().equals("Product") ? products : services) {
-                if (model.getSearchString().contains(newValue)) filtered.add(model);
+                if (model.getSearchString().toLowerCase().contains(newValue.toLowerCase())) filtered.add(model);
             }
             tvItems.setItems(FXCollections.observableArrayList(filtered));
         });
@@ -411,7 +411,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                             Utility.closeWindow(vbHolder);
                             dataInterface.updateData("The sale has been posted.", filtered.toArray(expressSales));
                         });
-                    }
+                    } else Utility.closeWindow(vbHolder);
                 } else {
                     Platform.runLater(() -> notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
                             new String[]{"message"})));
@@ -499,6 +499,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                     Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
                 }
             });
+            return;
         }
 
         Call<ExpressSaleLine[]> call = apiService.addSaleLine(expressSale.getId(), type, typeId, price, buyingPrice, q);

@@ -1,1 +1,4 @@
-{"countryCode":"254","defaultPrinter":"u"}
+{
+  "countryCode": "256",
+  "defaultPrinter": "{\"printer\":\"HP Deskjet 1510 series\",\"nCopies\":0,\"prnCaps\":0,\"gotTrays\":false,\"gotCopies\":false,\"mediaInitialized\":false,\"mpaListInitialized\":false,\"isInvalid\":false}"
+}

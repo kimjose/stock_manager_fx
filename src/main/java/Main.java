@@ -51,7 +51,6 @@ public class Main extends Application{
         passwordField.setText("admin123");
         tfName.textProperty().addListener((observable, oldValue, newValue) -> loginButton.setDisable(newValue.trim().equals("")));
         loginButton.addEventFilter(ActionEvent.ACTION, event -> {
-            event.consume();
             String userName = tfName.getText().trim();
             String password = passwordField.getText().trim();
             Call<User> call = apiService.login(userName, password, password);
@@ -84,6 +83,7 @@ public class Main extends Application{
                     });
                 }
             });
+            event.consume();
         });
         dialog.initStyle(StageStyle.UNDECORATED);
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
