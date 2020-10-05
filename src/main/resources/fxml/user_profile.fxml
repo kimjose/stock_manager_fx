@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import org.controlsfx.control.NotificationPane?>
-<VBox fx:id="vpParent" prefHeight="283.0" prefWidth="1014.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UserProfile">
+<VBox fx:id="vbParent" prefHeight="283.0" prefWidth="1014.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UserProfile">
    <children>
       <NotificationPane fx:id="notificationPane"/>
       <HBox fx:id="hbHolder" prefHeight="227.0" prefWidth="824.0" style="-fx-background-color: #FFFFFF;">

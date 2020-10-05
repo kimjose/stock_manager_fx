@@ -5,8 +5,9 @@ import utils.Utility;
 public class DashboardData {
     private double todaySales, totalSales, customerBalance, vendorBalance;
     private int customers, vendors;
-    private ChartData[] chartData;
-    private ChartData[] pnls;
+    private ChartData[] chartData, barChartData;
+    private ChartData[] pnls, monthPNLs;
+
 
     public double getTodaySales() {
         return todaySales;
@@ -53,6 +54,15 @@ public class DashboardData {
     public void setChartData(ChartData[] chartData) {
         this.chartData = chartData;
     }
+
+    public ChartData[] getBarChartData() {
+        return barChartData;
+    }
+
+    public ChartData[] getMonthPNLs() {
+        return monthPNLs;
+    }
+
     public String getCustomerBalanceString(){
         return Utility.formatNumber(customerBalance);
     }

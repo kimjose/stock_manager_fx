@@ -7,10 +7,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -35,6 +39,9 @@ import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
 
+
+    @FXML
+    private VBox vbData;
 
     @FXML
     private AnchorPane vbParent;
@@ -85,7 +92,16 @@ public class DashboardController implements Initializable {
     private Label labelNewVendor;
 
     @FXML
+    private ScrollPane spDashboard;
+
+    @FXML
+    private VBox vbCharts;
+
+    @FXML
     private LineChart<String, Double> lineChart;
+
+    @FXML
+    private BarChart<String, Double> bcMonthlySales;
 
     @FXML
     private MaskerPane maskerPane;
@@ -103,10 +119,22 @@ public class DashboardController implements Initializable {
             vbParent.getScene().getStylesheets().add(getClass().getClassLoader().getResource("css/dashboard.css").toExternalForm());
             loadData(true);
         });
-
+/*
         vbSales.prefWidthProperty().bind(vbParent.widthProperty().subtract(15).divide(3));
         vbCustomers.prefWidthProperty().bind(vbParent.widthProperty().subtract(15).divide(3));
-        vbVendors.prefWidthProperty().bind(vbParent.widthProperty().subtract(15).divide(3));
+        vbVendors.prefWidthProperty().bind(vbParent.widthProperty().subtract(15).divide(3));*/
+
+        spDashboard.prefHeightProperty().bind(vbParent.heightProperty().subtract(60));
+        spDashboard.prefWidthProperty().bind(vbParent.widthProperty());
+        hbSummary.prefHeightProperty().bind(vbParent.heightProperty().subtract(80));
+        hbSummary.prefWidthProperty().bind(vbParent.widthProperty().subtract(10));
+
+        vbCharts.prefWidthProperty().bind(hbSummary.widthProperty().subtract(196));
+        vbCharts.prefHeightProperty().bind(hbSummary.heightProperty().subtract(10));
+        lineChart.prefWidthProperty().bind(vbCharts.widthProperty());
+        lineChart.prefHeightProperty().bind(vbCharts.heightProperty().divide(2));
+        bcMonthlySales.prefWidthProperty().bind(vbCharts.widthProperty());
+        bcMonthlySales.prefHeightProperty().bind(vbCharts.heightProperty().divide(2));
 
         labelNewCustomer.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             try {
@@ -165,6 +193,9 @@ public class DashboardController implements Initializable {
                 e.printStackTrace();
             }
         });
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.F5) loadData(false);
+        });
     }
 
 
@@ -179,10 +210,10 @@ public class DashboardController implements Initializable {
                     if (response.isSuccessful()){
                         DashboardData dashboardData = response.body();
                         DashboardData.ChartData[] chartData = dashboardData.getChartData();
-                        XYChart.Series<String, Double> series = new XYChart.Series<>();
-                        series.setName("Daily Sales");
+                        XYChart.Series<String, Double> dailySales = new XYChart.Series<>();
+                        dailySales.setName("Daily Sales");
                         for (DashboardData.ChartData data : chartData) {
-                            series.getData().add(new XYChart.Data<>(data.getName(), data.getValue()));
+                            dailySales.getData().add(new XYChart.Data<>(data.getName(), data.getValue()));
                         }
                         DashboardData.ChartData[] pnls = dashboardData.getPnls();
                         XYChart.Series<String, Double> profits = new XYChart.Series<>();
@@ -190,7 +221,18 @@ public class DashboardController implements Initializable {
                         for (DashboardData.ChartData pnl : pnls ) {
                             profits.getData().add(new XYChart.Data<>(pnl.getName(), pnl.getValue()));
                         }
-                        lineChart.getData().setAll(series, profits);
+                        XYChart.Series<String, Double> monthSales = new XYChart.Series<>();
+                        monthSales.setName("Sales");
+                        for (DashboardData.ChartData sales : dashboardData.getBarChartData() ) {
+                            monthSales.getData().add(new XYChart.Data<>(sales.getName(), sales.getValue()));
+                        }
+                        XYChart.Series<String, Double> monthProfits = new XYChart.Series<>();
+                        monthProfits.setName("Profits/Losses");
+                        for (DashboardData.ChartData monthPnLs : dashboardData.getMonthPNLs() ) {
+                            monthProfits.getData().add(new XYChart.Data<>(monthPnLs.getName(), monthPnLs.getValue()));
+                        }
+                        lineChart.getData().setAll(dailySales, profits);
+                        bcMonthlySales.getData().setAll(monthSales, monthProfits);
                         labelTodaySale.setText(dashboardData.getTodaySalesString());
                         labelTotalSale.setText(dashboardData.getTotalSalesString());
                         labelCustomers.setText(String.valueOf(dashboardData.getCustomers()));

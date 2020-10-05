@@ -99,10 +99,11 @@ public class MainStage implements Initializable, ChangeListener {
         });
         Platform.runLater(() -> {
             LocalDate expiresOn = Utility.checkExpiresOn();
-            labelLicense.setText("License issued to " + Utility.CLIENT_NAME + " till "+expiresOn);
-            if (expiresOn.isBefore(LocalDate.now()) || expiresOn.isEqual(LocalDate.now())) Utility.subscribe(apCenter.getScene().getWindow());
+            labelLicense.setText("License issued to " + Utility.CLIENT_NAME + " till " + expiresOn);
+            if (expiresOn.isBefore(LocalDate.now()) || expiresOn.isEqual(LocalDate.now()))
+                Utility.subscribe(apCenter.getScene().getWindow());
         });
-        faivSetting.addEventFilter(MouseEvent.MOUSE_CLICKED, event->{
+        faivSetting.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/settings.fxml"));
                 VBox box = loader.load();
@@ -195,7 +196,7 @@ public class MainStage implements Initializable, ChangeListener {
         treeItemList.add(financeTree);
         treeItemList.add(vendorsTree);
         treeItemList.add(customerTree);
-        treeItemList.add(usersTree);
+        if (user.isAdmin()) treeItemList.add(usersTree);
         TreeItem<String> rootItem = new TreeItem<>("Inventory Manager");
         rootItem.getChildren().addAll(treeItemList);
         rootItem.setExpanded(true);
@@ -211,8 +212,8 @@ public class MainStage implements Initializable, ChangeListener {
 
             case "Dashboard": {
                 try {
-                    FXMLLoader loader = new FXMLLoader();
-                    AnchorPane anchorPane = loader.load(getClass().getResource("/fxml/dashboard.fxml").openStream());
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard.fxml"));
+                    AnchorPane anchorPane = loader.load();
                     anchorPane.prefWidthProperty().bind(bpParent.widthProperty().subtract(220));
                     anchorPane.prefHeightProperty().bind(bpParent.heightProperty().subtract(40));
                     List<Node> nodeList = new ArrayList<>();

@@ -50,7 +50,7 @@ public class CreateUser implements Initializable {
 
     @FXML
     private TextField tfFirstName;
-    
+
     @FXML
     private TextField tfNationalId;
 
@@ -103,7 +103,7 @@ public class CreateUser implements Initializable {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Product Image");
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("All Images", "*.jpg",".png"),
+                    new FileChooser.ExtensionFilter("All Images", "*.jpg", ".png"),
                     new FileChooser.ExtensionFilter("JPEG", "*.jpg"),
                     new FileChooser.ExtensionFilter("PNG", "*.png")
             );
@@ -120,12 +120,12 @@ public class CreateUser implements Initializable {
         contextMenu.getItems().add(miSelect);
         contextMenu.getItems().add(miReset);
         ivPhoto.setOnContextMenuRequested(event -> contextMenu.show(ivPhoto, event.getScreenX(), event.getScreenY()));
-        Platform.runLater(()->Utility.setLogo(vbParent));
+        Platform.runLater(() -> Utility.setLogo(vbParent));
         btnSave.setOnAction(event -> save());
-        btnCancel.setOnAction(event->Utility.closeWindow(hbHolder));
+        btnCancel.setOnAction(event -> Utility.closeWindow(hbHolder));
     }
 
-    private void save(){
+    private void save() {
         String errorMessage = "",
                 username = tfUsername.getText().trim(),
                 firstName = tfFirstName.getText().trim(),
@@ -134,53 +134,62 @@ public class CreateUser implements Initializable {
                 password = pfPassword.getText().trim(),
                 nationalId = tfNationalId.getText().trim(),
                 phoneNo = tfPhoneNo.getText().trim(),
-                gender = rbMale.isSelected()?"Male":"Female",
+                gender = rbMale.isSelected() ? "Male" : "Female",
                 date = "";
         boolean admin = cbAdmin.isSelected();
         if (username.equals("")) errorMessage = "Enter a valid username";
-        if (email.equals("")) errorMessage += errorMessage.equals("")?"Enter a valid email":"\nEnter a valid email";
+        if (email.equals("")) errorMessage += errorMessage.equals("") ? "Enter a valid email" : "\nEnter a valid email";
         else {
-            if (!email.matches(Utility.EMAIL_PATTERN.pattern())) errorMessage += errorMessage.equals("")?"Enter a valid email":"\nEnter a valid email";
+            if (!email.matches(Utility.EMAIL_PATTERN.pattern()))
+                errorMessage += errorMessage.equals("") ? "Enter a valid email" : "\nEnter a valid email";
         }
-        if (firstName.equals("")) errorMessage += errorMessage.equals("")?"First name is required":"\nFirst name is required";
-        if (lastName.equals("")) errorMessage += errorMessage.equals("")?"Last name is required":"\nLast name is required";
-        if (phoneNo.equals("")) errorMessage += errorMessage.equals("")?"Phone No is required":"\nPhone No is required";
-        if (password.length() < 6 && user == null && !password.equals("")) errorMessage += errorMessage.equals("")?"Password must have atleast 6 characters":"\nPassword must have atleast 6 characters";
-        if (nationalId.length() < 5) errorMessage += errorMessage.equals("")?"Enter a valid national Id":"\nEnter a valid national Id";
+        if (firstName.equals(""))
+            errorMessage += errorMessage.equals("") ? "First name is required" : "\nFirst name is required";
+        if (lastName.equals(""))
+            errorMessage += errorMessage.equals("") ? "Last name is required" : "\nLast name is required";
+        if (phoneNo.equals(""))
+            errorMessage += errorMessage.equals("") ? "Phone No is required" : "\nPhone No is required";
+        if (password.length() < 6 && user == null && !password.equals(""))
+            errorMessage += errorMessage.equals("") ? "Password must have atleast 6 characters" : "\nPassword must have atleast 6 characters";
+        if (nationalId.length() < 5)
+            errorMessage += errorMessage.equals("") ? "Enter a valid national Id" : "\nEnter a valid national Id";
         try {
             date = dpDOB.getValue().toString();
             if (date.equals("")) throw new Exception();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            errorMessage += errorMessage.equals("")?"Enter a valid Date of Birth":"\nEnter a valid Date of Birth";
+            errorMessage += errorMessage.equals("") ? "Enter a valid Date of Birth" : "\nEnter a valid Date of Birth";
         }
         if (!errorMessage.equals("")) {
-            notificationPane.show(errorMessage); return;
+            notificationPane.show(errorMessage);
+            return;
         }
         Call<Void> call;
-        if (user == null) call = apiService.createUser(username, email, firstName, lastName, nationalId, date, gender, base64Image, admin?1:0, password, phoneNo);
+        if (user == null)
+            call = apiService.createUser(username, email, firstName, lastName, nationalId, date, gender, base64Image, admin ? 1 : 0, password, phoneNo);
         else {
-            username = username.equals(user.getUserName())?null:username;
-            email = email.equals(user.getEmail())?null:email;
-            nationalId = nationalId.equals(user.getNationalId()+"")?null:nationalId;
-            phoneNo = phoneNo.equals(user.getPhoneNo())?null:phoneNo;
-            call = apiService.updateUser(user.getId(), username, email, firstName, lastName, nationalId, date, gender, base64Image, admin?1:0, password, phoneNo, 0);
+            username = username.equals(user.getUserName()) ? null : username;
+            email = email.equals(user.getEmail()) ? null : email;
+            nationalId = nationalId.equals(user.getNationalId() + "") ? null : nationalId;
+            phoneNo = phoneNo.equals(user.getPhoneNo()) ? null : phoneNo;
+            call = apiService.updateUser(user.getId(), username, email, firstName, lastName, nationalId, date, gender, base64Image, admin ? 1 : 0, password, phoneNo, 0);
         }
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                Platform.runLater(()->{
-                    if (response.isSuccessful()){
+                Platform.runLater(() -> {
+                    if (response.isSuccessful()) {
                         Utility.closeWindow(hbHolder);
-                    } else notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{
-                            "userName","lastName","firstName","email","nationalId", "gender", "password"
-                    }));
+                    } else
+                        notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(), new String[]{
+                                "userName", "lastName", "firstName", "email", "nationalId", "gender", "password"
+                        }));
                 });
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable throwable) {
-                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
+                Platform.runLater(() -> notificationPane.show(throwable.getMessage()));
             }
         });
     }
@@ -201,7 +210,7 @@ public class CreateUser implements Initializable {
         else rbFemale.setSelected(true);
         cbAdmin.setSelected(user.isAdmin());
         tfNationalId.setText(String.valueOf(user.getNationalId()));
-        if (user.getPhoto() != null && !user.getPhoto().equals("")){
+        if (user.getPhoto() != null && !user.getPhoto().equals("")) {
             base64Image = user.getPhoto();
             Utility.decodeImage(user.getPhoto(), ivPhoto, "mUser.png");
         }

@@ -29,7 +29,7 @@
             <HBox alignment="TOP_CENTER" prefHeight="27.0" prefWidth="895.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="125.0" AnchorPane.topAnchor="4.0">
                <children>
                   <Label fx:id="labelLicense" alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="437.0" text="Software licensed to LolO till $date" textAlignment="RIGHT" />
-                  <Label onMouseClicked="#subscribe" prefHeight="15.0" prefWidth="65.0" styleClass="label-link" text="Subscribe">
+                  <Label onMouseClicked="#subscribe" prefHeight="15.0" prefWidth="65.0" styleClass="label-link" text="Renew License">
                      <HBox.margin>
                         <Insets left="5.0" />
                      </HBox.margin>
@@ -46,13 +46,12 @@
                         <Insets top="8.0" right="5.0" />
                      </HBox.margin>
                   </FontAwesomeIconView>
-                  <ImageView fx:id="ivUserPhoto" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" styleClass="circle-image-view">
-                     <image>
-                        <Image url="@../user.png" />
-                     </image>
+                  <ImageView fx:id="ivUserPhoto" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                             styleClass="circle-image-view">
                      <HBox.margin>
-                        <Insets top="5.0" />
+                        <Insets top="5.0"/>
                      </HBox.margin>
+                     <Image url="@../user.png"/>
                   </ImageView>
                   <Label fx:id="labelUserName" text="User Name" prefHeight="40.0" prefWidth="69.0"/>
                   <FontAwesomeIconView fx:id="faivExit" fill="#f62817" glyphName="POWER_OFF" size="25">

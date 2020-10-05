@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -215,11 +216,11 @@ public class Subscription {
                 if (stringBuilder.length() != 0) {
                     stringBuilder.append('&');
                 }
-                stringBuilder.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                stringBuilder.append(URLEncoder.encode(param.getKey(), StandardCharsets.UTF_8));
                 stringBuilder.append('=');
-                stringBuilder.append(URLEncoder.encode(param.getValue().toString(), "UTF-8"));
+                stringBuilder.append(URLEncoder.encode(param.getValue().toString(), StandardCharsets.UTF_8));
             }
-            byte[] dataBytes = stringBuilder.toString().getBytes("UTF-8");
+            byte[] dataBytes = stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -229,7 +230,7 @@ public class Subscription {
             httpURLConnection.getOutputStream().write(dataBytes);
             BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
             String line = "";
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
             }

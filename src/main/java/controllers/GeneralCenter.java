@@ -152,9 +152,9 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/sell_product.fxml")));
             VBox vBox = loader.load();
             Scene scene = new Scene(vBox);
-            SellProduct sellProduct = loader.getController();
-            sellProduct.setDataInterface(this);
-            sellProduct.setProduct(product);
+            SellProduct sellProductController = loader.getController();
+            sellProductController.setDataInterface(this);
+            sellProductController.setProduct(product);
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setResizable(false);
@@ -1794,7 +1794,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     VBox vBox = loader.load();
                     CustomerReceipt controller = loader.getController();
                     controller.setDataInterface(this);
-                    Scene scene = new Scene(vBox, 490, 320);
+                    Scene scene = new Scene(vBox);
                     Stage stage = new Stage();
                     stage.setScene(scene);
                     stage.initModality(Modality.APPLICATION_MODAL);
@@ -1846,7 +1846,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_brand.fxml")));
                     VBox vBox = loader.load();
-                    Scene scene = new Scene(vBox, 450, 200);
+                    Scene scene = new Scene(vBox);
                     Stage stage = new Stage();
                     stage.setScene(scene);
                     CreateBrand createBrand = loader.getController();
@@ -1880,7 +1880,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
 
                     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/create_category.fxml")));
                     VBox vBox = loader.load();
-                    Scene scene = new Scene(vBox, 450, 200);
+                    Scene scene = new Scene(vBox);
                     Stage stage = new Stage();
                     stage.setScene(scene);
                     CreateCategory controller = loader.getController();

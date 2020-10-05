@@ -58,6 +58,6 @@ public class Service implements SuperModel {
 
     @Override
     public String getSearchString() {
-        return name;
+        return name +" " +description;
     }
 }

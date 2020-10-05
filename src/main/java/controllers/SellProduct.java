@@ -68,7 +68,7 @@ public class SellProduct implements Initializable {
     private Product product;
     private ApiService apiService;
     private HomeDataInterface dataInterface;
-    private User user = SessionManager.INSTANCE.getUser();
+    private final User user = SessionManager.INSTANCE.getUser();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -198,6 +198,8 @@ public class SellProduct implements Initializable {
     public void setProduct(Product product) {
         this.product = product;
         labelProduct.setText(product.getName());
+        tfPrice.setText(String.valueOf(product.getSellingPrice()));
+        tfQuantity.setText("1");
     }
 
     public void setDataInterface(HomeDataInterface dataInterface) {

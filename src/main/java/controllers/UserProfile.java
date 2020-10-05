@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 public class UserProfile implements Initializable {
 
     @FXML
-    private VBox vpParent;
+    private VBox vbParent;
 
     @FXML
     private HBox hbHolder;
@@ -111,9 +111,9 @@ public class UserProfile implements Initializable {
 
 
         //function keys
-        vpParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+        vbParent.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             KeyCode keyCode = event.getCode();
-            if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vpParent);
+            if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbParent);
         });
     }
 
