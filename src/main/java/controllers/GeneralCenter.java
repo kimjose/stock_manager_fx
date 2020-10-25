@@ -682,8 +682,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Utility.setLogo(pane);
-                    dialog.initOwner(pane.getScene().getWindow());
+                    dialog.initOwner(vbParent.getScene().getWindow());
                     ButtonType nextButtonType = new ButtonType("Go", ButtonBar.ButtonData.OK_DONE);
                     ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
                     pane.getButtonTypes().addAll(nextButtonType, cancelButtonType);
@@ -734,6 +733,8 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     });
                     dialog.initOwner(tvGeneral.getScene().getWindow());
                     dialog.setDialogPane(pane);
+                    DialogPane finalPane = pane;
+                    dialog.setOnShowing(event1 -> Utility.setLogo(finalPane));
                     dialog.show();
                 });
                 hbReports.getChildren().add(customButton);
@@ -755,7 +756,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                     params.put("saleDate", sale.getSaleDate());
                     params.put("businessName", Utility.CLIENT_NAME);
                     params.put("saleTotal", "Kshs " + sale.getTotalString());
-                    Node n = Utility.showProgressBar("Getting report...", tvGeneral.getScene().getWindow());
+                    Node n = Utility.showProgressBar("Generating report...", tvGeneral.getScene().getWindow());
                     Call<Object[]> call = apiService.saleReport(sale.getId());
                     call.enqueue(new Callback<>() {
                         @Override
@@ -802,7 +803,7 @@ public class GeneralCenter implements Initializable, HomeDataInterface {
                             if (startDate.equals("") || endDate.equals("")) throw new Exception("Invalid date values");
                             dialog.close();
 
-                            Node n = Utility.showProgressBar("Getting report...", tvGeneral.getScene().getWindow());
+                            Node n = Utility.showProgressBar("Generating report...", tvGeneral.getScene().getWindow());
                             Call<Object[]> call = apiService.salesReport(startDate, endDate);
                             call.enqueue(new Callback<>() {
                                 @Override

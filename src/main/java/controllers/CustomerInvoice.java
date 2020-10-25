@@ -238,7 +238,6 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             else if (keyCode.equals(KeyCode.F5)) loadData();
         });
 
-
         labelPay.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (invoice == null){
                 notificationPane.show("No invoice.");
@@ -369,6 +368,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                     Platform.runLater(() -> {
                         cbWarehouse.setItems(FXCollections.observableArrayList(response.body()));
                         if (invoice != null) cbWarehouse.getSelectionModel().select(invoice.getWarehouse());
+                        else cbWarehouse.getSelectionModel().selectFirst();
                     });
                 } else notificationPane.show(response.message());
             }

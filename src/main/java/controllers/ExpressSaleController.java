@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import interfaces.HomeDataInterface;
 import interfaces.LinesInterface;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -142,7 +144,40 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             if (expressSale == null) dpDate.setValue(LocalDate.now());
             String[] types = {"Product", "Service"};
             cbType.setItems(FXCollections.observableArrayList(types));
-            cbType.setOnAction(event -> {
+            cbType.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                Task<Object> myTask = new Task<>() {
+                    @Override
+                    protected Object call() {
+                        if (products == null || services == null) {
+                            loadData();
+                            try {
+                                Thread.currentThread().wait();
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                e.printStackTrace();
+                            }
+                        }
+                        Platform.runLater(() -> {
+                            if (newValue.equals("Product")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(products));
+                            } else if (newValue.equals("Service")) {
+                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("description"));
+                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                                tvItems.setItems(FXCollections.observableArrayList(services));
+                            }
+                        });
+                        return null;
+                    }
+                };
+                Thread thread = new Thread(myTask);
+                thread.setDaemon(true);
+                thread.start();
+            });
+            /*cbType.setOnAction(event -> {
                 Task<Object> myTask = new Task<>() {
                     @Override
                     protected Object call() {
@@ -176,7 +211,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                 Thread thread = new Thread(myTask);
                 thread.setDaemon(true);
                 thread.start();
-            });
+            });*/
 
 
             vsSale.registerValidator(cbWarehouse, true, Validator.createEmptyValidator("Warehouse is required."));
@@ -185,7 +220,6 @@ public class ExpressSaleController implements Initializable, LinesInterface {
 
             vsLine.registerValidator(cbType, true, Validator.createEmptyValidator("Select a valid type"));
          });
-
 
         tcPS.setCellValueFactory(new PropertyValueFactory<>("name"));
         tcPrice.setCellValueFactory(new PropertyValueFactory<>("unitPriceTf"));
@@ -269,9 +303,9 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                 if (response.isSuccessful()) {
                     Platform.runLater(() -> {
                         cbBank.setItems(FXCollections.observableArrayList(response.body()));
-                        if (expressSale != null) {
+                        if (expressSale != null)
                             cbBank.getSelectionModel().select(expressSale.getBank());
-                        }
+                        else cbBank.getSelectionModel().selectFirst();
                     });
                 } else notificationPane.show(response.message());
             }
@@ -288,12 +322,25 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                     Platform.runLater(() -> {
                         cbWarehouse.setItems(FXCollections.observableArrayList(response.body()));
                         if (expressSale != null) cbWarehouse.getSelectionModel().select(expressSale.getWarehouse());
+                        else cbWarehouse.getSelectionModel().selectFirst();
                     });
                 } else notificationPane.show(response.message());
             }
 
             @Override
             public void onFailure(Call<Warehouse[]> call, Throwable throwable) {
+                notificationPane.show(throwable.getMessage());
+            }
+        });
+        getServices.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<Service[]> call, Response<Service[]> response) {
+                if (response.isSuccessful()) setServices(response.body());
+                else notificationPane.show(response.message());
+            }
+
+            @Override
+            public void onFailure(Call<Service[]> call, Throwable throwable) {
                 notificationPane.show(throwable.getMessage());
             }
         });
@@ -309,18 +356,6 @@ public class ExpressSaleController implements Initializable, LinesInterface {
 
             @Override
             public void onFailure(Call<Product[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
-            }
-        });
-        getServices.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<Service[]> call, Response<Service[]> response) {
-                if (response.isSuccessful()) setServices(response.body());
-                else notificationPane.show(response.message());
-            }
-
-            @Override
-            public void onFailure(Call<Service[]> call, Throwable throwable) {
                 notificationPane.show(throwable.getMessage());
             }
         });

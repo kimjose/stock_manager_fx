@@ -86,7 +86,7 @@
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
                   <VBox prefHeight="296.0" prefWidth="654.0" spacing="2.0">
                      <children>
-                        <Label prefHeight="27.0" prefWidth="428.0" text="Sale Items">
+                        <Label prefHeight="27.0" prefWidth="428.0" text="Invoice Items">
                            <padding>
                               <Insets left="5.0" />
                            </padding>
