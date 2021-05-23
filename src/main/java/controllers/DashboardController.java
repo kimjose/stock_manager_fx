@@ -110,7 +110,7 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         btnRefresh.setOnAction(event -> loadData(false));
-        lineChart.setTitle("Daily Sales For Last 7 Days.");
+        lineChart.setTitle("Daily Sales For Last 10 Days.");
         XYChart.Series<String, Double> data = new XYChart.Series<>();
         for (int i = 0; i < 7; i++) {
             data.getData().add(new XYChart.Data<>("date", (double) i));

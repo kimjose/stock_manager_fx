@@ -297,7 +297,7 @@ public class Utility {
     private static String readProperty(String property, String defaultResponse) {
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("im.properties"));
+            properties.load(new FileInputStream(USER_DIR + "/im.properties"));
             return properties.getProperty(property, defaultResponse);
         } catch (IOException e) {
             e.printStackTrace();

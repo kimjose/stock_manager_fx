@@ -180,7 +180,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                                 tvItems.setItems(FXCollections.observableArrayList(products));
                             } else if (type.equals("Service")) {
                                 tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
-                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+//                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
                                 tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
                                 tvItems.setItems(FXCollections.observableArrayList(services));
                             }

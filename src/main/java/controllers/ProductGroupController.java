@@ -81,7 +81,7 @@ public class ProductGroupController implements Initializable {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.F9)) Utility.closeWindow(vbHolder);
             else if (keyCode.equals(KeyCode.F5)) loadData();
-            event.consume();
+//            event.consume();
         });
     }
 

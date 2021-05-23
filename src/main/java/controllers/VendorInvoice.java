@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import models.SuperModel;
 import models.auth.User;
@@ -190,6 +191,15 @@ public class VendorInvoice implements Initializable, LinesInterface {
             vsInvoice.registerValidator(dpDate, true, Validator.createEmptyValidator("Select a valid Date."));
 
             vsLine.registerValidator(cbType, true, Validator.createEmptyValidator("Select a valid type"));
+
+            labelPay.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+                if (invoice == null || invoice.getTotal() <= 0) return;
+                try {
+                    //todo soonest....
+                } catch (Exception ex) {
+
+                }
+            });
 
             loadData();
         });
@@ -555,7 +565,7 @@ public class VendorInvoice implements Initializable, LinesInterface {
         setLines(invoice.getInvoiceLines());
         dpDate.setValue(LocalDate.parse(invoice.getInvoiceDate()));
         tvLines.setDisable(invoice.isPosted());
-
+        tvItems.setDisable(invoice.isPosted());
     }
 
     public void setProducts(Product[] products) {
@@ -572,3 +582,4 @@ public class VendorInvoice implements Initializable, LinesInterface {
         this.services = services;
     }
 }
+  

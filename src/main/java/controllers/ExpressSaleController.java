@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import interfaces.HomeDataInterface;
 import interfaces.LinesInterface;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -144,39 +145,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             if (expressSale == null) dpDate.setValue(LocalDate.now());
             String[] types = {"Product", "Service"};
             cbType.setItems(FXCollections.observableArrayList(types));
-            cbType.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                Task<Object> myTask = new Task<>() {
-                    @Override
-                    protected Object call() {
-                        if (products == null || services == null) {
-                            loadData();
-                            try {
-                                Thread.currentThread().wait();
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                e.printStackTrace();
-                            }
-                        }
-                        Platform.runLater(() -> {
-                            if (newValue.equals("Product")) {
-                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
-                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
-                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
-                                tvItems.setItems(FXCollections.observableArrayList(products));
-                            } else if (newValue.equals("Service")) {
-                                tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
-                                tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("description"));
-                                tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
-                                tvItems.setItems(FXCollections.observableArrayList(services));
-                            }
-                        });
-                        return null;
-                    }
-                };
-                Thread thread = new Thread(myTask);
-                thread.setDaemon(true);
-                thread.start();
-            });
+            cbType.getSelectionModel().selectedItemProperty().addListener(this::typeChanged);
             /*cbType.setOnAction(event -> {
                 Task<Object> myTask = new Task<>() {
                     @Override
@@ -290,6 +259,40 @@ public class ExpressSaleController implements Initializable, LinesInterface {
         });
 
         loadData();
+    }
+
+    private void typeChanged(Observable observable, String oldValue, String newValue){
+        Task<Object> myTask = new Task<>() {
+            @Override
+            protected Object call() {
+                if (products == null || services == null) {
+                    loadData();
+                    try {
+                        Thread.currentThread().wait();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        e.printStackTrace();
+                    }
+                }
+                Platform.runLater(() -> {
+                    if (newValue.equals("Product")) {
+                        tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                        tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+                        tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                        tvItems.setItems(FXCollections.observableArrayList(products));
+                    } else if (newValue.equals("Service")) {
+                        tcItemName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                        tcItemPrice.setCellValueFactory(new PropertyValueFactory<>("description"));
+                        tcItemAdd.setCellValueFactory(new PropertyValueFactory<>("addBtn"));
+                        tvItems.setItems(FXCollections.observableArrayList(services));
+                    }
+                });
+                return null;
+            }
+        };
+        Thread thread = new Thread(myTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private void loadData() {
@@ -555,6 +558,7 @@ public class ExpressSaleController implements Initializable, LinesInterface {
             }
         });
     }
+
 
     public void setDataInterface(HomeDataInterface dataInterface) {
         this.dataInterface = dataInterface;

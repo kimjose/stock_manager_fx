@@ -1,4 +1,1 @@
-{
-  "countryCode": "256",
-  "defaultPrinter": "{\"printer\":\"HP Deskjet 1510 series\",\"nCopies\":0,\"prnCaps\":0,\"gotTrays\":false,\"gotCopies\":false,\"mediaInitialized\":false,\"mpaListInitialized\":false,\"isInvalid\":false}"
-}
+{"countryCode":"254","defaultPrinter":"{\"printer\":\"OneNote (Desktop)\",\"name\":{\"value\":\"OneNote (Desktop)\",\"locale\":\"en_US\"},\"port\":\"nul:\",\"printRes\":[{\"crossFeedResolution\":60000,\"feedResolution\":60000},{\"crossFeedResolution\":120000,\"feedResolution\":120000}],\"nCopies\":0,\"prnCaps\":4105,\"defaultSettings\":[1,-50,600,600,1,1,-50,-50,2],\"gotTrays\":false,\"gotCopies\":false,\"mediaInitialized\":false,\"mpaListInitialized\":false,\"isInvalid\":false}"}

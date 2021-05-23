@@ -110,6 +110,7 @@ public class ExpressSaleLine {
                     }
                     ExpressSaleLine newLine = this;
                     newLine.setUnitPrice(nPrice);
+                    newLine.setQuantity(0);
                     if (linesInterface != null) linesInterface.updateLine(newLine);
                 }catch(Exception e){ e.printStackTrace();}
             }

@@ -131,7 +131,20 @@ public class CreateProduct implements Initializable {
         vbParent.addEventFilter(KeyEvent.KEY_PRESSED, e ->{
             KeyCode keyCode = e.getCode();
             if (keyCode.equals(KeyCode.F5)) loadData();
-            e.consume();
+        });
+
+        cbUOM.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (product != null) product.setUom(newValue);
+        });
+
+        cbBrand.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (product != null) {
+                product.setBrand(newValue);
+            }
+        });
+
+        cbCategory.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (product != null) product.setCategory(newValue);
         });
 
         loadData();
@@ -218,8 +231,10 @@ public class CreateProduct implements Initializable {
             public void onResponse(Call<UnitOfMeasure[]> call, Response<UnitOfMeasure[]> response) {
                 if (response.isSuccessful()){
                     Platform.runLater(()->{
+                        UnitOfMeasure selectedUOM = cbUOM.getValue();
                         cbUOM.setItems(FXCollections.observableArrayList(response.body()));
                         if (product != null ) cbUOM.getSelectionModel().select(product.getUom());
+                        else cbUOM.getSelectionModel().select(selectedUOM);
                     });
                 }else Platform.runLater(()->notificationPane.show(response.message()));
             }
@@ -235,8 +250,10 @@ public class CreateProduct implements Initializable {
             public void onResponse(Call<Brand[]> call, Response<Brand[]> response) {
                 if (response.isSuccessful()) {
                     Platform.runLater(() -> {
+                        Brand selectedBrand = cbBrand.getValue();
                         cbBrand.setItems(FXCollections.observableArrayList(response.body()));
                         if (product != null) cbBrand.getSelectionModel().select(product.getBrand());
+                        else cbBrand.getSelectionModel().select(selectedBrand);
                     });
                 } else Platform.runLater(() -> notificationPane.show(response.message()));
             }
@@ -252,8 +269,10 @@ public class CreateProduct implements Initializable {
             public void onResponse(Call<Category[]> call, Response<Category[]> response) {
                 if (response.isSuccessful()) {
                     Platform.runLater(() -> {
+                        Category selectedCategory = cbCategory.getValue();
                         cbCategory.setItems(FXCollections.observableArrayList(response.body()));
                         if (product != null) cbCategory.getSelectionModel().select(product.getCategory());
+                        else cbCategory.getSelectionModel().select(selectedCategory);
                     });
                 } else Platform.runLater(() -> notificationPane.show(response.message()));
             }

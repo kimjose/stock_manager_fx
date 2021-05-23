@@ -59,10 +59,10 @@
                 <version>3.2.0</version>
                 <configuration>
                     <archive>
-                        <manifest>
+                        <!--<manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2018.2.4\plugins\javaFX\lib</classpathPrefix>
-                        </manifest>
+                        </manifest>-->
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
@@ -84,6 +84,7 @@
                                 <copy file="im_logo.png" todir="${project.build.directory}"/>
                                 <copy file="user.png" todir="${project.build.directory}"/>
                                 <copy file="settings.json" todir="${project.build.directory}"/>
+                                <copy file="im.bat" todir="${project.build.directory}"/>
                             </target>
 
                         </configuration>
