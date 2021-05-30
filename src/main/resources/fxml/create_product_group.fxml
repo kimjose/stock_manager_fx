@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.NotificationPane?>
+
+
+<VBox fx:id="vbParent" prefHeight="274.0" prefWidth="452.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ProductGroupController">
+   <children>
+      <NotificationPane fx:id="notificationPane" />
+      <VBox fx:id="vbHolder" prefHeight="329.0" prefWidth="600.0">
+         <children>
+            <HBox>
+               <children>
+                  <Label prefHeight="32.0" prefWidth="130.0" text="Group ID:" />
+                  <Label fx:id="labelId" prefHeight="32.0" prefWidth="130.0" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="32.0" prefWidth="130.0" text="Group Name:" />
+                  <TextField fx:id="tfName" prefHeight="22.0" prefWidth="201.0" promptText="Name">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="42.0">
+               <children>
+                  <Label prefHeight="32.0" prefWidth="130.0" text="Group Description:" />
+                  <TextField fx:id="tfDescription" prefHeight="22.0" prefWidth="201.0" promptText="Description">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="32.0" prefWidth="130.0" text="Group Price:" />
+                  <TextField fx:id="tfPrice" prefHeight="22.0" prefWidth="201.0" promptText="Price">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="32.0" prefWidth="130.0" text="Product:" />
+                  <ComboBox fx:id="cbProduct" prefHeight="25.0" prefWidth="259.0" promptText="Select Product">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </ComboBox>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="32.0" prefWidth="130.0" text="Quantity:" />
+                  <TextField fx:id="tfQuantity" prefHeight="22.0" prefWidth="201.0" promptText="Quantity">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <ButtonBar>
+               <buttons>
+                  <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="46.0" prefWidth="129.0" styleClass="btn_save" text="Save">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="46.0" prefWidth="129.0" styleClass="btn_cancel" text="Cancel">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="15" />
+                     </graphic>
+                  </Button>
+               </buttons>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </ButtonBar>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="4.0" left="4.0" right="2.0" top="2.0" />
+   </padding>
+</VBox>

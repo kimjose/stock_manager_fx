@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.NotificationPane?>
+
+<VBox fx:id="vbParent" prefHeight="574.0" prefWidth="1100.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <NotificationPane fx:id="notificationPane" />
+      <VBox fx:id="vbHolder" prefHeight="573.0" prefWidth="1092.0" spacing="2.0">
+         <children>
+            <HBox prefHeight="75.0" prefWidth="1092.0">
+               <children>
+                  <VBox prefHeight="252.0" prefWidth="363.0" spacing="3.0">
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label prefHeight="25.0" prefWidth="108.0" text="Invoice No" />
+                              <TextField fx:id="tfNo" editable="false" />
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <Label fx:id="labelOwner" prefHeight="25.0" prefWidth="108.0" text="Invoice No" />
+                              <ComboBox fx:id="cbOwner" prefHeight="25.0" prefWidth="210.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0" prefHeight="51.0" prefWidth="375.0">
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label prefHeight="27.0" prefWidth="118.0" text="Invoice Date" />
+                              <DatePicker fx:id="dpDate" prefHeight="25.0" prefWidth="209.0" />
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <Label prefHeight="24.0" prefWidth="119.0" text="Warehouse" />
+                              <ComboBox fx:id="cbWarehouse" prefHeight="25.0" prefWidth="210.0" promptText="Select Warehouse" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <HBox prefHeight="33.0" prefWidth="236.0">
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="118.0" text="Invoice Total" />
+                        <Label fx:id="labelTotal" prefHeight="27.0" prefWidth="118.0" text="0" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+
+            <HBox prefHeight="444.0" prefWidth="1005.0" spacing="4.0">
+               <children>
+                  <VBox prefHeight="429.0" prefWidth="428.0" spacing="2.0">
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="428.0" text="Items">
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Label>
+                        <ComboBox fx:id="cbType" prefHeight="25.0" prefWidth="151.0" promptText="Select type" />
+                        <TextField fx:id="tfSearch" prefHeight="26.0" prefWidth="255.0" promptText="Search item" />
+                        <TableView fx:id="tvItems" prefHeight="358.0" prefWidth="428.0">
+                           <columns>
+                              <TableColumn fx:id="tcItemName" prefWidth="122.0" text="Name" />
+                              <TableColumn fx:id="tcItemPrice" prefWidth="193.0" text="Selling Price" />
+                              <TableColumn fx:id="tcItemAdd" prefWidth="97.0" text="Add" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox prefHeight="296.0" prefWidth="654.0" spacing="2.0">
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="428.0" text="Invoice Items">
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Label>
+                        <TableView fx:id="tvLines" prefHeight="407.0" prefWidth="568.0">
+                           <columns>
+                              <TableColumn fx:id="tcPS" prefWidth="157.0" text="Product/Service" />
+                              <TableColumn fx:id="tcPrice" prefWidth="140.0" text="Unit Price" />
+                              <TableColumn fx:id="tcQuantity" prefWidth="128.0" text="Quantity" />
+                              <TableColumn fx:id="tcTotal" text="Total" />
+                              <TableColumn fx:id="tcRemove" prefWidth="153.0" text="Remove" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="77.0" prefWidth="719.0" spacing="25.0">
+               <children>
+                  <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_success" text="Save [F11]">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="30" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnCancel" contentDisplay="TOP" layoutX="116.0" layoutY="10.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_cancel" text="Cancel [F9]">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="30" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnReverse" contentDisplay="TOP" disable="true" layoutX="275.0" layoutY="18.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_cancel" text="Reverse [F8]">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="UNDO" size="30" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnPost" contentDisplay="TOP" disable="true" layoutX="222.0" layoutY="10.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="110.0" styleClass="btn_success" text="Post [F10]">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="PLAY" size="30" />
+                     </graphic>
+                  </Button>
+                  <Label fx:id="labelPay" alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="62.0" styleClass="label-link" text="Pay now" underline="true" />
+               </children>
+               <padding>
+                  <Insets right="4.0" top="8.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+   </padding>
+</VBox>

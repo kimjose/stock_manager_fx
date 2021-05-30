@@ -1,0 +1,40 @@
+.parent {
+	-fx-background-color: #DCDCDC; 
+}
+.label {
+	-fx-text-fill: #000;
+	-fx-font-weight: normal !important;
+}
+}
+.label-header {
+	-fx-font-weight: bold !important;
+}
+.vb-sales {
+	-fx-background-color: #fff;
+	-fx-background-radius: 0;
+	-fx-border-radius: 0;
+	-fx-border-style: solid;
+	-fx-border-color: #009966;
+}
+.vb-customers {
+	-fx-background-color: #fff;
+	-fx-background-radius: 0;
+	-fx-border-radius: 0;
+	-fx-border-style: solid;
+	-fx-border-color: #FF7F50;
+}
+.vb-vendors {
+	-fx-background-color: #fff;
+	-fx-background-radius: 0;
+	-fx-border-radius: 0;
+	-fx-border-style: solid;
+	-fx-border-color: #EE82EE;
+}
+.label-link{
+	-fx-text-fill: #006699;
+	-fx-background-color: transparent;
+}
+.label-link:hover{
+	-fx-cursor: hand;
+	-fx-underline: true;
+}

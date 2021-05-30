@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane prefHeight="97.0" prefWidth="365.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="365.0" spacing="4.0" stylesheets="@../css/Main.css">
+         <children>
+            <Label alignment="BOTTOM_CENTER" prefHeight="20.0" prefWidth="411.0" text="Select date range">
+               <VBox.margin>
+                  <Insets left="1.0" right="1.0" />
+               </VBox.margin>
+            </Label>
+            <HBox>
+               <children>
+                  <Label alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="84.0" text="Start Date" />
+                  <DatePicker prefHeight="25.0" prefWidth="263.0" />
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="46.0">
+               <children>
+                  <Label alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="83.0" text="End Date" />
+                  <DatePicker prefHeight="25.0" prefWidth="264.0" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="2.0" left="3.0" right="3.0" top="2.0" />
+         </padding>
+      </VBox>
+   </content>
+</DialogPane>

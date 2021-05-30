@@ -1,0 +1,130 @@
+.parent{
+	background: #FFFDD0
+}
+.tab-pane {
+    -fx-background-color: transparent;
+}
+.tab:selected{
+    -fx-font-weight: bold;
+}
+.masker-pane{
+	-fx-background-color: #ADD8E6;
+	-fx-opacity: 0.4;
+}
+.masker-pane:hover{
+	-fx-cursor: wait;
+}
+/*.jfx-tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+    -fx-color: black;
+}*/
+.dashboard .parent{
+	-fx-background-color: #FFFDD0; 
+}
+.tree-cell {
+	-fx-background-color: #C0C0C0;
+	-fx-text-fill:#000000;
+}
+.tree-cell:hover {
+    -fx-font-style: italic;
+    -fx-text-fill:#000;
+}
+.tree-cell:selected {
+    -fx-font-weight: bold;
+    -fx-background-color: #F2DDAA;
+    -fx-text-fill:#000A00;
+}
+/*Table properties*/
+.table-view{
+	-fx-background-color: #ADD8E6;
+}
+.table-view .table-row-cell:even{
+	-fx-background-color:#F2DDAA;
+}
+.table-view .table-row-cell:selected{
+	-fx-background-color:#006699 !important;
+	-fx-font-style: italic;
+}
+.table-view .column-header{
+	-fx-background-color: #ADD8A9;
+}
+.table-view :disabled{
+    -fx-opacity: 1;
+}
+/*.table-row-cell: selected {
+	-fx-font-style: italic;
+	-fx-background-color: #ADD8E6;
+	-fx-border: none;
+	-fx-color:#000;
+}*/
+.button{
+    -fx-font-family:Arial;
+}
+.button:hover{
+	-fx-cursor: hand;
+	-fx-background-color: #ADD8E6 !important;
+	-fx-text-fill:#ffffff;
+}
+.button:focused{
+    -fx-border-color: #7EC0EE;
+}
+/*.tree-view {
+	-fx-background-color:  #4338AE;
+}*/
+
+.btn_success{
+	-fx-background-color:#19D019;
+	-fx-text-fill: white;
+	-fx-font-weight: bold ;
+}
+.btn_save{
+	-fx-background-color:CYAN;
+	-fx-text-fill: white;
+	-fx-font-weight: bold ;
+}
+.btn_cancel{
+	-fx-background-color:#f80707;
+	-fx-text-fill: white;
+}
+.btn_neutral{
+	-fx-background-color:#1446e8;
+	-fx-text-fill: white;
+}
+.label{
+	-fx-font-family:Arial;
+	-fx-font-weight: bold ;
+}
+.label-link{
+	-fx-font-weight: normal ;
+	-fx-text-fill: #006699;
+	-fx-background-color: transparent;
+}
+.label-link:hover{
+	-fx-cursor: hand;
+}
+.text-field{
+	-fx-font-family:Arial;
+	-fx-border-width: 0 10 0 0;
+}
+.separator *.line{
+	-fx-border-style: dotted;
+	-fx-border-width: 0 1 1 0;
+	-fx-border-color: #808000;
+}
+.circle-image-view{
+	-fx-border-radius: 15px;
+	-fx-background-color: #000; 
+}
+.top-parent{
+	-fx-background-color: #C0C0C0;
+}
+.top-center{
+	-fx-background-color: #FFFDD0;
+}
+.subscribe-parent{
+	-fx-background-color: #ADD8A9;
+}
+
+
+/*Dashboard*/
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Subscription update.</comment>
+<entry key="reportsLocation">/src/main/resources/reports/</entry>
+<entry key="stkUrl">https://infinitops.co.ke/subscribe/Subscribe/?request=lipa</entry>
+<entry key="renewUrl">https://infinitops.co.ke/subscribe/Subscribe/?request=renew</entry>
+<entry key="clientName">Infinitops Soln</entry>
+<entry key="expiresOn">2020-08-12</entry>
+<entry key="version">IM001</entry>
+</properties>

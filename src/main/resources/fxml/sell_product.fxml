@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
+
+<VBox fx:id="vbParent" prefHeight="237.0" prefWidth="344.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SellProduct">
+   <children>
+      <VBox fx:id="vbHolder" prefHeight="228.0" prefWidth="339.0">
+         <children>
+            <HBox>
+               <children>
+                  <Label prefHeight="30.0" prefWidth="110.0" text="Product" />
+                  <Label fx:id="labelProduct" prefHeight="30.0" prefWidth="113.0" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="30.0" prefWidth="110.0" text="Warehouse" />
+                  <ComboBox fx:id="cbWarehouse" prefHeight="28.0" prefWidth="211.0" promptText="Select warehouse" />
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="10.0">
+               <children>
+                  <Label prefHeight="30.0" prefWidth="110.0" text="Available quantity" />
+                  <Label fx:id="labelAvailable" prefHeight="30.0" prefWidth="113.0" text="0" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="30.0" prefWidth="110.0" text="Selling Price" />
+                  <TextField fx:id="tfPrice" prefHeight="25.0" prefWidth="211.0" promptText="Enter selling price">
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="40.0">
+               <children>
+                  <Label prefHeight="30.0" prefWidth="110.0" text="Quantity" />
+                  <TextField fx:id="tfQuantity" prefHeight="25.0" prefWidth="211.0" promptText="Enter Quantity">
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="30.0" prefWidth="110.0" text="Payment Method" />
+                  <ComboBox fx:id="cbBank" prefHeight="25.0" prefWidth="210.0" promptText="Select Bank">
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                  </ComboBox>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefHeight="30.0" prefWidth="110.0" text="Reference No" />
+                  <TextField fx:id="tfRefNo" prefHeight="25.0" prefWidth="211.0" promptText="Enter Reference No">
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <ButtonBar>
+               <buttons>
+                  <Button fx:id="btnSell" mnemonicParsing="false" prefHeight="29.0" prefWidth="83.0" styleClass="btn_save" text="Sell" />
+                  <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="29.0" prefWidth="83.0" styleClass="btn_cancel" text="Cancel" />
+               </buttons>
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin>
+            </ButtonBar>
+         </children>
+      </VBox>
+      <NotificationPane fx:id="notificationPane" />
+   </children>
+   <padding>
+      <Insets bottom="2.0" left="3.0" right="2.0" top="5.0" />
+   </padding>
+</VBox>
