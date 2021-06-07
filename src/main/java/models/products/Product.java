@@ -15,6 +15,8 @@ public class Product implements SuperModel{
      * 'name', 'is_active', 'description', 'sku_code', 'upc_code', 'quantity',
      *         'price', 'brand', 'category', 'uom', 'image'**/
 
+    public static final String LINE_NAME = "Product";
+
     private int id;
     private String name, description, image;
     @SerializedName("sku_code")

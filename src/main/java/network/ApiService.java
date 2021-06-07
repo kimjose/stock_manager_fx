@@ -247,7 +247,7 @@ public interface ApiService {
     @POST("express_sale")
     @FormUrlEncoded
     Call<ExpressSale> addSale(@Field("description") String description, @Field("saleDate") String saleDate,
-                                @Field("bankId") int bankId, @Field("warehouseId") int warehouseId, @Field("refNo") String refNo, @Field("lines") ExpressSaleLine[] lines,
+                                @Field("bankId") int bankId, @Field("warehouseId") int warehouseId, @Field("refNo") String refNo, @Field("lines") String lines,
                                 @Field("createdBy") int createdBy);
 
     @POST("post_sale/{id}/{postedBy}")
@@ -343,7 +343,7 @@ public interface ApiService {
 
     @PUT("express_sale/{id}")
     Call<ExpressSale> updateSale(@Path("id") int id, @Query("description") String description, @Query("saleDate") String saleDate,
-                                   @Query("bankId") int bankId, @Query("warehouseId") int warehouseId, @Query("refNo") String refNo, @Field("lines") ExpressSaleLine[] lines);
+                                   @Query("bankId") int bankId, @Query("warehouseId") int warehouseId, @Query("refNo") String refNo, @Field("lines") String lines);
 
     @POST("product_group/{id}")
     Call<ProductGroup[]> updateGroup(@Path("id") int id, @Field("name") String name, @Field("description") String description, @Field("productId") int product,

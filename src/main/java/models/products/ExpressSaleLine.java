@@ -20,7 +20,17 @@ public class ExpressSaleLine {
     private double unitPrice;
     private double buyingPrice;
     private int id;
-    private LinesInterface linesInterface;
+    private transient LinesInterface linesInterface;
+
+    public ExpressSaleLine(String type, int typeId, double unitPrice, double buyingPrice, int quantity, LinesInterface linesInterface, String name) {
+        this.type = type;
+        this.quantity = quantity;
+        this.typeId = typeId;
+        this.unitPrice = unitPrice;
+        this.buyingPrice = buyingPrice;
+        this.linesInterface = linesInterface;
+        this.name = name;
+    }
 
     public int getId() {
         return id;
@@ -83,9 +93,7 @@ public class ExpressSaleLine {
                 try {
                     String q = textField.getText().trim();
                     int newQ = Integer.parseInt(q);
-                    int diff = newQ - quantity;
-                    ExpressSaleLine newLine = this;
-                    newLine.setQuantity(diff);
+                    ExpressSaleLine newLine = new ExpressSaleLine(type, typeId, unitPrice, buyingPrice, newQ, linesInterface, name);
                     if (linesInterface != null) linesInterface.updateLine(newLine);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -108,9 +116,8 @@ public class ExpressSaleLine {
                         textField.setText(String.valueOf(unitPrice));
                         return;
                     }
-                    ExpressSaleLine newLine = this;
+                    ExpressSaleLine newLine = new ExpressSaleLine(type, typeId, nPrice, buyingPrice, quantity, linesInterface, name);
                     newLine.setUnitPrice(nPrice);
-                    newLine.setQuantity(0);
                     if (linesInterface != null) linesInterface.updateLine(newLine);
                 }catch(Exception e){ e.printStackTrace();}
             }
