@@ -178,7 +178,7 @@ public interface ApiService {
     @POST("customer_invoice")
     @FormUrlEncoded
     Call<Invoice> addCustomerInvoice(@Field("customerId") int customer,
-                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date,@Field("createdBy") int createdBy);
+                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date, @Field("lines") String lines, @Field("createdBy") int createdBy);
 
     @POST("post_customer_invoice/{id}/{postedBy}")
     Call<Invoice[]> postCustomerInvoice(@Path("id") int id, @Path("postedBy") int postedBy);
@@ -219,7 +219,7 @@ public interface ApiService {
     @POST("vendor_invoice")
     @FormUrlEncoded
     Call<models.vendors.Invoice> addVendorInvoice(@Field("vendorId") int vendor,
-                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date, @Field("addedBy") int addedBy);
+                                       @Field("warehouseId") int warehouse,@Field("invoiceDate")String date, @Field("lines")String lines, @Field("addedBy") int addedBy);
 
     @POST("post_vendor_invoice/{id}/{postedBy}")
     Call<models.vendors.Invoice[]> postVendorInvoice(@Path("id") int id, @Path("postedBy") int postedBy);
@@ -326,11 +326,11 @@ public interface ApiService {
 
     @PUT("customer_invoice/{id}")
     Call<Invoice> updateCustomerInvoice(@Path("id")int id,@Query("customerId") int customer,
-                                          @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
+                                          @Query("warehouseId") int warehouse,@Query("invoiceDate")String date, @Field("lines")String lines );
 
     @PUT("vendor_invoice/{id}")
     Call<models.vendors.Invoice> updateVendorInvoice(@Path("id")int id,@Query("vendorId") int vendor,
-                                          @Query("warehouseId") int warehouse,@Query("invoiceDate")String date);
+                                          @Query("warehouseId") int warehouse,@Query("invoiceDate")String date, @Field("lines")String lines);
 
 
     @PUT("payment_voucher/{id}")

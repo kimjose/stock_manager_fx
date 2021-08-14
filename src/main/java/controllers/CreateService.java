@@ -97,7 +97,7 @@ public class CreateService implements Initializable {
 
             @Override
             public void onFailure(Call<Service[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
         });
     }

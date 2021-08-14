@@ -309,12 +309,12 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                             cbBank.getSelectionModel().select(expressSale.getBank());
                         else cbBank.getSelectionModel().selectFirst();
                     });
-                } else notificationPane.show(response.message());
+                } else Platform.runLater(() ->notificationPane.show(response.message()));
             }
 
             @Override
             public void onFailure(Call<Bank[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(() ->notificationPane.show(throwable.getMessage()));
             }
         });
         getWarehouses.enqueue(new Callback<>() {
@@ -326,12 +326,12 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                         if (expressSale != null) cbWarehouse.getSelectionModel().select(expressSale.getWarehouse());
                         else cbWarehouse.getSelectionModel().selectFirst();
                     });
-                } else notificationPane.show(response.message());
+                } else Platform.runLater(() ->notificationPane.show(response.message()));
             }
 
             @Override
             public void onFailure(Call<Warehouse[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(() ->notificationPane.show(throwable.getMessage()));
             }
         });
         getServices.enqueue(new Callback<>() {
@@ -510,7 +510,6 @@ public class ExpressSaleController implements Initializable, LinesInterface {
                 added = true;
             } else {
                 saleLineList.add(saleLine);
-                added = true;
             }
 
         }
