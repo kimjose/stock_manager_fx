@@ -47,8 +47,8 @@ public class Main extends Application{
         tfName.requestFocus();
         CustomPasswordField passwordField = (CustomPasswordField)  vBox.getChildren().get(4);
         Label myLabel = (Label) vBox.getChildren().get(5);
-        tfName.setText("kim");
-        passwordField.setText("admin123");
+        tfName.setText("admin");
+        passwordField.setText("password");
         tfName.textProperty().addListener((observable, oldValue, newValue) -> loginButton.setDisable(newValue.trim().equals("")));
         loginButton.addEventFilter(ActionEvent.ACTION, event -> {
             String userName = tfName.getText().trim();
