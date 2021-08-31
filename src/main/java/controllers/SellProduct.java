@@ -107,12 +107,12 @@ public class SellProduct implements Initializable {
                     Platform.runLater(() -> {
                         cbBank.setItems(FXCollections.observableArrayList(response.body()));
                     });
-                } else notificationPane.show(response.message());
+                } else Platform.runLater(() ->notificationPane.show(response.message()));
             }
 
             @Override
             public void onFailure(Call<Bank[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(() ->notificationPane.show(throwable.getMessage()));
             }
         });
         Call<Warehouse[]> call = apiService.warehouses();

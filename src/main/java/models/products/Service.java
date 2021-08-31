@@ -8,6 +8,8 @@ import javafx.scene.paint.Paint;
 import models.SuperModel;
 
 public class Service implements SuperModel {
+    public static final String LINE_NAME = "Service";
+
     private int id;
     private String name, description;
     private LinesInterface linesInterface;

@@ -116,7 +116,7 @@ public class CreateCustomer implements Initializable {
 
             @Override
             public void onFailure(Call<Customer[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
         });
     }

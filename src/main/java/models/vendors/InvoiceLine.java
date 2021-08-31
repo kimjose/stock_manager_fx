@@ -24,8 +24,16 @@ public class InvoiceLine {
     private String description;
     private double unitPrice;
     private int quantity;
-    private LinesInterface linesInterface;
+    private transient LinesInterface linesInterface;
     private String name;
+    public InvoiceLine(String type, int typeId, String description, double unitPrice, int quantity, String name) {
+        this.type = type;
+        this.typeId = typeId;
+        this.description = description;
+        this.unitPrice = unitPrice;
+        this.quantity = quantity;
+        this.name = name;
+    }
 
     public int getId() {
         return id;

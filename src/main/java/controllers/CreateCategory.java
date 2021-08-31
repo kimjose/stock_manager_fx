@@ -114,7 +114,7 @@ public class CreateCategory implements Initializable {
 
             @Override
             public void onFailure(Call<Category[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
         });
     }

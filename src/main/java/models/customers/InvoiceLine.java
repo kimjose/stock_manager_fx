@@ -30,8 +30,18 @@ public class InvoiceLine {
     private double unitPrice;
     private double buyingPrice;
     private int quantity;
-    private LinesInterface linesInterface;
+    private transient LinesInterface linesInterface;
     private String name;
+
+    public InvoiceLine(String type, int typeId, String description, double unitPrice, double buyingPrice, int quantity, String name) {
+        this.type = type;
+        this.typeId = typeId;
+        this.description = description;
+        this.unitPrice = unitPrice;
+        this.buyingPrice = buyingPrice;
+        this.quantity = quantity;
+        this.name = name;
+    }
 
     public int getId() {
         return id;

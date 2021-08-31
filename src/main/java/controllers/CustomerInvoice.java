@@ -138,10 +138,11 @@ public class CustomerInvoice implements Initializable, LinesInterface {
     private final User user = SessionManager.INSTANCE.getUser();
     private Service[] services;
     private Product[] products;
+    private InvoiceLine[] invoiceLines = new InvoiceLine[]{};
 
     private final ValidationSupport vsInvoice = new ValidationSupport();
     private final ValidationSupport vsLine = new ValidationSupport();
-
+    private Gson gson = new Gson();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -294,18 +295,20 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             @Override
             public void onResponse(Call<InvoiceLine[]> call, Response<InvoiceLine[]> response) {
                 assert response.body() != null;
-                if (response.isSuccessful()) {
-                    setLines(response.body());
-                } else {
-                    assert response.errorBody() != null;
-                    notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
-                            new String[]{"invId", "type", "typeId", "description"}));
-                }
+                Platform.runLater(() -> {
+                    if (response.isSuccessful()) {
+                        setLines(response.body());
+                    } else {
+                        assert response.errorBody() != null;
+                        notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
+                                new String[]{"invId", "type", "typeId", "description"}));
+                    }
+                });
             }
 
             @Override
             public void onFailure(Call<InvoiceLine[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
         });
     }
@@ -314,10 +317,10 @@ public class CustomerInvoice implements Initializable, LinesInterface {
     public void addItem(SuperModel item, String type) {
         if (type.equals("Service")) {
             Service service = (Service) item;
-            addLine(type, service.getId(), 100, 100, 1);
+            addLine(type, service.getId(), 100, 100, 1, service.getName());
         } else if (type.equals("Product")) {
             Product product = (Product) item;
-            addLine(type, product.getId(), product.getSellingPrice(), product.getBuyingPrice(), 1);
+            addLine(type, product.getId(), product.getSellingPrice(), product.getBuyingPrice(), 1, product.getName());
         }
     }
 
@@ -328,12 +331,15 @@ public class CustomerInvoice implements Initializable, LinesInterface {
             invTotal += line.getTotal();
             System.out.println(line.getName());
         }
-        invoice.setInvoiceLines(lines);
-        invoice.setTotal(invTotal);
+        if (invoice != null){
+            invoice.setInvoiceLines(lines);
+            invoice.setTotal(invTotal);
+        }
         Platform.runLater(() -> {
-            labelTotal.setText(String.valueOf(invoice.getTotal()));
+//            labelTotal.setText(String.valueOf(invoice.getTotal()));
             tvLines.setItems(FXCollections.observableArrayList(lines));
         });
+        this.invoiceLines = lines;
     }
 
     private void loadData() {
@@ -353,12 +359,12 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                             }
                         }
                     });
-                } else notificationPane.show(response.message());
+                } else Platform.runLater(()->notificationPane.show(response.message()));
             }
 
             @Override
             public void onFailure(Call<Customer[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(()->notificationPane.show(throwable.getMessage()));
             }
         });
         getWarehouses.enqueue(new Callback<>() {
@@ -370,12 +376,12 @@ public class CustomerInvoice implements Initializable, LinesInterface {
                         if (invoice != null) cbWarehouse.getSelectionModel().select(invoice.getWarehouse());
                         else cbWarehouse.getSelectionModel().selectFirst();
                     });
-                } else notificationPane.show(response.message());
+                } else Platform.runLater(() ->notificationPane.show(response.message()));
             }
 
             @Override
             public void onFailure(Call<Warehouse[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
+                Platform.runLater(() ->notificationPane.show(throwable.getMessage()));
             }
         });
         getProducts.enqueue(new Callback<>() {
@@ -439,9 +445,9 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         }
         Call<Invoice> call;
         if (invoice == null) {
-            call = apiService.addCustomerInvoice(customer.getId(), warehouse.getId(), date, user.getId());
+            call = apiService.addCustomerInvoice(customer.getId(), warehouse.getId(), date, gson.toJson(invoiceLines), user.getId());
         } else {
-            call = apiService.updateCustomerInvoice(invoice.getId(), customer.getId(), warehouse.getId(), date);
+            call = apiService.updateCustomerInvoice(invoice.getId(), customer.getId(), warehouse.getId(), date, gson.toJson(invoiceLines));
         }
         call.enqueue(new Callback<>() {
             @Override
@@ -510,7 +516,7 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         });
     }
 
-    private void addLine(String type, int typeId, double price, double buyingPrice, int q) {
+    private void addLine(String type, int typeId, double price, double buyingPrice, int q, String name) {
         ValidationResult vr = vsLine.getValidationResult();
         Iterator<ValidationMessage> iterator = vr.getErrors().iterator();
         StringBuilder message = new StringBuilder();
@@ -554,65 +560,26 @@ public class CustomerInvoice implements Initializable, LinesInterface {
         }
         int q = Integer.parseInt(quantity);
 */
-        if (invoice == null) {
-            ValidationResult invoiceValidationResult = vsInvoice.getValidationResult();
-            Iterator<ValidationMessage> messageIterator = invoiceValidationResult.getErrors().iterator();
-            StringBuilder stringBuilder = new StringBuilder();
-            while (messageIterator.hasNext()) {
-                stringBuilder.append(messageIterator.next().getText());
-                stringBuilder.append("\n");
-            }
-            if (!invoiceValidationResult.getErrors().isEmpty()) {
-                notificationPane.show(stringBuilder.toString());
-                return;
-            }
-            Invoice mInvoice = new Invoice();
-            mInvoice.setCustomer(cbOwner.getValue());
-            mInvoice.setInvoiceDate(dpDate.getValue().toString());
-            mInvoice.setWarehouse(cbWarehouse.getValue());
-            Gson gson = new Gson();
-            String json = gson.toJson(mInvoice, Invoice.class);
-            System.out.println(json);
-            Call<Invoice> call = apiService.addCustomerInvoiceLine(json, type, typeId, price, buyingPrice, q, "description", user.getId());
-            call.enqueue(new Callback<>() {
-                @Override
-                public void onResponse(Call<Invoice> call, Response<Invoice> response) {
-                    Platform.runLater(() -> {
-                        if (response.isSuccessful()) {
-                            setInvoice(response.body());
-                        }
-                        else notificationPane.show(response.message());
-                    });
-                }
 
-                @Override
-                public void onFailure(Call<Invoice> call, Throwable throwable) {
-                    System.out.println(throwable.toString());
-                    Platform.runLater(throwable::getMessage);
-                }
-            });
-            return;
+        boolean added = false;
+        List<InvoiceLine> lineList = new ArrayList<>();
+        for (InvoiceLine line : invoiceLines) {
+            if (line.getTypeId() == typeId && line.getType().equals(type)){
+                InvoiceLine invoiceLine = new InvoiceLine(type, typeId, "", price, buyingPrice, q+line.getQuantity(), name);
+                lineList.add(invoiceLine);
+                System.out.println("heredddd");
+                added = true;
+            } else {
+                System.out.println("there");
+                lineList.add(line);
+            }
         }
-
-        Call<InvoiceLine[]> call = apiService.addCustomerInvoiceLine(invoice.getId(), type, typeId, price, buyingPrice, q, "description");
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<InvoiceLine[]> call, Response<InvoiceLine[]> response) {
-                assert response.body() != null;
-                if (response.isSuccessful()) {
-                    setLines(response.body());
-                } else {
-                    assert response.errorBody() != null;
-                    notificationPane.show(Utility.handleApiErrors(response.message(), response.errorBody(),
-                            new String[]{"invId", "type", "typeId", "description"}));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<InvoiceLine[]> call, Throwable throwable) {
-                notificationPane.show(throwable.getMessage());
-            }
-        });
+        if(!added){
+            System.out.println("last");
+            InvoiceLine invoiceLine = new InvoiceLine(type, typeId, "", price, buyingPrice, q, name);
+            lineList.add(invoiceLine);
+        }
+        setLines(lineList.toArray(invoiceLines));
     }
 
 
