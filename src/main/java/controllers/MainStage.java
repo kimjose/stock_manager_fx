@@ -160,15 +160,11 @@ public class MainStage implements Initializable, ChangeListener {
         TreeItem<String> uomTI = new TreeItem<>("Units of Measure");
         TreeItem<String> warehouseTI = new TreeItem<>("Warehouses");
         TreeItem<String> productGroupsTI = new TreeItem<>("Product Groups");
-        TreeItem<String> unpackingTI = new TreeItem<>("Unpackings");
-        TreeItem<String> postedUnpackingTI = new TreeItem<>("Posted Unpackings");
-        TreeItem<String> reversedUnpackingTI = new TreeItem<>("Reversed Unpackings");
         TreeItem<String> serviceTI = new TreeItem<>("Services");
         TreeItem<String> eSaleTI = new TreeItem<>("Express Sales");
         TreeItem<String> peSaleTI = new TreeItem<>("Posted Express Sales");
         TreeItem<String> reSaleTI = new TreeItem<>("Reversed Express Sales");
-        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI, productGroupsTI, unpackingTI,
-                postedUnpackingTI, reversedUnpackingTI, serviceTI, eSaleTI, peSaleTI, reSaleTI);
+        shopTree.getChildren().addAll(productsTree, brandsTI, categoriesTI, uomTI, warehouseTI, productGroupsTI, serviceTI, eSaleTI, peSaleTI, reSaleTI);
 
         TreeItem<String> allVendors = new TreeItem<>("All Vendors");
         TreeItem<String> vInvoiceTree = new TreeItem<>("Vendor Invoices");
@@ -234,9 +230,6 @@ public class MainStage implements Initializable, ChangeListener {
             case "Warehouses":
             case "Brands":
             case "Product Groups":
-            case "Unpackings":
-            case "Posted Unpackings":
-            case "Reversed Unpackings":
             case "Services":
             case "Express Sales":
             case "Posted Express Sales":
