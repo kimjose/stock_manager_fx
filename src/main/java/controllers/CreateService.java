@@ -74,7 +74,6 @@ public class CreateService implements Initializable {
         Call<Service[]> call;
         if (service==null) call = apiService.addService(name, description);
         else {
-            name = service.getName().equals(name)?null:name;
             call = apiService.updateService(service.getId(), name, description);
         }
         call.enqueue(new Callback<>() {

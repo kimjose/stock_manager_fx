@@ -323,7 +323,6 @@ public class CreateProduct implements Initializable {
         }
         Call<Product[]> call;
         if (product != null) {
-            name = name.equals(product.getName()) ? null : name;
             call = apiService.updateProduct(product.getId(), name, desc, buyingPrice, sellingPrice, brand.getId(), uom.getId(), category.getId(), skuCode, upcCode, base64Image);
         }else call = apiService.addProduct(name, desc, buyingPrice, sellingPrice,  brand.getId(), uom.getId(), category.getId(), skuCode, upcCode, base64Image);
         call.enqueue(new Callback<>() {
